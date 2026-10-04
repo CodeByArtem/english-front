@@ -1,0 +1,235 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $color-gray-50 0%, $color-gray-100 100%);
+}
+
+.header {
+  background: $color-white;
+  box-shadow: $shadow-sm;
+  position: sticky;
+  top: 0;
+  z-index: $z-index-sticky;
+}
+
+.headerContent {
+  @include container;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $spacing-lg;
+  padding-bottom: $spacing-lg;
+}
+
+.logo {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+  margin: 0;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+.navLink {
+  color: $color-gray-600;
+  font-weight: $font-weight-medium;
+  @include transition(color);
+
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.navButton {
+  @include button-reset;
+  padding: $spacing-sm $spacing-lg;
+  background: $color-primary;
+  color: $color-white;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-md;
+  @include transition(background, transform);
+
+  &:hover {
+    background: $color-primary-dark;
+    transform: translateY(-1px);
+  }
+}
+
+.userMenu {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: $spacing-xs;
+}
+
+.userName {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-900;
+}
+
+.userRole {
+  font-size: $font-size-xs;
+  color: $color-gray-500;
+  text-transform: capitalize;
+}
+
+.logoutButton {
+  @include button-reset;
+  padding: $spacing-sm $spacing-lg;
+  background: $color-gray-200;
+  color: $color-gray-700;
+  font-weight: $font-weight-medium;
+  border-radius: $border-radius-md;
+  @include transition(background, color);
+
+  &:hover {
+    background: $color-gray-300;
+    color: $color-gray-900;
+  }
+}
+
+.loading {
+  @include flex-center;
+  min-height: 50vh;
+  font-size: $font-size-lg;
+  color: $color-gray-600;
+}
+
+.main {
+  @include container;
+  padding-top: $spacing-3xl;
+  padding-bottom: $spacing-3xl;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: $spacing-3xl;
+}
+
+.heroTitle {
+  font-size: $font-size-5xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin-bottom: $spacing-md;
+}
+
+.heroSubtitle {
+  font-size: $font-size-lg;
+  color: $color-gray-600;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.courses {
+  margin-bottom: $spacing-3xl;
+}
+
+.sectionTitle {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin-bottom: $spacing-2xl;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-xl;
+}
+
+.card {
+  @include card($spacing-xl, $border-radius-xl, $shadow-md);
+  @include hover-lift;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.level {
+  padding: $spacing-xs $spacing-sm;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-sm;
+}
+
+.lessons {
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+}
+
+.cardTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+.cardDescription {
+  font-size: $font-size-base;
+  color: $color-gray-600;
+  line-height: $line-height-relaxed;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.cardButton {
+  @include button-reset;
+  padding: $spacing-md;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-md;
+  @include transition(background, transform);
+  cursor: pointer;
+
+  &:hover {
+    background: $color-primary-dark;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@include respond-to(sm) {
+  .main {
+    padding-top: $spacing-2xl;
+    padding-bottom: $spacing-2xl;
+  }
+
+  .heroTitle {
+    font-size: $font-size-4xl;
+  }
+
+  .heroSubtitle {
+    font-size: $font-size-base;
+  }
+
+  .sectionTitle {
+    font-size: $font-size-2xl;
+  }
+}

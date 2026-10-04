@@ -1,0 +1,190 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $color-gray-50 0%, $color-gray-100 100%);
+}
+
+.header {
+  background: $color-white;
+  box-shadow: $shadow-sm;
+  position: sticky;
+  top: 0;
+  z-index: $z-index-sticky;
+}
+
+.headerContent {
+  @include container;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $spacing-lg;
+  padding-bottom: $spacing-lg;
+}
+
+.title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+.backLink {
+  color: $color-gray-600;
+  font-weight: $font-weight-medium;
+  @include transition(color);
+
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.main {
+  @include container;
+  padding-top: $spacing-2xl;
+  padding-bottom: $spacing-2xl;
+}
+
+.loading {
+  @include flex-center;
+  min-height: 50vh;
+  font-size: $font-size-lg;
+  color: $color-gray-600;
+}
+
+.error {
+  padding: $spacing-xl;
+  background: rgba($color-danger, 0.1);
+  border: 1px solid $color-danger;
+  border-radius: $border-radius-lg;
+  color: $color-danger-dark;
+  text-align: center;
+  margin: $spacing-2xl auto;
+  max-width: 500px;
+}
+
+.empty {
+  @include card($spacing-2xl, $border-radius-xl, $shadow-md);
+  text-align: center;
+  color: $color-gray-600;
+  font-size: $font-size-lg;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: $spacing-xl;
+}
+
+.card {
+  @include card($spacing-xl, $border-radius-xl, $shadow-md);
+  @include hover-lift;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.cardTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin: 0;
+  flex: 1;
+}
+
+.status {
+  padding: $spacing-xs $spacing-sm;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-sm;
+  white-space: nowrap;
+}
+
+.statusPending {
+  background: rgba($color-warning, 0.1);
+  color: $color-warning-dark;
+  border: 1px solid $color-warning;
+}
+
+.statusSubmitted {
+  background: rgba($color-primary, 0.1);
+  color: $color-primary-dark;
+  border: 1px solid $color-primary;
+}
+
+.statusGraded {
+  background: rgba($color-success, 0.1);
+  color: $color-success-dark;
+  border: 1px solid $color-success;
+}
+
+.description {
+  font-size: $font-size-base;
+  color: $color-gray-600;
+  line-height: $line-height-relaxed;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.dueDate {
+  font-size: $font-size-sm;
+  color: $color-gray-500;
+}
+
+.grade {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-success-dark;
+}
+
+.button {
+  @include button-reset;
+  padding: $spacing-md;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-md;
+  @include transition(background, transform);
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    background: $color-primary-dark;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@include respond-to(sm) {
+  .main {
+    padding-top: $spacing-lg;
+    padding-bottom: $spacing-lg;
+  }
+
+  .title {
+    font-size: $font-size-2xl;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

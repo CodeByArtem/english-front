@@ -1,0 +1,189 @@
+.pageContainer {
+  min-height: 100vh;
+  background-color: #e5e7eb;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+  font-family: sans-serif;
+}
+
+.submissionCard {
+  background: white;
+  width: 100%;
+  max-width: 900px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem;
+  border-radius: 4px;
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: #1b4c5b;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
+  &:hover { text-decoration: underline; }
+}
+
+.headerSection {
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.title {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #1b4c5b;
+  margin-bottom: 0.5rem;
+}
+
+.infoGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  font-size: 0.95rem;
+  color: #475569;
+
+  p {
+    margin: 0;
+    span {
+      font-weight: bold;
+      color: #1b4c5b;
+    }
+  }
+}
+
+.scoreBadge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.statusGraded { background: #dcfce7; color: #166534; }
+.statusPending { background: #fef9c3; color: #854d0e; }
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #1b4c5b;
+  margin: 2rem 0 1rem;
+  border-left: 4px solid #d02a27;
+  padding-left: 1rem;
+}
+
+.exerciseBlock {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.answerItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px dashed #cbd5e1;
+  &:last-child { border-bottom: none; }
+}
+
+.answerLabel {
+  font-weight: bold;
+  color: #578a9c;
+}
+
+.answerValues {
+  text-align: right;
+}
+
+.studentAnswer {
+  display: block;
+  font-size: 0.95rem;
+}
+
+.correctAnswer {
+  display: block;
+  font-size: 0.85rem;
+  color: #16a34a;
+  margin-top: 0.2rem;
+}
+
+.incorrectMarker { color: #d02a27; margin-left: 0.5rem; font-weight: bold; }
+.correctMarker { color: #16a34a; margin-left: 0.5rem; font-weight: bold; }
+
+.gradingForm {
+  background: #f1f5f9;
+  padding: 1.5rem;
+  border-radius: 4px;
+  margin-top: 2rem;
+  border: 1px solid #cbd5e1;
+}
+
+.formGroup {
+  margin-bottom: 1rem;
+  label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 0.4rem;
+    color: #1b4c5b;
+  }
+  input, textarea {
+    width: 100%;
+    padding: 0.6rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    font-size: 0.95rem;
+  }
+  textarea { height: 100px; resize: vertical; }
+}
+
+.saveBtn {
+  background: #1b4c5b;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover { background: #143742; }
+  &:disabled { background: #94a3b8; }
+}
+
+.tutorFeedback {
+  background: #ecfdf5;
+  border: 1px solid #10b981;
+  padding: 1.5rem;
+  border-radius: 4px;
+  margin-top: 2rem;
+
+  h4 {
+    margin-top: 0;
+    color: #065f46;
+    margin-bottom: 0.5rem;
+  }
+}
+
+.successMsg {
+  color: #16a34a;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.errorMsg {
+  color: #d02a27;
+  font-weight: bold;
+  margin-top: 1rem;
+}
+
+.loading, .error {
+  padding: 5rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #64748b;
+}

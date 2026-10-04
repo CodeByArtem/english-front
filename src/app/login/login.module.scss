@@ -1,0 +1,131 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.container {
+  @include flex-center;
+  min-height: 100vh;
+  padding: $spacing-lg;
+  background: linear-gradient(135deg, $color-gray-50 0%, $color-gray-100 100%);
+}
+
+.card {
+  @include card($spacing-2xl, $border-radius-2xl, $shadow-xl);
+  width: 100%;
+  max-width: 420px;
+}
+
+.title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin-bottom: $spacing-sm;
+  text-align: center;
+}
+
+.subtitle {
+  font-size: $font-size-base;
+  color: $color-gray-600;
+  text-align: center;
+  margin-bottom: $spacing-2xl;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-gray-700;
+}
+
+.input {
+  @include input-reset;
+  width: 100%;
+  padding: $spacing-md;
+  border: 1px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  color: $color-gray-900;
+  background: $color-white;
+  @include transition(border-color, box-shadow);
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    outline: none;
+  }
+
+  &::placeholder {
+    color: $color-gray-400;
+  }
+}
+
+.error {
+  padding: $spacing-md;
+  background: rgba($color-danger, 0.1);
+  border: 1px solid $color-danger;
+  border-radius: $border-radius-md;
+  color: $color-danger-dark;
+  font-size: $font-size-sm;
+  text-align: center;
+}
+
+.button {
+  @include button-reset;
+  width: 100%;
+  padding: $spacing-md;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-md;
+  @include transition(background, transform);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: $color-primary-dark;
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.footer {
+  margin-top: $spacing-xl;
+  text-align: center;
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+}
+
+.link {
+  color: $color-primary;
+  font-weight: $font-weight-medium;
+  @include transition(color);
+
+  &:hover {
+    color: $color-primary-dark;
+    text-decoration: underline;
+  }
+}
+
+@include respond-to(sm) {
+  .container {
+    padding: $spacing-2xl;
+  }
+}

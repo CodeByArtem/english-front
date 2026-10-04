@@ -1,0 +1,380 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $color-gray-50 0%, $color-gray-100 100%);
+}
+
+.header {
+  background: $color-white;
+  box-shadow: $shadow-sm;
+  position: sticky;
+  top: 0;
+  z-index: $z-index-sticky;
+}
+
+.headerContent {
+  @include container;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $spacing-lg;
+  padding-bottom: $spacing-lg;
+}
+
+.logo {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-primary;
+  @include transition(color);
+
+  &:hover {
+    color: $color-primary-dark;
+  }
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: $spacing-lg;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: $spacing-xs;
+}
+
+.userName {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-900;
+}
+
+.userRole {
+  font-size: $font-size-xs;
+  color: $color-gray-500;
+  text-transform: capitalize;
+}
+
+.logoutButton {
+  @include button-reset;
+  padding: $spacing-sm $spacing-lg;
+  background: $color-gray-200;
+  color: $color-gray-700;
+  font-weight: $font-weight-medium;
+  border-radius: $border-radius-md;
+  @include transition(background, color);
+
+  &:hover {
+    background: $color-gray-300;
+    color: $color-gray-900;
+  }
+}
+
+.loading {
+  @include flex-center;
+  min-height: 50vh;
+  font-size: $font-size-lg;
+  color: $color-gray-600;
+}
+
+.main {
+  @include container;
+  padding-top: $spacing-2xl;
+  padding-bottom: $spacing-2xl;
+  display: grid;
+  gap: $spacing-2xl;
+}
+
+.welcome {
+  text-align: center;
+  padding: $spacing-2xl 0;
+}
+
+.welcomeTitle {
+  font-size: $font-size-4xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin-bottom: $spacing-md;
+}
+
+.welcomeSubtitle {
+  font-size: $font-size-lg;
+  color: $color-gray-600;
+  margin: 0;
+}
+
+.teacherActions {
+  margin-top: $spacing-xl;
+  display: flex;
+  justify-content: center;
+}
+
+.teacherLink {
+  display: inline-block;
+  padding: $spacing-sm $spacing-xl;
+  background: $color-primary;
+  color: $color-white;
+  font-weight: $font-weight-bold;
+  border-radius: $border-radius-lg;
+  text-decoration: none;
+  @include transition(background, transform);
+
+  &:hover {
+    background: $color-primary-dark;
+    transform: translateY(-2px);
+  }
+}
+
+.courses {
+  @include card($spacing-2xl, $border-radius-xl, $shadow-md);
+}
+
+.sectionTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin-bottom: $spacing-xl;
+}
+
+.textbookList {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.textbookItem {
+  @include card(0, $border-radius-lg, $shadow-sm);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+}
+
+.textbookHeader {
+  padding: $spacing-lg $spacing-xl;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  background: $color-white;
+  @include transition(background);
+
+  &:hover {
+    background: $color-gray-50;
+  }
+}
+
+.textbookInfo {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.textbookTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+.level {
+  padding: $spacing-xs $spacing-sm;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-sm;
+}
+
+.chevron {
+  font-size: $font-size-xs;
+  color: $color-gray-400;
+}
+
+.unitList {
+  background: $color-gray-50;
+  border-top: 1px solid $color-gray-200;
+}
+
+.unitItem {
+  border-bottom: 1px solid $color-gray-200;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.unitHeader {
+  padding: $spacing-md $spacing-xl;
+  padding-left: $spacing-2xl;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  @include transition(background);
+
+  &:hover {
+    background: $color-gray-100;
+  }
+}
+
+.unitTitle {
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-800;
+  margin: 0;
+}
+
+.lessonList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  background: $color-white;
+}
+
+.lessonItem {
+  border-bottom: 1px solid $color-gray-100;
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.lessonLink {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+  padding: $spacing-sm $spacing-xl;
+  padding-left: $spacing-3xl;
+  color: $color-gray-700;
+  text-decoration: none;
+  font-size: $font-size-sm;
+  @include transition(background, color);
+
+  &:hover {
+    background: $color-primary-50;
+    color: $color-primary;
+  }
+}
+
+.lessonIcon {
+  font-size: $font-size-base;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: $spacing-xl;
+}
+
+.card {
+  @include card($spacing-xl, $border-radius-xl, $shadow-md);
+  @include hover-lift;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+}
+
+.level {
+  padding: $spacing-xs $spacing-sm;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-sm;
+}
+
+.lessons {
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+}
+
+.cardTitle {
+  font-size: $font-size-xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+.cardDescription {
+  font-size: $font-size-base;
+  color: $color-gray-600;
+  line-height: $line-height-relaxed;
+  margin: 0;
+  flex-grow: 1;
+}
+
+.progressSection {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.progressBar {
+  width: 100%;
+  height: 8px;
+  background: $color-gray-200;
+  border-radius: $border-radius-full;
+  overflow: hidden;
+}
+
+.progressFill {
+  height: 100%;
+  background: $color-primary;
+  @include transition(width);
+}
+
+.progressText {
+  font-size: $font-size-xs;
+  color: $color-gray-600;
+}
+
+.cardButton {
+  @include button-reset;
+  padding: $spacing-md;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-md;
+  @include transition(background, transform);
+  cursor: pointer;
+  text-align: center;
+
+  &:hover {
+    background: $color-primary-dark;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+@include respond-to(sm) {
+  .main {
+    padding-top: $spacing-lg;
+    padding-bottom: $spacing-lg;
+  }
+
+  .welcomeTitle {
+    font-size: $font-size-3xl;
+  }
+
+  .sectionTitle {
+    font-size: $font-size-xl;
+  }
+
+  .userSection {
+    flex-direction: column;
+    align-items: flex-end;
+    gap: $spacing-sm;
+  }
+}

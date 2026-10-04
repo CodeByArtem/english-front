@@ -1,0 +1,121 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+// Reset
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  font-family: $font-family-base;
+  font-size: $font-size-base;
+  line-height: $line-height-normal;
+  color: $color-gray-900;
+  background-color: $color-gray-50;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Typography
+h1, h2, h3, h4, h5, h6 {
+  font-family: $font-family-heading;
+  font-weight: $font-weight-bold;
+  line-height: $line-height-tight;
+  margin-bottom: $spacing-md;
+}
+
+h1 {
+  font-size: $font-size-5xl;
+}
+
+h2 {
+  font-size: $font-size-4xl;
+}
+
+h3 {
+  font-size: $font-size-3xl;
+}
+
+h4 {
+  font-size: $font-size-2xl;
+}
+
+h5 {
+  font-size: $font-size-xl;
+}
+
+h6 {
+  font-size: $font-size-lg;
+}
+
+p {
+  margin-bottom: $spacing-md;
+}
+
+a {
+  color: $color-primary;
+  text-decoration: none;
+  @include transition(color);
+
+  &:hover {
+    color: $color-primary-dark;
+  }
+}
+
+// Lists
+ul, ol {
+  list-style: none;
+}
+
+// Images
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+// Forms
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+// Buttons
+button {
+  @include button-reset;
+}
+
+// Focus styles
+:focus-visible {
+  outline: 2px solid $color-primary;
+  outline-offset: 2px;
+}
+
+// Selection
+::selection {
+  background-color: $color-primary;
+  color: $color-white;
+}
+
+// Scrollbar
+body {
+  @include scrollbar;
+}
+
+// Container
+.container {
+  @include container;
+}

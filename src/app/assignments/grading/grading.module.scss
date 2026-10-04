@@ -1,0 +1,408 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, $color-gray-50 0%, $color-gray-100 100%);
+}
+
+.header {
+  background: $color-white;
+  box-shadow: $shadow-sm;
+  position: sticky;
+  top: 0;
+  z-index: $z-index-sticky;
+}
+
+.headerContent {
+  @include container;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: $spacing-lg;
+  padding-bottom: $spacing-lg;
+}
+
+.title {
+  font-size: $font-size-3xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+.backLink {
+  color: $color-gray-600;
+  font-weight: $font-weight-medium;
+  @include transition(color);
+
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.main {
+  @include container;
+  padding-top: $spacing-2xl;
+  padding-bottom: $spacing-2xl;
+  display: grid;
+  gap: $spacing-2xl;
+}
+
+.loading {
+  @include flex-center;
+  min-height: 50vh;
+  font-size: $font-size-lg;
+  color: $color-gray-600;
+}
+
+.error {
+  padding: $spacing-xl;
+  background: rgba($color-danger, 0.1);
+  border: 1px solid $color-danger;
+  border-radius: $border-radius-lg;
+  color: $color-danger-dark;
+  text-align: center;
+  margin: $spacing-2xl auto;
+  max-width: 500px;
+}
+
+.section {
+  @include card($spacing-2xl, $border-radius-xl, $shadow-md);
+}
+
+.sectionTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin-bottom: $spacing-xl;
+}
+
+.empty {
+  color: $color-gray-600;
+  font-size: $font-size-base;
+  text-align: center;
+  padding: $spacing-xl;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.listItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  @include transition(border-color, box-shadow);
+
+  &:hover {
+    border-color: $color-primary;
+    box-shadow: $shadow-md;
+  }
+}
+
+.itemInfo {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.itemTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+.itemStudent {
+  font-size: $font-size-base;
+  color: $color-gray-600;
+  margin: 0;
+}
+
+.itemDate {
+  font-size: $font-size-sm;
+  color: $color-gray-500;
+  margin: 0;
+}
+
+.itemMeta {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+}
+
+.gradeBadge {
+  padding: $spacing-xs $spacing-sm;
+  background: rgba($color-success, 0.1);
+  color: $color-success-dark;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-sm;
+  border: 1px solid $color-success;
+}
+
+.button {
+  @include button-reset;
+  padding: $spacing-sm $spacing-lg;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-md;
+  @include transition(background, transform);
+  cursor: pointer;
+
+  &:hover {
+    background: $color-primary-dark;
+    transform: translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.buttonSecondary {
+  @include button-reset;
+  padding: $spacing-sm $spacing-lg;
+  background: $color-gray-200;
+  color: $color-gray-700;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-md;
+  @include transition(background, transform);
+  cursor: pointer;
+
+  &:hover {
+    background: $color-gray-300;
+  }
+}
+
+.gradingPanel {
+  @include card($spacing-2xl, $border-radius-xl, $shadow-lg);
+}
+
+.gradingCard {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xl;
+}
+
+.gradingHeader {
+  display: flex;
+  align-items: center;
+  gap: $spacing-md;
+  padding-bottom: $spacing-lg;
+  border-bottom: 1px solid $color-gray-200;
+}
+
+.backButton {
+  @include button-reset;
+  color: $color-gray-600;
+  font-weight: $font-weight-medium;
+  @include transition(color);
+  cursor: pointer;
+
+  &:hover {
+    color: $color-primary;
+  }
+}
+
+.gradingTitle {
+  font-size: $font-size-2xl;
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+.submissionInfo {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+  padding: $spacing-lg;
+  background: $color-gray-50;
+  border-radius: $border-radius-md;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-sm;
+}
+
+.infoLabel {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-600;
+  min-width: 80px;
+}
+
+.infoValue {
+  font-size: $font-size-base;
+  color: $color-gray-900;
+}
+
+.submissionContent {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+  padding: $spacing-lg;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-md;
+}
+
+.contentTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+.contentText {
+  font-size: $font-size-base;
+  color: $color-gray-800;
+  line-height: $line-height-relaxed;
+  margin: 0;
+}
+
+.fileLink {
+  color: $color-primary;
+  font-weight: $font-weight-medium;
+  @include transition(color);
+
+  &:hover {
+    color: $color-primary-dark;
+    text-decoration: underline;
+  }
+}
+
+.gradingForm {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-lg;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-sm;
+}
+
+.label {
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+  color: $color-gray-700;
+}
+
+.input {
+  @include input-reset;
+  width: 100%;
+  padding: $spacing-md;
+  border: 2px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  color: $color-gray-900;
+  background: $color-white;
+  @include transition(border-color, box-shadow);
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    outline: none;
+  }
+}
+
+.textarea {
+  @include input-reset;
+  width: 100%;
+  padding: $spacing-md;
+  border: 2px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  color: $color-gray-900;
+  background: $color-white;
+  font-family: inherit;
+  line-height: $line-height-normal;
+  @include transition(border-color, box-shadow);
+  resize: vertical;
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 3px rgba($color-primary, 0.1);
+    outline: none;
+  }
+
+  &::placeholder {
+    color: $color-gray-400;
+  }
+}
+
+.formActions {
+  display: flex;
+  gap: $spacing-md;
+  justify-content: flex-end;
+}
+
+.buttonPrimary {
+  @include button-reset;
+  padding: $spacing-md $spacing-xl;
+  background: $color-primary;
+  color: $color-white;
+  font-size: $font-size-base;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-md;
+  @include transition(background, transform);
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: $color-primary-dark;
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+@include respond-to(sm) {
+  .main {
+    padding-top: $spacing-lg;
+    padding-bottom: $spacing-lg;
+  }
+
+  .title {
+    font-size: $font-size-2xl;
+  }
+
+  .sectionTitle {
+    font-size: $font-size-xl;
+  }
+
+  .listItem {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .formActions {
+    flex-direction: column;
+  }
+
+  .buttonPrimary,
+  .buttonSecondary {
+    width: 100%;
+  }
+}
