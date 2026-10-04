@@ -164,7 +164,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                     </div>
 
                     <div className={styles.audioRow}>
-                        <span className={styles.taskNum}>1b</span>
+                        <span className={styles.taskNum}>1 b</span>
                         <button
                             onClick={() => playAudio('1.1')}
                             className={`${styles.audioBtn} ${playingAudio === '1.1' ? styles.audioBtnActive : ''}`}
@@ -182,7 +182,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 '▶ Track 1.1'
                             )}
                         </button>
-                        <span>Listen and check your answers.</span>
+                        <span>Listen and check your answers. Then listen again and repeat.</span>
                     </div>
 
                     {/* Exercise 2: Stress Table */}
@@ -209,6 +209,13 @@ const LessonContent: React.FC<LessonContentProps> = ({
                             <span>Listen and complete the table.</span>
                         </div>
 
+                        {/* Плашка со странами перед таблицей (как в учебнике) */}
+                        <div className={styles.countriesBox} style={{ margin: '1rem 0' }}>
+                            {countriesList.map((country, i) => (
+                                <span key={`2a-${i}`} className={styles.countryTag}>{country}</span>
+                            ))}
+                        </div>
+
                         <table className={styles.stressTable}>
                             <thead>
                             <tr>
@@ -220,39 +227,78 @@ const LessonContent: React.FC<LessonContentProps> = ({
                             </tr>
                             </thead>
                             <tbody>
+                            {/* Строка 1 */}
                             <tr>
                                 <td>
-                                    <input
-                                        type="text"
-                                        value={stressTableInputs['1_1'] || ''}
-                                        onChange={e => onStressChange('1_1', e.target.value)}
-                                        disabled={readOnly}
-                                        className={isDiff('stress', '1_1', stressTableInputs['1_1'] || '') ? styles.diffHighlight : ''}
-                                    />
+                                    <input type="text" value={stressTableInputs['o_1'] || ''} onChange={e => onStressChange('o_1', e.target.value)} disabled={readOnly} className={isDiff('stress', 'o_1', stressTableInputs['o_1'] || '') ? styles.diffHighlight : ''} />
                                 </td>
-                                <td>Poland</td>
-                                <td>Japan</td>
+                                <td style={{ textAlign: 'center', fontStyle: 'italic', color: '#666' }}>Poland</td>
+                                <td style={{ textAlign: 'center', fontStyle: 'italic', color: '#666' }}>Japan</td>
                                 <td>
-                                    <input
-                                        type="text"
-                                        value={stressTableInputs['1_3'] || ''}
-                                        onChange={e => onStressChange('1_3', e.target.value)}
-                                        disabled={readOnly}
-                                        className={isDiff('stress', '1_3', stressTableInputs['1_3'] || '') ? styles.diffHighlight : ''}
-                                    />
+                                    <input type="text" value={stressTableInputs['Ooo_1'] || ''} onChange={e => onStressChange('Ooo_1', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Ooo_1', stressTableInputs['Ooo_1'] || '') ? styles.diffHighlight : ''} />
                                 </td>
                                 <td>
-                                    <input
-                                        type="text"
-                                        value={stressTableInputs['1_4'] || ''}
-                                        onChange={e => onStressChange('1_4', e.target.value)}
-                                        disabled={readOnly}
-                                        className={isDiff('stress', '1_4', stressTableInputs['1_4'] || '') ? styles.diffHighlight : ''}
-                                    />
+                                    <input type="text" value={stressTableInputs['ooOo_1'] || ''} onChange={e => onStressChange('ooOo_1', e.target.value)} disabled={readOnly} className={isDiff('stress', 'ooOo_1', stressTableInputs['ooOo_1'] || '') ? styles.diffHighlight : ''} />
                                 </td>
+                            </tr>
+                            {/* Строка 2 */}
+                            <tr>
+                                <td>
+                                    <input type="text" value={stressTableInputs['o_2'] || ''} onChange={e => onStressChange('o_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'o_2', stressTableInputs['o_2'] || '') ? styles.diffHighlight : ''} />
+                                </td>
+                                <td>
+                                    <input type="text" value={stressTableInputs['Oo_2'] || ''} onChange={e => onStressChange('Oo_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Oo_2', stressTableInputs['Oo_2'] || '') ? styles.diffHighlight : ''} />
+                                </td>
+                                <td>
+                                    <input type="text" value={stressTableInputs['oO_2'] || ''} onChange={e => onStressChange('oO_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'oO_2', stressTableInputs['oO_2'] || '') ? styles.diffHighlight : ''} />
+                                </td>
+                                <td>
+                                    <input type="text" value={stressTableInputs['Ooo_2'] || ''} onChange={e => onStressChange('Ooo_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Ooo_2', stressTableInputs['Ooo_2'] || '') ? styles.diffHighlight : ''} />
+                                </td>
+                                <td>
+                                    <input type="text" value={stressTableInputs['ooOo_2'] || ''} onChange={e => onStressChange('ooOo_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'ooOo_2', stressTableInputs['ooOo_2'] || '') ? styles.diffHighlight : ''} />
+                                </td>
+                            </tr>
+                            {/* Строка 3 */}
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="text" value={stressTableInputs['Oo_3'] || ''} onChange={e => onStressChange('Oo_3', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Oo_3', stressTableInputs['Oo_3'] || '') ? styles.diffHighlight : ''} />
+                                </td>
+                                <td>
+                                    <input type="text" value={stressTableInputs['oO_3'] || ''} onChange={e => onStressChange('oO_3', e.target.value)} disabled={readOnly} className={isDiff('stress', 'oO_3', stressTableInputs['oO_3'] || '') ? styles.diffHighlight : ''} />
+                                </td>
+                                <td>
+                                    <input type="text" value={stressTableInputs['Ooo_3'] || ''} onChange={e => onStressChange('Ooo_3', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Ooo_3', stressTableInputs['Ooo_3'] || '') ? styles.diffHighlight : ''} />
+                                </td>
+                                <td></td>
                             </tr>
                             </tbody>
                         </table>
+                    </div>
+
+                    {/* Exercise 2b & 2c */}
+                    <div className={styles.audioRow} style={{marginTop: '1.5rem'}}>
+                        <span className={styles.taskNum}>2 b</span>
+                        <span>Listen again and repeat.</span>
+                    </div>
+
+                    <div className={styles.exerciseBlock} style={{marginTop: '1rem'}}>
+                        <p className={styles.taskText}>
+                            <span className={styles.taskNum}>2 c</span> How do you say your country in English? Underline the stressed syllable.
+                        </p>
+                        <p style={{ color: '#008b9c', fontStyle: 'italic', marginBottom: '0.8rem', fontSize: '0.95rem' }}>
+                            Brazil, Italy
+                        </p>
+                        <input
+                            type="text"
+                            placeholder="Type your country here..."
+                            value={stressTableInputs['my_country'] || ''}
+                            onChange={e => onStressChange('my_country', e.target.value)}
+                            disabled={readOnly}
+                            className={`${styles.lineInput} ${isDiff('stress', 'my_country', stressTableInputs['my_country'] || '') ? styles.diffHighlight : ''}`}
+                            style={{ width: '100%', maxWidth: '280px', borderBottom: '1px solid #ccc' }}
+                        />
                     </div>
 
                     {/* Exercise 3: Roleplay */}
@@ -292,7 +338,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 '▶ Track 1.3'
                             )}
                         </button>
-                        <span style={{fontSize: '0.9rem'}}>Listen to conversations. Complete with countries.</span>
+                        <span style={{fontSize: '0.9rem'}}>Listen to two conversations at a language conference. Complete them with the correct countries.</span>
                     </div>
 
                     <div className={styles.confImageWrap}>
@@ -360,6 +406,18 @@ const LessonContent: React.FC<LessonContentProps> = ({
                             />.
                         </p>
                     </div>
+
+                    {/* Exercise 4b & 4c */}
+                    <div className={styles.exerciseBlock} style={{marginTop: '2rem'}}>
+                        <div className={styles.audioRow} style={{marginBottom: '0.8rem'}}>
+                            <span className={styles.taskNum} style={{ color: '#2c3e50', fontWeight: 'bold' }}>b</span>
+                            <span>Listen again and repeat.</span>
+                        </div>
+                        <p className={styles.taskText}>
+                            <span className={styles.taskNum} style={{ color: '#2c3e50', fontWeight: 'bold' }}>c</span> Work in pairs. Practise the conversations.
+                        </p>
+                    </div>
+
                 </div>
             </div>
         </>
