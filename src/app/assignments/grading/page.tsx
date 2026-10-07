@@ -5,6 +5,18 @@ import Link from 'next/link';
 import api from '@/lib/api';
 import styles from './grading.module.scss';
 
+interface TeacherStatItem {
+  id: string;
+  assignment?: { id?: string; title?: string; lesson?: { title?: string } };
+  lesson?: { id?: string; title?: string };
+  student?: { id?: string; email?: string };
+  answers?: Record<string, unknown>;
+  createdAt: string;
+  grade?: number | null;
+  tutorComment?: string | null;
+  status?: string;
+}
+
 interface Submission {
   id: string;
   assignmentId: string;
@@ -15,7 +27,7 @@ interface Submission {
   fileUrl?: string;
   submittedAt: string;
   grade?: number;
-  feedback?: string;
+  tutorComment?: string;
   status: 'pending' | 'graded';
 }
 
@@ -25,14 +37,26 @@ export default function GradingPage() {
   const [error, setError] = useState('');
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null);
   const [grade, setGrade] = useState('');
-  const [feedback, setFeedback] = useState('');
+  const [tutorComment, setTutorComment] = useState('');
   const [grading, setGrading] = useState(false);
 
   useEffect(() => {
     const fetchSubmissions = async () => {
       try {
-        const response = await api.get('/assignments/submissions');
-        setSubmissions(response.data);
+        const response = await api.get('/submissions/teacher-stats');
+        const mapped: Submission[] = (response.data || []).map((item: TeacherStatItem) => ({
+          id: item.id,
+          assignmentId: item.assignment?.id || item.lesson?.id || '',
+          assignmentTitle: item.lesson?.title || item.assignment?.lesson?.title || item.assignment?.title || 'Lesson',
+          studentName: item.student?.email || 'Student',
+          studentId: item.student?.id || '',
+          content: item.answers ? JSON.stringify(item.answers, null, 2) : '',
+          submittedAt: item.createdAt,
+          grade: item.grade ?? undefined,
+          tutorComment: item.tutorComment || '',
+          status: item.grade !== null && item.grade !== undefined ? 'graded' : 'pending',
+        }));
+        setSubmissions(mapped);
       } catch (err: any) {
         setError(err.response?.data?.message || 'Failed to load submissions');
       } finally {
@@ -50,22 +74,22 @@ export default function GradingPage() {
     setGrading(true);
 
     try {
-      await api.post(`/assignments/submissions/${selectedSubmission.id}/grade`, {
+      await api.patch(`/submissions/${selectedSubmission.id}/grade`, {
         grade: parseInt(grade),
-        feedback,
+        tutorComment,
       });
 
       setSubmissions((prev) =>
         prev.map((sub) =>
           sub.id === selectedSubmission.id
-            ? { ...sub, grade: parseInt(grade), feedback, status: 'graded' as const }
+            ? { ...sub, grade: parseInt(grade), tutorComment, status: 'graded' as const }
             : sub
         )
       );
 
       setSelectedSubmission(null);
       setGrade('');
-      setFeedback('');
+      setTutorComment('');
     } catch (err: any) {
       setError(err.response?.data?.message || 'Failed to grade submission');
     } finally {
@@ -76,7 +100,7 @@ export default function GradingPage() {
   const selectSubmission = (submission: Submission) => {
     setSelectedSubmission(submission);
     setGrade(submission.grade?.toString() || '');
-    setFeedback(submission.feedback || '');
+    setTutorComment(submission.tutorComment || '');
   };
 
   const pendingSubmissions = submissions.filter((s) => s.status === 'pending');
@@ -165,14 +189,14 @@ export default function GradingPage() {
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label htmlFor="feedback" className={styles.label}>
+                  <label htmlFor="tutorComment" className={styles.label}>
                     Feedback
                   </label>
                   <textarea
-                    id="feedback"
+                    id="tutorComment"
                     className={styles.textarea}
-                    value={feedback}
-                    onChange={(e) => setFeedback(e.target.value)}
+                    value={tutorComment}
+                    onChange={(e) => setTutorComment(e.target.value)}
                     placeholder="Provide feedback to the student..."
                     rows={6}
                   />

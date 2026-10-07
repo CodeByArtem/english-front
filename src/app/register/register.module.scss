@@ -69,6 +69,12 @@
   }
 }
 
+.hint {
+  font-size: $font-size-xs;
+  color: $color-gray-500;
+  margin-top: $spacing-xs;
+}
+
 .roleSelector {
   display: flex;
   gap: $spacing-md;

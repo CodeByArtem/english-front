@@ -142,3 +142,114 @@
   font-size: 1.2rem;
   color: #64748b;
 }
+
+.inviteSection {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.inviteHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.inviteTitle {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1b4c5b;
+  margin-bottom: 0.25rem;
+}
+
+.inviteDesc {
+  color: #64748b;
+  font-size: 0.875rem;
+}
+
+.inviteButton {
+  background-color: #1b4c5b;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background-color: #143742;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.inviteCard {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: white;
+  border: 1px dashed #0284c7;
+  border-radius: 6px;
+}
+
+.inviteRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.inviteLabel {
+  font-weight: 600;
+  color: #334155;
+  font-size: 0.9rem;
+}
+
+.inviteCode {
+  background: #f1f5f9;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.95rem;
+  color: #0f172a;
+  word-break: break-all;
+}
+
+.copyBtn {
+  background: #0284c7;
+  color: white;
+  border: none;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: #0369a1;
+  }
+}
+
+.inviteExpiry {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.inviteSuccess {
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #166534;
+  font-weight: 500;
+}
+

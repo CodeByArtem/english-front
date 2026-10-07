@@ -10,18 +10,13 @@ const api = axios.create({
     },
 });
 
-let isRefreshing = false;
-let failedQueue: { resolve: (v?: unknown) => void; reject: (e: unknown) => void }[] = [];
+let refreshPromise: Promise<void> | null = null;
+let refreshGeneration = 0;
 
 // Флаг «идёт выход»: пока он включён, редиректы на /login подавляются
 let isLoggingOut = false;
 export const setLoggingOut = (value: boolean) => {
     isLoggingOut = value;
-};
-
-const processQueue = (error: unknown) => {
-    failedQueue.forEach((prom) => (error ? prom.reject(error) : prom.resolve()));
-    failedQueue = [];
 };
 
 // Эти запросы никогда не должны запускать refresh
@@ -36,6 +31,11 @@ const redirectToLogin = () => {
         window.location.href = '/login';
     }
 };
+
+api.interceptors.request.use((config) => {
+    (config as any)._gen = refreshGeneration;
+    return config;
+});
 
 api.interceptors.response.use(
   (response) => response,
@@ -53,29 +53,38 @@ api.interceptors.response.use(
       if (error.response?.status === 401 && !originalRequest._retry && !isAuthRequest) {
           originalRequest._retry = true;
 
-          if (isRefreshing) {
-              return new Promise((resolve, reject) => {
-                  failedQueue.push({ resolve, reject });
-              }).then(() => api(originalRequest));
+          if (originalRequest?._gen !== undefined && originalRequest._gen < refreshGeneration) {
+              return api(originalRequest);
           }
 
-          isRefreshing = true;
+          if (!refreshPromise) {
+              refreshPromise = api
+                  .post('/auth/refresh')
+                  .then(() => {
+                      refreshGeneration++;
+                  })
+                  .catch((refreshError) => {
+                      redirectToLogin();
+                      return Promise.reject(refreshError);
+                  })
+                  .finally(() => {
+                      refreshPromise = null;
+                  });
+          }
 
           try {
-              await api.post('/auth/refresh');
-              processQueue(null);
+              await refreshPromise;
               return api(originalRequest);
           } catch (refreshError) {
-              processQueue(refreshError);
-              redirectToLogin();
               return Promise.reject(refreshError);
-          } finally {
-              isRefreshing = false;
           }
       }
 
       if (error.response) {
-          console.error('API Error:', error.response.data?.message || error.response.statusText || 'Unknown error');
+          // Логируем только критические ошибки сервера (5xx), клиентские 4xx обрабатываются на страницах
+          if (error.response.status >= 500) {
+              console.error('API Error:', error.response.data?.message || error.response.statusText || 'Server error');
+          }
       } else if (error.request) {
           console.error('Network Error:', error.message);
       } else {

@@ -5,13 +5,11 @@ import { useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import styles from './register.module.scss';
 
-type Role = 'student' | 'tutor';
-
 export default function RegisterPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState<Role>('student');
+  const [inviteCode, setInviteCode] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
@@ -21,10 +19,35 @@ export default function RegisterPage() {
     setLoading(true);
 
     try {
-      await api.post('/auth/register', { email, password, role });
+      const payload: { email: string; password: string; inviteCode?: string } = {
+        email,
+        password,
+      };
+      if (inviteCode.trim()) {
+        payload.inviteCode = inviteCode.trim();
+      }
+
+      await api.post('/auth/register', payload);
       router.push('/login');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+    } catch (err) {
+      const errorResponse =
+        err && typeof err === 'object' && 'response' in err
+          ? (err as { response?: { data?: { message?: string }; status?: number } }).response
+          : undefined;
+      const serverMsg = errorResponse?.data?.message;
+      if (
+        (typeof serverMsg === 'string' && serverMsg.toLowerCase().includes('already exists')) ||
+        errorResponse?.status === 401
+      ) {
+        setError('A user with this email already exists.');
+      } else if (
+        typeof serverMsg === 'string' &&
+        serverMsg.toLowerCase().includes('invite')
+      ) {
+        setError('Invalid or expired invite code.');
+      } else {
+        setError(serverMsg || 'Registration failed. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -69,23 +92,18 @@ export default function RegisterPage() {
           </div>
 
           <div className={styles.formGroup}>
-            <label className={styles.label}>Role</label>
-            <div className={styles.roleSelector}>
-              <button
-                type="button"
-                className={`${styles.roleButton} ${role === 'student' ? styles.roleButtonActive : ''}`}
-                onClick={() => setRole('student')}
-              >
-                Student
-              </button>
-              <button
-                type="button"
-                className={`${styles.roleButton} ${role === 'tutor' ? styles.roleButtonActive : ''}`}
-                onClick={() => setRole('tutor')}
-              >
-                Tutor
-              </button>
-            </div>
+            <label htmlFor="inviteCode" className={styles.label}>
+              Teacher Invite Code (Optional)
+            </label>
+            <input
+              id="inviteCode"
+              type="text"
+              className={styles.input}
+              value={inviteCode}
+              onChange={(e) => setInviteCode(e.target.value)}
+              placeholder="Enter invite code if you are a tutor"
+            />
+            <span className={styles.hint}>Leave blank if you are a student.</span>
           </div>
 
           {error && <div className={styles.error}>{error}</div>}
