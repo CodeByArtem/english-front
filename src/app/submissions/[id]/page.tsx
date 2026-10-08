@@ -19,6 +19,14 @@ export default function SubmissionPage() {
   const [flagAnswers, setFlagAnswers] = useState<Record<number, string>>({});
   const [dialogInputs, setDialogInputs] = useState<Record<string, string>>({});
   const [stressTableInputs, setStressTableInputs] = useState<Record<string, string>>({});
+  const [grammarInputs, setGrammarInputs] = useState<Record<string, string>>({});
+  const [dialogue7aInputs, setDialogue7aInputs] = useState<Record<string, string>>({});
+  const [conferenceCard, setConferenceCard] = useState<{
+    name: string;
+    city: string;
+    country: string;
+    roles: string[];
+  }>({ name: '', city: '', country: '', roles: [] });
   
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
@@ -48,6 +56,9 @@ export default function SubmissionPage() {
         setFlagAnswers(answers.flagAnswers || {});
         setDialogInputs(answers.dialogInputs || {});
         setStressTableInputs(answers.stressTableInputs || {});
+        setGrammarInputs(answers.grammarInputs || {});
+        setDialogue7aInputs(answers.dialogue7aInputs || {});
+        setConferenceCard(answers.conferenceCard || { name: '', city: '', country: '', roles: [] });
         
         if (data.grade !== null) setGrade(data.grade);
         if (data.tutorComment) setTutorComment(data.tutorComment);
@@ -74,6 +85,29 @@ export default function SubmissionPage() {
 
   const handleStressChange = (sid: string, value: string) => {
     setStressTableInputs(prev => ({ ...prev, [sid]: value }));
+  };
+
+  const handleGrammarChange = (gid: string, value: string) => {
+    setGrammarInputs(prev => ({ ...prev, [gid]: value }));
+  };
+
+  const handleDialogue7aChange = (did: string, value: string) => {
+    setDialogue7aInputs(prev => ({ ...prev, [did]: value }));
+  };
+
+  const handleConferenceCardChange = (field: 'name' | 'city' | 'country', value: string) => {
+    setConferenceCard(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleRoleToggle = (role: string) => {
+    setConferenceCard(prev => {
+      const currentRoles = prev.roles || [];
+      const exists = currentRoles.includes(role);
+      return {
+        ...prev,
+        roles: exists ? currentRoles.filter(r => r !== role) : [...currentRoles, role],
+      };
+    });
   };
 
   const playAudio = (track: string) => {
@@ -106,7 +140,14 @@ export default function SubmissionPage() {
       setSuccess('');
       setError('');
       await api.patch(`/submissions/${id}/review`, {
-        answers: { flagAnswers, dialogInputs, stressTableInputs },
+        answers: {
+          flagAnswers,
+          dialogInputs,
+          stressTableInputs,
+          grammarInputs,
+          dialogue7aInputs,
+          conferenceCard,
+        },
         grade: Number(grade),
         tutorComment
       });
@@ -128,6 +169,9 @@ export default function SubmissionPage() {
     setFlagAnswers(original.flagAnswers || {});
     setDialogInputs(original.dialogInputs || {});
     setStressTableInputs(original.stressTableInputs || {});
+    setGrammarInputs(original.grammarInputs || {});
+    setDialogue7aInputs(original.dialogue7aInputs || {});
+    setConferenceCard(original.conferenceCard || { name: '', city: '', country: '', roles: [] });
     setSuccess('Reset to student answers');
   };
 
@@ -163,9 +207,16 @@ export default function SubmissionPage() {
           flagAnswers={flagAnswers}
           dialogInputs={dialogInputs}
           stressTableInputs={stressTableInputs}
+          grammarInputs={grammarInputs}
+          dialogue7aInputs={dialogue7aInputs}
+          conferenceCard={conferenceCard}
           onFlagChange={handleFlagChange}
           onDialogChange={handleDialogChange}
           onStressChange={handleStressChange}
+          onGrammarChange={handleGrammarChange}
+          onDialogue7aChange={handleDialogue7aChange}
+          onConferenceCardChange={handleConferenceCardChange}
+          onRoleToggle={handleRoleToggle}
           readOnly={!isTutor}
           originalAnswers={submission.answers}
           playAudio={playAudio}

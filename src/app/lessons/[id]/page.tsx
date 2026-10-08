@@ -18,6 +18,15 @@ const LessonPage = () => {
   const [flagAnswers, setFlagAnswers] = useState<Record<number, string>>({});
   const [dialogInputs, setDialogInputs] = useState<Record<string, string>>({});
   const [stressTableInputs, setStressTableInputs] = useState<Record<string, string>>({});
+  const [grammarInputs, setGrammarInputs] = useState<Record<string, string>>({});
+  const [dialogue7aInputs, setDialogue7aInputs] = useState<Record<string, string>>({});
+  const [conferenceCard, setConferenceCard] = useState<{
+    name: string;
+    city: string;
+    country: string;
+    roles: string[];
+  }>({ name: '', city: '', country: '', roles: [] });
+
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -79,6 +88,29 @@ const LessonPage = () => {
     setStressTableInputs(prev => ({ ...prev, [id]: value }));
   };
 
+  const handleGrammarChange = (id: string, value: string) => {
+    setGrammarInputs(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleDialogue7aChange = (id: string, value: string) => {
+    setDialogue7aInputs(prev => ({ ...prev, [id]: value }));
+  };
+
+  const handleConferenceCardChange = (field: 'name' | 'city' | 'country', value: string) => {
+    setConferenceCard(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleRoleToggle = (role: string) => {
+    setConferenceCard(prev => {
+      const currentRoles = prev.roles || [];
+      const exists = currentRoles.includes(role);
+      return {
+        ...prev,
+        roles: exists ? currentRoles.filter(r => r !== role) : [...currentRoles, role],
+      };
+    });
+  };
+
   const playAudio = (track: string) => {
     // If the same track is playing, stop it
     if (playingAudio === track && currentAudio) {
@@ -123,7 +155,14 @@ const LessonPage = () => {
 
       const response = await api.post('/submissions', {
         lessonId: lesson.id,
-        answers: { flagAnswers, dialogInputs, stressTableInputs },
+        answers: {
+          flagAnswers,
+          dialogInputs,
+          stressTableInputs,
+          grammarInputs,
+          dialogue7aInputs,
+          conferenceCard,
+        },
       });
 
       const { score } = response.data;
@@ -161,34 +200,56 @@ const LessonPage = () => {
             ← Back to Dashboard
           </button>
 
-          <LessonContent
-            lesson={lesson}
-            user={user}
-            flagAnswers={flagAnswers}
-            dialogInputs={dialogInputs}
-            stressTableInputs={stressTableInputs}
-            onFlagChange={handleFlagChange}
-            onDialogChange={handleDialogChange}
-            onStressChange={handleStressChange}
-            playAudio={playAudio}
-            playingAudio={playingAudio}
-          />
+          {lesson?.order === 1 || lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a22' ? (
+            <>
+              <LessonContent
+                lesson={lesson}
+                user={user}
+                flagAnswers={flagAnswers}
+                dialogInputs={dialogInputs}
+                stressTableInputs={stressTableInputs}
+                grammarInputs={grammarInputs}
+                dialogue7aInputs={dialogue7aInputs}
+                conferenceCard={conferenceCard}
+                onFlagChange={handleFlagChange}
+                onDialogChange={handleDialogChange}
+                onStressChange={handleStressChange}
+                onGrammarChange={handleGrammarChange}
+                onDialogue7aChange={handleDialogue7aChange}
+                onConferenceCardChange={handleConferenceCardChange}
+                onRoleToggle={handleRoleToggle}
+                playAudio={playAudio}
+                playingAudio={playingAudio}
+              />
 
-          <div className={styles.submitSection}>
-            <button
-                onClick={handleSubmitResults}
-                disabled={submitting}
-                className={styles.submitBtn}
-            >
-              {submitting ? 'Submitting...' : 'Submit Answers'}
-            </button>
-            {successMessage && (
-                <p className={styles.successText}>{successMessage}</p>
-            )}
-            {errorMessage && (
-                <p className={styles.errorText}>{errorMessage}</p>
-            )}
-          </div>
+              <div className={styles.submitSection}>
+                <button
+                    onClick={handleSubmitResults}
+                    disabled={submitting}
+                    className={styles.submitBtn}
+                >
+                  {submitting ? 'Submitting...' : 'Submit Answers'}
+                </button>
+                {successMessage && (
+                    <p className={styles.successText}>{successMessage}</p>
+                )}
+                {errorMessage && (
+                    <p className={styles.errorText}>{errorMessage}</p>
+                )}
+              </div>
+            </>
+          ) : (
+            <div className={styles.placeholderContainer}>
+              <h2 className={styles.placeholderTitle}>{lesson?.title || 'Lesson'}</h2>
+              <div className={styles.placeholderCard}>
+                <div className={styles.placeholderIcon}>⏳</div>
+                <p className={styles.placeholderText}>Урок ещё готовится</p>
+                <p className={styles.placeholderSubtext}>
+                  Материалы и интерактивные задания для этого урока находятся в разработке.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
   );

@@ -405,3 +405,351 @@
   font-size: 1.2rem;
   color: #64748b;
 }
+
+.placeholderContainer {
+  padding: 3rem 1rem;
+  text-align: center;
+}
+
+.placeholderTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  margin-bottom: 2rem;
+}
+
+.placeholderCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 3rem 2rem;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.placeholderIcon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.placeholderText {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.placeholderSubtext {
+  font-size: 0.95rem;
+  color: #64748b;
+  margin: 0;
+}
+
+// Exercises 5-10 continuation of Lesson 1
+.continuationLayout {
+  margin-top: 2.5rem;
+}
+
+.grammarBox {
+  background-color: #d2dce6;
+  border-radius: 6px;
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.grammarBoxTitle {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #1e3a5f;
+  font-style: italic;
+  margin: 0 0 0.75rem 0;
+}
+
+.tablesContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.grammarRow {
+  display: flex;
+  background: #e2e8f0;
+  border: 1px solid white;
+}
+
+.grammarSign {
+  width: 1.75rem;
+  background: #b8c7d6;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.grammarCell {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+  p { margin: 0.2rem 0; }
+}
+
+.grammarColRight {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 9rem;
+  margin-left: 0.25rem;
+}
+
+.grammarMiniRow {
+  display: flex;
+  background: #e2e8f0;
+  border: 1px solid white;
+  font-size: 0.85rem;
+  align-items: center;
+  span:last-child { padding: 0.25rem 0.5rem; }
+}
+
+.whereBox {
+  margin-top: 1rem;
+  p { font-weight: bold; color: #1e3a5f; margin: 0 0 0.25rem 0; }
+}
+
+.whereRow {
+  display: flex;
+  justify-content: space-between;
+  font-style: italic;
+  color: #0284c7;
+  font-weight: 500;
+  font-size: 0.9rem;
+  span span { color: #64748b; font-style: normal; }
+}
+
+.shortFormsBox {
+  margin-top: 1rem;
+  h5 { font-weight: bold; color: #1e3a5f; margin: 0 0 0.5rem 0; font-size: 0.95rem; }
+}
+
+.shortFormsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.shortFormItem {
+  display: flex;
+  align-items: center;
+}
+
+.staticAudioRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+}
+
+.staticAudioBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: #d02a27;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 0.2rem 0.45rem;
+  border-radius: 3px;
+  flex-shrink: 0;
+  svg { width: 14px; height: 14px; fill: currentColor; }
+}
+
+.pronounceList {
+  margin: 0.5rem 0 1rem 2rem;
+  font-size: 0.9rem;
+  line-height: 1.8;
+  p { margin: 0; }
+}
+
+.blueHighlight {
+  color: #0284c7;
+  font-weight: 600;
+}
+
+.dialogue7aBlock {
+  margin: 0.5rem 0 1rem 2rem;
+  font-size: 0.9rem;
+  line-height: 1.9;
+  p { margin: 0.3rem 0; }
+}
+
+.roleplayGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.roleplayHeader {
+  background-color: #fca5a5;
+  text-align: center;
+  font-weight: 600;
+  color: #1f2937;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+}
+
+.roleplayCard {
+  border: 3px solid #38bdf8;
+  background-color: #e0f2fe;
+  padding: 0.75rem;
+  border-radius: 6px;
+  position: relative;
+  font-size: 0.85rem;
+  p { margin: 0.2rem 0; }
+  span { font-weight: bold; }
+}
+
+.flagBadge {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  border: 1px solid #cbd5e1;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+}
+
+.appInfoLink {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #64748b;
+  font-size: 0.85rem;
+  margin: 1rem 0 2rem;
+  svg { width: 16px; height: 16px; color: #d02a27; flex-shrink: 0; }
+}
+
+.ribbon {
+  display: inline-block;
+  background-color: #e07a5f;
+  color: white;
+  padding: 0.25rem 1.25rem 0.25rem 0.75rem;
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  position: relative;
+  margin: 1rem 0;
+  &::after {
+    content: '';
+    position: absolute;
+    right: -10px;
+    top: 0;
+    width: 0;
+    height: 0;
+    border-top: 13px solid transparent;
+    border-left: 10px solid #e07a5f;
+    border-bottom: 13px solid transparent;
+  }
+}
+
+.conferenceCard {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  margin: 0.5rem 0 1.5rem;
+  max-width: 420px;
+}
+
+.confHeader {
+  background-color: #798e4d;
+  color: white;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.confBody {
+  background-color: #a5dbd4;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.confField {
+  display: flex;
+  align-items: center;
+  label {
+    width: 4.5rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #374151;
+  }
+  input {
+    flex: 1;
+    background: white;
+    border: 1px solid #cbd5e1;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.85rem;
+    outline: none;
+    border-radius: 2px;
+    &:focus { border-color: #0284c7; }
+  }
+}
+
+.confRoles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+  margin-top: 0.25rem;
+}
+
+.confCheckboxLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: #374151;
+  cursor: pointer;
+  input { cursor: pointer; }
+}
+
+.confFooter {
+  background-color: #798e4d;
+  height: 0.75rem;
+}
+
+.developBadge {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  .developBox {
+    background-color: #d02a27;
+    color: white;
+    padding: 0.4rem 1.5rem;
+    font-weight: bold;
+    border-top-left-radius: 1rem;
+    font-size: 0.9rem;
+    position: relative;
+    overflow: hidden;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 0;
+      height: 0;
+      border-left: 20px solid transparent;
+      border-bottom: 25px solid #84cc16;
+    }
+  }
+}
