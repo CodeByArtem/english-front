@@ -375,6 +375,50 @@
   cursor: pointer;
   transition: background 0.2s;
   &:hover { background: #143742; }
+
+  &:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+    opacity: 0.8;
+  }
+}
+
+.revisionBox {
+  background-color: #fff7ed;
+  color: #c2410c;
+  border: 1px solid #fed7aa;
+  border-left: 4px solid #f97316;
+  padding: 0.85rem 1.2rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  margin-bottom: 0.75rem;
+  text-align: left;
+  strong {
+    display: block;
+    margin-bottom: 0.35rem;
+  }
+}
+
+.warningBox {
+  background-color: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fde68a;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.successBox {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
 }
 
 .successText {

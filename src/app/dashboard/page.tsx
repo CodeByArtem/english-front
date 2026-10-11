@@ -9,6 +9,7 @@ import styles from './page.module.scss';
 interface Lesson {
   id: string;
   title: string;
+  order?: number;
 }
 
 interface Unit {
@@ -32,10 +33,21 @@ interface User {
   role: string;
 }
 
+interface SubmissionItem {
+  id: string;
+  score?: number;
+  grade?: number;
+  status: string;
+  tutorComment?: string;
+  createdAt: string;
+  lesson?: { id: string; title: string };
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [textbooks, setTextbooks] = useState<Textbook[]>([]);
+  const [submissions, setSubmissions] = useState<SubmissionItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedTextbook, setExpandedTextbook] = useState<string | null>(null);
   const [expandedUnit, setExpandedUnit] = useState<string | null>(null);
@@ -49,6 +61,15 @@ export default function DashboardPage() {
         ]);
         setUser(userResponse.data);
         setTextbooks(textbooksResponse.data);
+
+        if (userResponse.data?.role?.toLowerCase() === 'student') {
+          try {
+            const subRes = await api.get('/submissions/student');
+            setSubmissions(subRes.data || []);
+          } catch {
+            // Ignore if student has no submissions yet
+          }
+        }
       } catch (err) {
         // Не залогинен: на логин
         router.push('/login');
@@ -131,6 +152,57 @@ export default function DashboardPage() {
             )}
           </section>
 
+          {submissions.length > 0 && (
+            <section className={styles.submissionsSection}>
+              <h2 className={styles.sectionTitle}>My Homework & Progress</h2>
+              <div className={styles.submissionGrid}>
+                {submissions.map((sub) => (
+                  <div
+                    key={sub.id}
+                    className={`${styles.subCard} ${sub.status === 'needs_revision' ? styles.subCardRevision : ''}`}
+                  >
+                    <div className={styles.subCardHeader}>
+                      <h3 className={styles.subLessonTitle}>
+                        {sub.lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a33'
+                          ? '1B Jobs'
+                          : sub.lesson?.title || 'Lesson'}
+                      </h3>
+                      <span className={`${styles.subStatusBadge} ${
+                        sub.status === 'graded'
+                          ? styles.badgeGraded
+                          : sub.status === 'needs_revision'
+                          ? styles.badgeRevision
+                          : styles.badgeSubmitted
+                      }`}>
+                        {sub.status === 'needs_revision'
+                          ? '⚠️ Needs Revision'
+                          : sub.status === 'graded'
+                          ? `Graded (${sub.grade ?? sub.score}%)`
+                          : '⏳ Under Review'}
+                      </span>
+                    </div>
+                    {sub.status === 'needs_revision' && sub.tutorComment && (
+                      <p className={styles.tutorComment}>
+                        <strong>Teacher note:</strong> {sub.tutorComment}
+                      </p>
+                    )}
+                    <div className={styles.subCardFooter}>
+                      <span className={styles.subDate}>Submitted: {new Date(sub.createdAt).toLocaleDateString()}</span>
+                      {sub.lesson?.id && (
+                        <Link
+                          href={`/lessons/${sub.lesson.id}`}
+                          className={sub.status === 'needs_revision' ? styles.actionBtnRevision : styles.actionBtnView}
+                        >
+                          {sub.status === 'needs_revision' ? 'Fix & Resubmit →' : 'Open Lesson →'}
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
           <section className={styles.courses}>
             <h2 className={styles.sectionTitle}>Your Textbooks</h2>
             <div className={styles.textbookList}>
@@ -165,14 +237,36 @@ export default function DashboardPage() {
 
                                 {expandedUnit === unit.id && (
                                     <ul className={styles.lessonList}>
-                                      {unit.lessons.map((lesson) => (
+                                      {unit.lessons.map((lesson) => {
+                                        const sub = submissions.find((s) => s.lesson?.id === lesson.id);
+                                        const lessonTitle =
+                                          lesson.order === 2 || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a33'
+                                            ? '1B Jobs'
+                                            : lesson.title;
+                                        return (
                                           <li key={lesson.id} className={styles.lessonItem}>
                                             <Link href={`/lessons/${lesson.id}`} className={styles.lessonLink}>
                                               <span className={styles.lessonIcon}>📖</span>
-                                              {lesson.title}
+                                              <span>{lessonTitle}</span>
+                                              {sub && (
+                                                <span className={`${styles.inlineBadge} ${
+                                                  sub.status === 'graded'
+                                                    ? styles.badgeGraded
+                                                    : sub.status === 'needs_revision'
+                                                    ? styles.badgeRevision
+                                                    : styles.badgeSubmitted
+                                                }`}>
+                                                  {sub.status === 'needs_revision'
+                                                    ? 'Needs Revision'
+                                                    : sub.status === 'graded'
+                                                    ? `${sub.grade ?? sub.score}%`
+                                                    : 'Under Review'}
+                                                </span>
+                                              )}
                                             </Link>
                                           </li>
-                                      ))}
+                                        );
+                                      })}
                                     </ul>
                                 )}
                               </div>

@@ -584,12 +584,25 @@ const LessonContent: React.FC<LessonContentProps> = ({
 
                     {/* Exercise 6 */}
                     <div className={styles.exerciseBlock}>
-                        <div className={styles.staticAudioRow}>
+                        <div className={styles.audioRow}>
                             <span className={styles.taskNum}>6 a</span>
-                            <span className={styles.staticAudioBadge}>
-                                <svg viewBox="0 0 20 20"><path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" /></svg>
-                                1.4
-                            </span>
+                            <button
+                                onClick={() => playAudio('1.4')}
+                                className={`${styles.audioBtn} ${playingAudio === '1.4' ? styles.audioBtnActive : ''}`}
+                            >
+                                {playingAudio === '1.4' ? (
+                                    <>
+                                        <div className={styles.equalizer}>
+                                            <div className={styles.bar}></div>
+                                            <div className={styles.bar}></div>
+                                            <div className={styles.bar}></div>
+                                        </div>
+                                        <span>Playing...</span>
+                                    </>
+                                ) : (
+                                    '▶ Track 1.4'
+                                )}
+                            </button>
                             <span>Listen to the sentences. Notice the pronunciation of the short forms in <span className={styles.blueHighlight}>blue</span>.</span>
                         </div>
                         <div className={styles.pronounceList}>
@@ -680,12 +693,25 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 /> from Ankara in Turkey.
                             </p>
                         </div>
-                        <div className={styles.staticAudioRow}>
+                        <div className={styles.audioRow} style={{ marginTop: '0.8rem' }}>
                             <span className={styles.taskNum} style={{ color: '#2c3e50', fontWeight: 'bold' }}>b</span>
-                            <span className={styles.staticAudioBadge}>
-                                <svg viewBox="0 0 20 20"><path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.707.707L4.586 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.586l3.707-3.707a1 1 0 011.09-.217zM14.657 2.929a1 1 0 011.414 0A9.972 9.972 0 0119 10a9.972 9.972 0 01-2.929 7.071 1 1 0 01-1.414-1.414A7.971 7.971 0 0017 10c0-2.21-.894-4.208-2.343-5.657a1 1 0 010-1.414zm-2.829 2.828a1 1 0 011.415 0A5.983 5.983 0 0115 10a5.984 5.984 0 01-1.757 4.243 1 1 0 01-1.415-1.415A3.984 3.984 0 0013 10a3.983 3.983 0 00-1.172-2.828 1 1 0 010-1.415z" clipRule="evenodd" /></svg>
-                                1.5
-                            </span>
+                            <button
+                                onClick={() => playAudio('1.5')}
+                                className={`${styles.audioBtn} ${playingAudio === '1.5' ? styles.audioBtnActive : ''}`}
+                            >
+                                {playingAudio === '1.5' ? (
+                                    <>
+                                        <div className={styles.equalizer}>
+                                            <div className={styles.bar}></div>
+                                            <div className={styles.bar}></div>
+                                            <div className={styles.bar}></div>
+                                        </div>
+                                        <span>Playing...</span>
+                                    </>
+                                ) : (
+                                    '▶ Track 1.5'
+                                )}
+                            </button>
                             <span>Listen and check your answers.</span>
                         </div>
                     </div>
@@ -709,7 +735,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 <p><span>City:</span> Buenos Aires</p>
                                 <p><span>Country:</span> Argentina</p>
                                 <div className={styles.flagBadge}>
-                                    <span style={{ fontSize: '1.1rem' }}>🇦🇷</span>
+                                    <img src="https://flagcdn.com/w80/ar.png" alt="Argentina" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 </div>
                             </div>
 
@@ -719,7 +745,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 <p><span>City:</span> São Paulo</p>
                                 <p><span>Country:</span> Brazil</p>
                                 <div className={styles.flagBadge}>
-                                    <span style={{ fontSize: '1.1rem' }}>🇧🇷</span>
+                                    <img src="https://flagcdn.com/w80/br.png" alt="Brazil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 </div>
                             </div>
 
@@ -729,7 +755,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 <p><span>City:</span> Milan</p>
                                 <p><span>Country:</span> Italy</p>
                                 <div className={styles.flagBadge}>
-                                    <span style={{ fontSize: '1.1rem' }}>🇮🇹</span>
+                                    <img src="https://flagcdn.com/w80/it.png" alt="Italy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 </div>
                             </div>
 
@@ -739,7 +765,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 <p><span>City:</span> Warsaw</p>
                                 <p><span>Country:</span> Poland</p>
                                 <div className={styles.flagBadge}>
-                                    <span style={{ fontSize: '1.1rem' }}>🇵🇱</span>
+                                    <img src="https://flagcdn.com/w80/pl.png" alt="Poland" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 </div>
                             </div>
                         </div>

@@ -1,0 +1,1094 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  font-family: inherit;
+}
+
+.headerSection {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #e11d48 100%);
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.titleArea {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.badgeBox {
+  background: white;
+  color: #dc2626;
+  font-weight: 800;
+  font-size: 1.75rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+  span {
+    color: #f43f5e;
+  }
+}
+
+.lessonTitle {
+  font-size: 1.85rem;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.lessonSubtitle {
+  font-size: 0.85rem;
+  color: #fecdd3;
+  margin: 0.25rem 0 0 0;
+}
+
+.goalsCard {
+  background: rgba(185, 28, 28, 0.7);
+  backdrop-filter: blur(8px);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(254, 205, 211, 0.3);
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  p {
+    margin: 0;
+    strong {
+      color: #fef08a;
+    }
+  }
+}
+
+.sectionCard {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.sectionHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.25rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #f1f5f9;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sectionTitle {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #0f172a;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.stepNum {
+  background: #fee2e2;
+  color: #dc2626;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  font-weight: 800;
+}
+
+.sectionSubtext {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0.35rem 0 0 2.25rem;
+}
+
+/* World Map Grid for 6 Profiles */
+.worldMapGrid {
+  background-color: #e0f2fe;
+  background-image: radial-gradient(#bae6fd 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+  border-radius: 12px;
+  border: 2px dashed #7dd3fc;
+  padding: 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.profileCard {
+  background: white;
+  border-radius: 10px;
+  border: 2px solid #fbbf24;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.profileImageWrap {
+  position: relative;
+  height: 170px;
+  background: #cbd5e1;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.profileNumber {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: #fbbf24;
+  color: #78350f;
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profileContent {
+  padding: 1rem;
+  background: #fffbeb;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: #334155;
+
+  p {
+    margin: 0;
+  }
+}
+
+.profileName {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.jobField {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.jobBadgeNum {
+  background: #fde68a;
+  color: #92400e;
+  font-weight: 800;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+}
+
+.jobInput {
+  flex: 1;
+  background: white;
+  border: 1px solid #fcd34d;
+  border-radius: 4px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.85rem;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  &:focus {
+    border-color: #d97706;
+    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+  }
+
+  &:disabled {
+    background: #f8fafc;
+    color: #475569;
+    cursor: default;
+  }
+}
+
+/* Two-column layout for Vocabulary / Reading */
+.twoColLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+
+  @media (min-width: 768px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Vocabulary Box */
+.vocabBox {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+.vocabTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 0.5rem;
+}
+
+.vocabGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #1e293b;
+
+  div {
+    span {
+      color: #dc2626;
+      font-weight: 700;
+      margin-right: 0.3rem;
+    }
+  }
+}
+
+/* Audio Row */
+.audioRow {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  transition: all 0.25s ease;
+}
+
+.audioRowActive {
+  background: #f0fdfa;
+  border-color: #2dd4bf;
+  box-shadow: 0 0 0 2px rgba(45, 212, 191, 0.25);
+}
+
+.audioInfo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: #0369a1;
+
+  p {
+    margin: 0;
+  }
+}
+
+.audioBadge {
+  background: #dc2626;
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+.audioBtn {
+  background: #dc2626;
+  color: white;
+  border: none;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  min-width: 95px;
+  justify-content: center;
+
+  &:hover {
+    background: #b91c1c;
+    transform: translateY(-1px);
+  }
+}
+
+.audioBtnActive {
+  background: #0284c7;
+
+  &:hover {
+    background: #0369a1;
+  }
+}
+
+.equalizer {
+  display: flex;
+  align-items: flex-end;
+  height: 12px;
+  gap: 2px;
+}
+
+.bar {
+  width: 2.5px;
+  background: white;
+  animation: equalize 1s ease-in-out infinite;
+
+  &:nth-child(1) { height: 60%; animation-delay: -0.4s; }
+  &:nth-child(2) { height: 100%; animation-delay: -0.2s; }
+  &:nth-child(3) { height: 80%; animation-delay: -0.6s; }
+}
+
+@keyframes equalize {
+  0%, 100% { height: 30%; }
+  50% { height: 100%; }
+}
+
+/* Syllable Stress Reference Box */
+.stressBox {
+  background: #faf5ff;
+  border: 1px solid #e9d5ff;
+  border-radius: 8px;
+  padding: 0.85rem 1rem;
+  margin-bottom: 1rem;
+  font-size: 0.85rem;
+
+  h4 {
+    margin: 0 0 0.5rem 0;
+    color: #6b21a8;
+    font-size: 0.9rem;
+  }
+
+  .stressList {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.3rem;
+    color: #4c1d95;
+    font-size: 0.8rem;
+
+    span strong {
+      text-decoration: underline;
+      color: #7e22ce;
+    }
+  }
+}
+
+/* Pair work dialogue card */
+.pairworkCard {
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+  border-radius: 8px;
+  padding: 1rem;
+
+  h4 {
+    margin: 0 0 0.5rem 0;
+    font-size: 0.9rem;
+    color: #92400e;
+  }
+}
+
+.dialogueBox {
+  background: white;
+  border: 1px solid #fef3c7;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-family: monospace;
+  font-size: 0.85rem;
+  line-height: 1.6;
+
+  p {
+    margin: 0;
+  }
+
+  .speakerA {
+    color: #dc2626;
+    font-weight: 700;
+  }
+
+  .speakerB {
+    color: #1e293b;
+    font-weight: 700;
+  }
+}
+
+/* Green Cross Hospital Reading Section */
+.hospitalCard {
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #059669;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin-top: 1rem;
+}
+
+.hospitalHeader {
+  background: #059669;
+  color: white;
+  padding: 0.65rem 1rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.hospitalSubHeader {
+  background: #ecfdf5;
+  color: #065f46;
+  padding: 0.35rem 1rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border-bottom: 1px solid #a7f3d0;
+}
+
+.hospitalBody {
+  background: white;
+  padding: 1rem;
+  font-size: 0.85rem;
+  color: #334155;
+  line-height: 1.5;
+
+  p {
+    margin: 0 0 0.5rem 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+
+    li {
+      background: #f8fafc;
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      border-left: 3px solid #10b981;
+    }
+  }
+}
+
+.staffSectionTitle {
+  background: #d1fae5;
+  color: #064e3b;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  display: inline-block;
+}
+
+/* Matching Exercise 3 */
+.matchingContainer {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: 1.2fr 1fr;
+  }
+}
+
+.matchingQuestions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.matchingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #1e293b;
+  font-weight: 500;
+}
+
+.matchingSelect {
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  outline: none;
+  cursor: pointer;
+
+  &:focus {
+    border-color: #059669;
+  }
+
+  &:disabled {
+    background: #f1f5f9;
+    cursor: default;
+  }
+}
+
+.matchingOptions {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.75rem;
+  font-size: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  p {
+    margin: 0;
+    strong {
+      color: #059669;
+    }
+  }
+}
+
+.diffHighlight {
+  border: 2px solid #f59e0b !important;
+  background-color: #fef3c7 !important;
+}
+
+/* Page 9 Section Styles */
+.pageDivider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.5rem 0 0.5rem 0;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+  border-radius: 10px;
+  color: white;
+  border-left: 5px solid #dc2626;
+
+  .pageTag {
+    background: #dc2626;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+  }
+
+  h3 {
+    margin: 0;
+    font-size: 1.15rem;
+    font-weight: 700;
+  }
+}
+
+.page9ProfilesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.miniProfileCard {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+
+  .miniPhotoWrap {
+    position: relative;
+    width: 100%;
+    height: 120px;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+
+    img {
+      object-fit: cover;
+    }
+
+    .photoLabel {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background: rgba(0, 0, 0, 0.65);
+      color: white;
+      font-size: 0.7rem;
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+  }
+
+  .nameBadge {
+    width: 100%;
+    background: #fde047;
+    color: #1f2937;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 0.35rem 0.5rem;
+    border-radius: 6px;
+    text-align: center;
+    margin-bottom: 0.75rem;
+  }
+
+  .details {
+    width: 100%;
+    font-size: 0.85rem;
+    color: #334155;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    p {
+      margin: 0;
+    }
+
+    .miniInput {
+      border: none;
+      border-bottom: 1.5px solid #94a3b8;
+      outline: none;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #0f172a;
+      width: 140px;
+      padding: 0 0.25rem;
+      background: transparent;
+
+      &:focus {
+        border-color: #dc2626;
+      }
+    }
+  }
+}
+
+/* Exercise 4a */
+.ex4aContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-top: 0.75rem;
+}
+
+.ex4aItem {
+  p {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #1e293b;
+    margin: 0 0 0.5rem 0;
+  }
+
+  .radioGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    padding-left: 0.5rem;
+
+    label {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.85rem;
+      color: #334155;
+      cursor: pointer;
+
+      input[type="radio"] {
+        accent-color: #dc2626;
+        cursor: pointer;
+      }
+
+      .optionLetter {
+        font-weight: 700;
+        color: #dc2626;
+      }
+    }
+  }
+}
+
+/* Grammar 5a */
+.grammarBox {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: 10px;
+  padding: 1.25rem;
+  margin-top: 1rem;
+}
+
+.grammarSubheader {
+  background: #e0f2fe;
+  color: #0369a1;
+  font-weight: 800;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.grammarTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  font-size: 0.85rem;
+  margin-bottom: 1rem;
+
+  th, td {
+    border: 1px solid #e0f2fe;
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+  }
+
+  th {
+    background: #bae6fd;
+    color: #0369a1;
+    font-weight: 700;
+  }
+
+  td {
+    color: #1e293b;
+  }
+}
+
+.grammarInput {
+  border: none;
+  border-bottom: 2px solid #0284c7;
+  outline: none;
+  font-weight: 800;
+  color: #dc2626;
+  text-align: center;
+  width: 55px;
+  padding: 0 0.2rem;
+  background: transparent;
+
+  &:focus {
+    border-color: #dc2626;
+  }
+}
+
+.whereBox {
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #0369a1;
+
+  strong {
+    color: #075985;
+  }
+}
+
+/* Audio 5b / short forms */
+.shortFormsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: #334155;
+  margin: 0.75rem 0 0 1.25rem;
+
+  li {
+    line-height: 1.4;
+  }
+
+  .shortFormHighlight {
+    color: #0284c7;
+    font-weight: 700;
+  }
+}
+
+/* Exercise 6: Dialogue with alternatives */
+.dialogue6Box {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  font-size: 0.85rem;
+  line-height: 1.7;
+
+  p {
+    margin: 0;
+  }
+}
+
+.inlineSelect {
+  background: white;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #dc2626;
+  outline: none;
+  cursor: pointer;
+  margin: 0 0.25rem;
+
+  &:focus {
+    border-color: #dc2626;
+  }
+
+  &:disabled {
+    background: #f1f5f9;
+    cursor: default;
+  }
+}
+
+/* Exercise 7a Q&A */
+.qaList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding-left: 1.25rem;
+  font-size: 0.85rem;
+
+  li {
+    color: #1e293b;
+    line-height: 1.5;
+  }
+
+  .exampleAnswer {
+    display: block;
+    color: #1d4ed8;
+    font-style: italic;
+    font-weight: 600;
+    margin-top: 0.2rem;
+  }
+
+  .qaInput {
+    border: none;
+    border-bottom: 1.5px solid #94a3b8;
+    outline: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #0f172a;
+    width: 100%;
+    max-width: 280px;
+    padding: 0.15rem 0.3rem;
+    background: transparent;
+    margin-top: 0.25rem;
+    display: block;
+
+    &:focus {
+      border-color: #dc2626;
+    }
+  }
+}
+
+/* Exercise 7b Partner cards */
+.partnerProfilesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-top: 1rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.partnerCard {
+  border-radius: 12px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+
+  @media (min-width: 480px) {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .partnerInputs {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    width: 100%;
+    font-size: 0.85rem;
+
+    p {
+      margin: 0;
+    }
+
+    input {
+      border: none;
+      outline: none;
+      font-weight: 600;
+      font-size: 0.85rem;
+      padding: 0 0.25rem;
+      width: 140px;
+      background: transparent;
+    }
+  }
+
+  .partnerAvatar {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+
+    img {
+      object-fit: cover;
+    }
+  }
+}
+
+.pinkCard {
+  background: #fdf2f8;
+  border: 1px solid #fbcfe8;
+
+  .partnerInputs input {
+    border-bottom: 1.5px solid #f472b6;
+    color: #9d174d;
+
+    &:focus {
+      border-color: #db2777;
+    }
+  }
+}
+
+.skyCard {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+
+  .partnerInputs input {
+    border-bottom: 1.5px solid #38bdf8;
+    color: #0369a1;
+
+    &:focus {
+      border-color: #0284c7;
+    }
+  }
+}
+
+.modelDialogueBox {
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.8rem;
+  color: #1e40af;
+  margin-top: 0.75rem;
+
+  strong {
+    color: #1e3a8a;
+  }
+}
+
+.speakingCard {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+
+  .speakingStepBadge {
+    background: #dc2626;
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 800;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    text-transform: uppercase;
+    display: inline-block;
+    align-self: flex-start;
+  }
+}
+
+.listeningBanner {
+  background: linear-gradient(135deg, #059669 0%, #dc2626 100%);
+  color: white;
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+
+  h4 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  p {
+    margin: 0.2rem 0 0 0;
+    font-size: 0.75rem;
+    opacity: 0.9;
+  }
+
+  .bannerCircle {
+    background: rgba(220, 38, 38, 0.9);
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 0.95rem;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+  }
+}
+

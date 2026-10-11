@@ -155,6 +155,24 @@
   &:disabled { background: #94a3b8; }
 }
 
+.revisionBtn {
+  background: #f59e0b;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-weight: bold;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+  &:hover { background: #d97706; }
+  &:disabled { background: #94a3b8; }
+}
+
+.statusRevision {
+  background-color: #fef3c7;
+  color: #b45309;
+}
+
 .tutorFeedback {
   background: #ecfdf5;
   border: 1px solid #10b981;

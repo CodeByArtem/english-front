@@ -5,6 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import styles from './submission.module.scss';
 import LessonContent from '@/components/LessonContent';
+import Lesson1BContent from '@/components/Lesson1BContent';
 
 export default function SubmissionPage() {
   const params = useParams();
@@ -27,7 +28,19 @@ export default function SubmissionPage() {
     country: string;
     roles: string[];
   }>({ name: '', city: '', country: '', roles: [] });
-  
+
+  const [jobsInputs, setJobsInputs] = useState<Record<string, string>>({});
+  const [readingInputs, setReadingInputs] = useState<Record<string, string>>({});
+  const [page9Profiles, setPage9Profiles] = useState<Record<string, string>>({});
+  const [ex4aAnswers, setEx4aAnswers] = useState<Record<string, string>>({});
+  const [grammar5aInputs, setGrammar5aInputs] = useState<Record<string, string>>({});
+  const [ex6Answers, setEx6Answers] = useState<Record<string, string>>({});
+  const [ex7aAnswers, setEx7aAnswers] = useState<Record<string, string>>({});
+  const [profilePairs, setProfilePairs] = useState<{
+    woman?: { name?: string; job?: string; city?: string; country?: string };
+    man?: { name?: string; job?: string; city?: string; country?: string };
+  }>({});
+
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
 
@@ -59,6 +72,14 @@ export default function SubmissionPage() {
         setGrammarInputs(answers.grammarInputs || {});
         setDialogue7aInputs(answers.dialogue7aInputs || {});
         setConferenceCard(answers.conferenceCard || { name: '', city: '', country: '', roles: [] });
+        setJobsInputs(answers.exercise_1b_jobs || answers.jobsInputs || {});
+        setReadingInputs(answers.exercise_3_reading || answers.readingInputs || {});
+        setPage9Profiles(answers.exercise_page9_profiles || {});
+        setEx4aAnswers(answers.exercise_4a_reading || {});
+        setGrammar5aInputs(answers.exercise_5a_grammar || {});
+        setEx6Answers(answers.exercise_6_dialogue || {});
+        setEx7aAnswers(answers.exercise_7a_qa || {});
+        setProfilePairs(answers.exercise_7b_profiles || {});
         
         if (data.grade !== null) setGrade(data.grade);
         if (data.tutorComment) setTutorComment(data.tutorComment);
@@ -134,24 +155,50 @@ export default function SubmissionPage() {
     });
   };
 
-  const handleSaveReview = async () => {
+  const handleSaveReview = async (targetStatus = 'graded') => {
     try {
       setSaving(true);
       setSuccess('');
       setError('');
+
+      if (targetStatus === 'needs_revision' && !tutorComment.trim()) {
+        setError('Please provide a tutor comment explaining what needs to be revised.');
+        setSaving(false);
+        return;
+      }
+
+      const isLesson1B =
+        lesson?.order === 2 ||
+        lesson?.title?.includes('1B') ||
+        lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a33';
+
+      const payloadAnswers = isLesson1B
+        ? {
+            exercise_1b_jobs: jobsInputs,
+            exercise_3_reading: readingInputs,
+            exercise_page9_profiles: page9Profiles,
+            exercise_4a_reading: ex4aAnswers,
+            exercise_5a_grammar: grammar5aInputs,
+            exercise_6_dialogue: ex6Answers,
+            exercise_7a_qa: ex7aAnswers,
+            exercise_7b_profiles: profilePairs,
+          }
+        : {
+            flagAnswers,
+            dialogInputs,
+            stressTableInputs,
+            grammarInputs,
+            dialogue7aInputs,
+            conferenceCard,
+          };
+
       await api.patch(`/submissions/${id}/review`, {
-        answers: {
-          flagAnswers,
-          dialogInputs,
-          stressTableInputs,
-          grammarInputs,
-          dialogue7aInputs,
-          conferenceCard,
-        },
-        grade: Number(grade),
-        tutorComment
+        answers: payloadAnswers,
+        grade: grade !== '' ? Number(grade) : undefined,
+        tutorComment,
+        status: targetStatus,
       });
-      setSuccess('Review saved successfully!');
+      setSuccess(targetStatus === 'needs_revision' ? 'Returned for revision!' : 'Graded successfully!');
       // Refresh data
       const res = await api.get(`/submissions/${id}`);
       setSubmission(res.data);
@@ -172,6 +219,14 @@ export default function SubmissionPage() {
     setGrammarInputs(original.grammarInputs || {});
     setDialogue7aInputs(original.dialogue7aInputs || {});
     setConferenceCard(original.conferenceCard || { name: '', city: '', country: '', roles: [] });
+    setJobsInputs(original.exercise_1b_jobs || original.jobsInputs || {});
+    setReadingInputs(original.exercise_3_reading || original.readingInputs || {});
+    setPage9Profiles(original.exercise_page9_profiles || {});
+    setEx4aAnswers(original.exercise_4a_reading || {});
+    setGrammar5aInputs(original.exercise_5a_grammar || {});
+    setEx6Answers(original.exercise_6_dialogue || {});
+    setEx7aAnswers(original.exercise_7a_qa || {});
+    setProfilePairs(original.exercise_7b_profiles || {});
     setSuccess('Reset to student answers');
   };
 
@@ -182,6 +237,10 @@ export default function SubmissionPage() {
   const isTutor = user?.role?.toUpperCase() !== 'STUDENT';
   const lesson = submission.lesson || submission.assignment?.lesson;
   const assignmentTitle = submission.assignment?.title;
+  const isLesson1B =
+    lesson?.order === 2 ||
+    lesson?.title?.includes('1B') ||
+    lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a33';
 
   return (
     <div className={styles.pageContainer}>
@@ -197,31 +256,63 @@ export default function SubmissionPage() {
             <p><span>Lesson:</span> {lesson?.title} {assignmentTitle ? `(${assignmentTitle})` : ''}</p>
             <p><span>Submitted At:</span> {new Date(submission.createdAt).toLocaleString()}</p>
             <p><span>Auto Score:</span> <span className={styles.scoreBadge}>{submission.score}%</span></p>
-            <p><span>Status:</span> <span className={`${styles.scoreBadge} ${submission.status === 'graded' ? styles.statusGraded : styles.statusPending}`}>{submission.status}</span></p>
+            <p><span>Status:</span> <span className={`${styles.scoreBadge} ${submission.status === 'graded' ? styles.statusGraded : submission.status === 'needs_revision' ? styles.statusRevision : styles.statusPending}`}>{submission.status}</span></p>
           </div>
         </div>
 
-        <LessonContent
-          lesson={lesson}
-          user={submission.student}
-          flagAnswers={flagAnswers}
-          dialogInputs={dialogInputs}
-          stressTableInputs={stressTableInputs}
-          grammarInputs={grammarInputs}
-          dialogue7aInputs={dialogue7aInputs}
-          conferenceCard={conferenceCard}
-          onFlagChange={handleFlagChange}
-          onDialogChange={handleDialogChange}
-          onStressChange={handleStressChange}
-          onGrammarChange={handleGrammarChange}
-          onDialogue7aChange={handleDialogue7aChange}
-          onConferenceCardChange={handleConferenceCardChange}
-          onRoleToggle={handleRoleToggle}
-          readOnly={!isTutor}
-          originalAnswers={submission.answers}
-          playAudio={playAudio}
-          playingAudio={playingAudio}
-        />
+        {isLesson1B ? (
+          <Lesson1BContent
+            lesson={lesson}
+            user={submission.student}
+            jobsInputs={jobsInputs}
+            readingInputs={readingInputs}
+            onJobChange={(jid, val) => setJobsInputs((prev) => ({ ...prev, [jid]: val }))}
+            onReadingChange={(rid, val) => setReadingInputs((prev) => ({ ...prev, [rid]: val }))}
+            page9Profiles={page9Profiles}
+            onPage9ProfileChange={(pid, val) => setPage9Profiles((prev) => ({ ...prev, [pid]: val }))}
+            ex4aAnswers={ex4aAnswers}
+            onEx4aChange={(qid, val) => setEx4aAnswers((prev) => ({ ...prev, [qid]: val }))}
+            grammar5aInputs={grammar5aInputs}
+            onGrammar5aChange={(gid, val) => setGrammar5aInputs((prev) => ({ ...prev, [gid]: val }))}
+            ex6Answers={ex6Answers}
+            onEx6Change={(qid, val) => setEx6Answers((prev) => ({ ...prev, [qid]: val }))}
+            ex7aAnswers={ex7aAnswers}
+            onEx7aChange={(qid, val) => setEx7aAnswers((prev) => ({ ...prev, [qid]: val }))}
+            profilePairs={profilePairs}
+            onProfilePairChange={(gender, field, val) =>
+              setProfilePairs((prev) => ({
+                ...prev,
+                [gender]: { ...prev[gender], [field]: val },
+              }))
+            }
+            readOnly={!isTutor}
+            originalAnswers={submission.answers}
+            playAudio={playAudio}
+            playingAudio={playingAudio}
+          />
+        ) : (
+          <LessonContent
+            lesson={lesson}
+            user={submission.student}
+            flagAnswers={flagAnswers}
+            dialogInputs={dialogInputs}
+            stressTableInputs={stressTableInputs}
+            grammarInputs={grammarInputs}
+            dialogue7aInputs={dialogue7aInputs}
+            conferenceCard={conferenceCard}
+            onFlagChange={handleFlagChange}
+            onDialogChange={handleDialogChange}
+            onStressChange={handleStressChange}
+            onGrammarChange={handleGrammarChange}
+            onDialogue7aChange={handleDialogue7aChange}
+            onConferenceCardChange={handleConferenceCardChange}
+            onRoleToggle={handleRoleToggle}
+            readOnly={!isTutor}
+            originalAnswers={submission.answers}
+            playAudio={playAudio}
+            playingAudio={playingAudio}
+          />
+        )}
 
         {isTutor ? (
           <div className={styles.gradingForm}>
@@ -244,13 +335,20 @@ export default function SubmissionPage() {
                 placeholder="Write your feedback here..."
               />
             </div>
-            <div style={{ display: 'flex', gap: '1rem' }}>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
               <button 
-                onClick={handleSaveReview} 
+                onClick={() => handleSaveReview('graded')} 
                 disabled={saving}
                 className={styles.saveBtn}
               >
-                {saving ? 'Saving...' : 'Save corrections'}
+                {saving ? 'Saving...' : 'Save & Grade'}
+              </button>
+              <button 
+                onClick={() => handleSaveReview('needs_revision')} 
+                disabled={saving}
+                className={styles.revisionBtn}
+              >
+                Return for revision
               </button>
               <button 
                 onClick={handleReset}
