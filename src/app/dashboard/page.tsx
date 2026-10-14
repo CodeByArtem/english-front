@@ -43,11 +43,22 @@ interface SubmissionItem {
   lesson?: { id: string; title: string };
 }
 
+interface TeacherAssignmentItem {
+  id: string;
+  title: string;
+  description?: string;
+  dueDate?: string;
+  attachmentUrl?: string;
+  status: 'pending' | 'submitted' | 'graded' | 'needs_revision';
+  grade?: number;
+}
+
 export default function DashboardPage() {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [textbooks, setTextbooks] = useState<Textbook[]>([]);
   const [submissions, setSubmissions] = useState<SubmissionItem[]>([]);
+  const [teacherAssignments, setTeacherAssignments] = useState<TeacherAssignmentItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [expandedTextbook, setExpandedTextbook] = useState<string | null>(null);
   const [expandedUnit, setExpandedUnit] = useState<string | null>(null);
@@ -64,8 +75,12 @@ export default function DashboardPage() {
 
         if (userResponse.data?.role?.toLowerCase() === 'student') {
           try {
-            const subRes = await api.get('/submissions/student');
+            const [subRes, assignRes] = await Promise.all([
+              api.get('/submissions/student').catch(() => ({ data: [] })),
+              api.get('/assignments').catch(() => ({ data: [] })),
+            ]);
             setSubmissions(subRes.data || []);
+            setTeacherAssignments(assignRes.data || []);
           } catch {
             // Ignore if student has no submissions yet
           }
@@ -165,6 +180,8 @@ export default function DashboardPage() {
                       <h3 className={styles.subLessonTitle}>
                         {sub.lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a33'
                           ? '1B Jobs'
+                          : sub.lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a44'
+                          ? '1C Nationalities'
                           : sub.lesson?.title || 'Lesson'}
                       </h3>
                       <span className={`${styles.subStatusBadge} ${
@@ -196,6 +213,57 @@ export default function DashboardPage() {
                           {sub.status === 'needs_revision' ? 'Fix & Resubmit →' : 'Open Lesson →'}
                         </Link>
                       )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {teacherAssignments.length > 0 && (
+            <section className={styles.submissionsSection}>
+              <h2 className={styles.sectionTitle}>Assignments from Teacher (Задания от учителя)</h2>
+              <div className={styles.submissionGrid}>
+                {teacherAssignments.map((assign) => (
+                  <div
+                    key={assign.id}
+                    className={`${styles.subCard} ${assign.status === 'needs_revision' ? styles.subCardRevision : ''}`}
+                  >
+                    <div className={styles.subCardHeader}>
+                      <h3 className={styles.subLessonTitle}>{assign.title}</h3>
+                      <span className={`${styles.subStatusBadge} ${
+                        assign.status === 'graded'
+                          ? styles.badgeGraded
+                          : assign.status === 'needs_revision'
+                          ? styles.badgeRevision
+                          : assign.status === 'submitted'
+                          ? styles.badgeSubmitted
+                          : styles.badgeRevision
+                      }`}>
+                        {assign.status === 'needs_revision'
+                          ? '⚠️ Needs Revision'
+                          : assign.status === 'graded'
+                          ? `Graded (${assign.grade ?? ''}%)`
+                          : assign.status === 'submitted'
+                          ? '⏳ Under Review'
+                          : '📝 To Do'}
+                      </span>
+                    </div>
+                    {assign.description && (
+                      <p className={styles.tutorComment}>
+                        {assign.description}
+                      </p>
+                    )}
+                    <div className={styles.subCardFooter}>
+                      <span className={styles.subDate}>
+                        {assign.dueDate ? `Due: ${new Date(assign.dueDate).toLocaleDateString()}` : 'No deadline'}
+                      </span>
+                      <Link
+                        href={`/assignments/${assign.id}`}
+                        className={styles.actionBtnView}
+                      >
+                        {assign.status === 'pending' ? 'Open & Submit →' : 'View Submission →'}
+                      </Link>
                     </div>
                   </div>
                 ))}
@@ -242,6 +310,8 @@ export default function DashboardPage() {
                                         const lessonTitle =
                                           lesson.order === 2 || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a33'
                                             ? '1B Jobs'
+                                            : lesson.order === 3 || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a44'
+                                            ? '1C Nationalities'
                                             : lesson.title;
                                         return (
                                           <li key={lesson.id} className={styles.lessonItem}>

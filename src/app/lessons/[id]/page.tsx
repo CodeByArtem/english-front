@@ -6,6 +6,7 @@ import api from '@/lib/api';
 import styles from './lesson.module.scss';
 import LessonContent from '@/components/LessonContent';
 import Lesson1BContent from '@/components/Lesson1BContent';
+import Lesson1CContent from '@/components/Lesson1CContent';
 
 const LessonPage = () => {
   const params = useParams();
@@ -39,6 +40,17 @@ const LessonPage = () => {
     woman?: { name?: string; job?: string; city?: string; country?: string };
     man?: { name?: string; job?: string; city?: string; country?: string };
   }>({});
+
+  // 1C states
+  const [nationalitiesInputs, setNationalitiesInputs] = useState<Record<string, string>>({});
+  const [stressInputs, setStressInputs] = useState<Record<string, string>>({});
+  const [famousInputs, setFamousInputs] = useState<string>('');
+  const [photosInputs, setPhotosInputs] = useState<Record<string, string>>({});
+  const [tfInputs, setTfInputs] = useState<Record<string, string>>({});
+  const [grammar5aInputs1C, setGrammar5aInputs1C] = useState<Record<string, string>>({});
+  const [textsInputs, setTextsInputs] = useState<Record<string, string>>({});
+  const [questionsInputs, setQuestionsInputs] = useState<Record<string, string>>({});
+  const [speakingNotes, setSpeakingNotes] = useState<string>('');
 
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
@@ -92,6 +104,15 @@ const LessonPage = () => {
             if (ans.exercise_6_dialogue) setEx6Answers(ans.exercise_6_dialogue);
             if (ans.exercise_7a_qa) setEx7aAnswers(ans.exercise_7a_qa);
             if (ans.exercise_7b_profiles) setProfilePairs(ans.exercise_7b_profiles);
+            if (ans.exercise_1b_nationalities) setNationalitiesInputs(ans.exercise_1b_nationalities);
+            if (ans.exercise_2c_stress) setStressInputs(ans.exercise_2c_stress);
+            if (ans.exercise_3_famous) setFamousInputs(ans.exercise_3_famous);
+            if (ans.exercise_4a_photos) setPhotosInputs(ans.exercise_4a_photos);
+            if (ans.exercise_4b_tf) setTfInputs(ans.exercise_4b_tf);
+            if (ans.exercise_5a_grammar) setGrammar5aInputs1C(ans.exercise_5a_grammar);
+            if (ans.exercise_6_texts) setTextsInputs(ans.exercise_6_texts);
+            if (ans.exercise_7a_questions) setQuestionsInputs(ans.exercise_7a_questions);
+            if (ans.exercise_8b_notes) setSpeakingNotes(ans.exercise_8b_notes);
           }
         } catch {
           // Если не студент или ещё нет сдачи — продолжаем без блокировки
@@ -197,7 +218,24 @@ const LessonPage = () => {
         lesson?.title?.includes('1B') ||
         lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a33';
 
-      const answersPayload = isLesson1B
+      const isLesson1C =
+        lesson?.order === 3 ||
+        lesson?.title?.includes('1C') ||
+        lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a44';
+
+      const answersPayload = isLesson1C
+        ? {
+            exercise_1b_nationalities: nationalitiesInputs,
+            exercise_2c_stress: stressInputs,
+            exercise_3_famous: famousInputs,
+            exercise_4a_photos: photosInputs,
+            exercise_4b_tf: tfInputs,
+            exercise_5a_grammar: grammar5aInputs1C,
+            exercise_6_texts: textsInputs,
+            exercise_7a_questions: questionsInputs,
+            exercise_8b_notes: speakingNotes,
+          }
+        : isLesson1B
         ? {
             exercise_1b_jobs: jobsInputs,
             exercise_3_reading: readingInputs,
@@ -253,6 +291,10 @@ const LessonPage = () => {
     lesson?.order === 2 ||
     lesson?.title?.includes('1B') ||
     lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a33';
+  const isLesson1C =
+    lesson?.order === 3 ||
+    lesson?.title?.includes('1C') ||
+    lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a44';
 
   return (
       <div className={styles.pageContainer}>
@@ -265,7 +307,7 @@ const LessonPage = () => {
             ← Back to Dashboard
           </button>
 
-          {isLesson1A || isLesson1B ? (
+          {isLesson1A || isLesson1B || isLesson1C ? (
             <>
               {isLesson1A && (
                 <LessonContent
@@ -315,6 +357,35 @@ const LessonPage = () => {
                       [gender]: { ...prev[gender], [field]: val },
                     }))
                   }
+                  readOnly={isLocked}
+                  originalAnswers={mySubmission?.answers}
+                  playAudio={playAudio}
+                  playingAudio={playingAudio}
+                />
+              )}
+
+              {isLesson1C && (
+                <Lesson1CContent
+                  lesson={lesson}
+                  user={user}
+                  nationalitiesInputs={nationalitiesInputs}
+                  stressInputs={stressInputs}
+                  famousInputs={famousInputs}
+                  photosInputs={photosInputs}
+                  tfInputs={tfInputs}
+                  grammar5aInputs={grammar5aInputs1C}
+                  textsInputs={textsInputs}
+                  questionsInputs={questionsInputs}
+                  speakingNotes={speakingNotes}
+                  onNationalitiesChange={(id, val) => setNationalitiesInputs((prev) => ({ ...prev, [id]: val }))}
+                  onStressChange={(id, val) => setStressInputs((prev) => ({ ...prev, [id]: val }))}
+                  onFamousChange={(val) => setFamousInputs(val)}
+                  onPhotosChange={(id, val) => setPhotosInputs((prev) => ({ ...prev, [id]: val }))}
+                  onTfChange={(id, val) => setTfInputs((prev) => ({ ...prev, [id]: val }))}
+                  onGrammar5aChange={(id, val) => setGrammar5aInputs1C((prev) => ({ ...prev, [id]: val }))}
+                  onTextsChange={(id, val) => setTextsInputs((prev) => ({ ...prev, [id]: val }))}
+                  onQuestionsChange={(id, val) => setQuestionsInputs((prev) => ({ ...prev, [id]: val }))}
+                  onSpeakingNotesChange={(val) => setSpeakingNotes(val)}
                   readOnly={isLocked}
                   originalAnswers={mySubmission?.answers}
                   playAudio={playAudio}

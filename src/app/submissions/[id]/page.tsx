@@ -6,6 +6,7 @@ import api from '@/lib/api';
 import styles from './submission.module.scss';
 import LessonContent from '@/components/LessonContent';
 import Lesson1BContent from '@/components/Lesson1BContent';
+import Lesson1CContent from '@/components/Lesson1CContent';
 
 export default function SubmissionPage() {
   const params = useParams();
@@ -40,6 +41,17 @@ export default function SubmissionPage() {
     woman?: { name?: string; job?: string; city?: string; country?: string };
     man?: { name?: string; job?: string; city?: string; country?: string };
   }>({});
+
+  // 1C states
+  const [nationalitiesInputs, setNationalitiesInputs] = useState<Record<string, string>>({});
+  const [stressInputs, setStressInputs] = useState<Record<string, string>>({});
+  const [famousInputs, setFamousInputs] = useState<string>('');
+  const [photosInputs, setPhotosInputs] = useState<Record<string, string>>({});
+  const [tfInputs, setTfInputs] = useState<Record<string, string>>({});
+  const [grammar5aInputs1C, setGrammar5aInputs1C] = useState<Record<string, string>>({});
+  const [textsInputs, setTextsInputs] = useState<Record<string, string>>({});
+  const [questionsInputs, setQuestionsInputs] = useState<Record<string, string>>({});
+  const [speakingNotes, setSpeakingNotes] = useState<string>('');
 
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
@@ -80,6 +92,15 @@ export default function SubmissionPage() {
         setEx6Answers(answers.exercise_6_dialogue || {});
         setEx7aAnswers(answers.exercise_7a_qa || {});
         setProfilePairs(answers.exercise_7b_profiles || {});
+        setNationalitiesInputs(answers.exercise_1b_nationalities || {});
+        setStressInputs(answers.exercise_2c_stress || {});
+        setFamousInputs(answers.exercise_3_famous || '');
+        setPhotosInputs(answers.exercise_4a_photos || {});
+        setTfInputs(answers.exercise_4b_tf || {});
+        setGrammar5aInputs1C(answers.exercise_5a_grammar || {});
+        setTextsInputs(answers.exercise_6_texts || {});
+        setQuestionsInputs(answers.exercise_7a_questions || {});
+        setSpeakingNotes(answers.exercise_8b_notes || '');
         
         if (data.grade !== null) setGrade(data.grade);
         if (data.tutorComment) setTutorComment(data.tutorComment);
@@ -172,7 +193,24 @@ export default function SubmissionPage() {
         lesson?.title?.includes('1B') ||
         lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a33';
 
-      const payloadAnswers = isLesson1B
+      const isLesson1C =
+        lesson?.order === 3 ||
+        lesson?.title?.includes('1C') ||
+        lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a44';
+
+      const payloadAnswers = isLesson1C
+        ? {
+            exercise_1b_nationalities: nationalitiesInputs,
+            exercise_2c_stress: stressInputs,
+            exercise_3_famous: famousInputs,
+            exercise_4a_photos: photosInputs,
+            exercise_4b_tf: tfInputs,
+            exercise_5a_grammar: grammar5aInputs1C,
+            exercise_6_texts: textsInputs,
+            exercise_7a_questions: questionsInputs,
+            exercise_8b_notes: speakingNotes,
+          }
+        : isLesson1B
         ? {
             exercise_1b_jobs: jobsInputs,
             exercise_3_reading: readingInputs,
@@ -202,9 +240,10 @@ export default function SubmissionPage() {
       // Refresh data
       const res = await api.get(`/submissions/${id}`);
       setSubmission(res.data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to save review:', err);
-      setError(err.response?.data?.message || 'Failed to save review.');
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setError(msg || 'Failed to save review.');
     } finally {
       setSaving(false);
     }
@@ -227,6 +266,15 @@ export default function SubmissionPage() {
     setEx6Answers(original.exercise_6_dialogue || {});
     setEx7aAnswers(original.exercise_7a_qa || {});
     setProfilePairs(original.exercise_7b_profiles || {});
+    setNationalitiesInputs(original.exercise_1b_nationalities || {});
+    setStressInputs(original.exercise_2c_stress || {});
+    setFamousInputs(original.exercise_3_famous || '');
+    setPhotosInputs(original.exercise_4a_photos || {});
+    setTfInputs(original.exercise_4b_tf || {});
+    setGrammar5aInputs1C(original.exercise_5a_grammar || {});
+    setTextsInputs(original.exercise_6_texts || {});
+    setQuestionsInputs(original.exercise_7a_questions || {});
+    setSpeakingNotes(original.exercise_8b_notes || '');
     setSuccess('Reset to student answers');
   };
 
@@ -241,6 +289,13 @@ export default function SubmissionPage() {
     lesson?.order === 2 ||
     lesson?.title?.includes('1B') ||
     lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a33';
+  const isLesson1C =
+    lesson?.order === 3 ||
+    lesson?.title?.includes('1C') ||
+    lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a44';
+  const isCustomAssignment = Boolean(
+    submission.answers?.text || (!lesson && submission.assignment),
+  );
 
   return (
     <div className={styles.pageContainer}>
@@ -253,14 +308,36 @@ export default function SubmissionPage() {
           <h1 className={styles.title}>Submission Details</h1>
           <div className={styles.infoGrid}>
             <p><span>Student:</span> {submission.student?.email}</p>
-            <p><span>Lesson:</span> {lesson?.title} {assignmentTitle ? `(${assignmentTitle})` : ''}</p>
+            <p><span>Lesson / Task:</span> {lesson?.title || assignmentTitle || 'Custom Assignment'}</p>
             <p><span>Submitted At:</span> {new Date(submission.createdAt).toLocaleString()}</p>
-            <p><span>Auto Score:</span> <span className={styles.scoreBadge}>{submission.score}%</span></p>
+            <p><span>Auto Score:</span> <span className={styles.scoreBadge}>{submission.score ?? 0}%</span></p>
             <p><span>Status:</span> <span className={`${styles.scoreBadge} ${submission.status === 'graded' ? styles.statusGraded : submission.status === 'needs_revision' ? styles.statusRevision : styles.statusPending}`}>{submission.status}</span></p>
           </div>
         </div>
 
-        {isLesson1B ? (
+        {isCustomAssignment ? (
+          <div style={{ margin: '1.5rem 0', padding: '1.5rem', background: '#f8fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
+            <h3 style={{ color: '#1b4c5b', marginBottom: '0.75rem', fontSize: '1.1rem' }}>
+              Текст ответа ученика:
+            </h3>
+            <div style={{ whiteSpace: 'pre-wrap', background: 'white', padding: '1.25rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '1rem', lineHeight: '1.6' }}>
+              {submission.answers?.text || (typeof submission.answers === 'string' ? submission.answers : 'Ответ не содержит текста')}
+            </div>
+            {submission.assignment?.attachmentUrl && (
+              <div style={{ marginTop: '1rem', fontSize: '0.9rem' }}>
+                <strong style={{ color: '#0369a1' }}>📎 Материал к заданию: </strong>
+                <a
+                  href={submission.assignment.attachmentUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ color: '#0284c7', textDecoration: 'underline' }}
+                >
+                  {submission.assignment.attachmentUrl} ↗
+                </a>
+              </div>
+            )}
+          </div>
+        ) : isLesson1B ? (
           <Lesson1BContent
             lesson={lesson}
             user={submission.student}
@@ -285,6 +362,33 @@ export default function SubmissionPage() {
                 [gender]: { ...prev[gender], [field]: val },
               }))
             }
+            readOnly={!isTutor}
+            originalAnswers={submission.answers}
+            playAudio={playAudio}
+            playingAudio={playingAudio}
+          />
+        ) : isLesson1C ? (
+          <Lesson1CContent
+            lesson={lesson}
+            user={submission.student}
+            nationalitiesInputs={nationalitiesInputs}
+            stressInputs={stressInputs}
+            famousInputs={famousInputs}
+            photosInputs={photosInputs}
+            tfInputs={tfInputs}
+            grammar5aInputs={grammar5aInputs1C}
+            textsInputs={textsInputs}
+            questionsInputs={questionsInputs}
+            speakingNotes={speakingNotes}
+            onNationalitiesChange={(nid, val) => setNationalitiesInputs((prev) => ({ ...prev, [nid]: val }))}
+            onStressChange={(sid, val) => setStressInputs((prev) => ({ ...prev, [sid]: val }))}
+            onFamousChange={(val) => setFamousInputs(val)}
+            onPhotosChange={(pid, val) => setPhotosInputs((prev) => ({ ...prev, [pid]: val }))}
+            onTfChange={(tid, val) => setTfInputs((prev) => ({ ...prev, [tid]: val }))}
+            onGrammar5aChange={(gid, val) => setGrammar5aInputs1C((prev) => ({ ...prev, [gid]: val }))}
+            onTextsChange={(tid, val) => setTextsInputs((prev) => ({ ...prev, [tid]: val }))}
+            onQuestionsChange={(qid, val) => setQuestionsInputs((prev) => ({ ...prev, [qid]: val }))}
+            onSpeakingNotesChange={(val) => setSpeakingNotes(val)}
             readOnly={!isTutor}
             originalAnswers={submission.answers}
             playAudio={playAudio}

@@ -29,12 +29,35 @@ interface TeacherStatItem {
   createdAt?: string;
 }
 
+interface TeacherAssignment {
+  id: string;
+  title: string;
+  description?: string;
+  attachmentUrl?: string;
+  assignedStudent?: { id: string; email: string } | null;
+  dueDate?: string;
+  submissionsCount?: number;
+}
+
 export default function TeacherDashboard() {
   const router = useRouter();
   const [stats, setStats] = useState<TeacherStatItem[]>([]);
+  const [assignments, setAssignments] = useState<TeacherAssignment[]>([]);
+  const [students, setStudents] = useState<{ id: string; email: string }[]>([]);
+  const [activeTab, setActiveTab] = useState<'submissions' | 'assignments'>('submissions');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [filter, setFilter] = useState<'all' | 'submitted' | 'needs_revision' | 'graded'>('all');
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [creatingAssignment, setCreatingAssignment] = useState(false);
+  const [newAssignment, setNewAssignment] = useState({
+    title: '',
+    description: '',
+    attachmentUrl: '',
+    studentId: '',
+    dueDate: '',
+  });
 
   const [inviteCode, setInviteCode] = useState<string | null>(null);
   const [inviteExpiresAt, setInviteExpiresAt] = useState<string | null>(null);
@@ -85,22 +108,74 @@ export default function TeacherDashboard() {
     }
   };
 
+  const handleCreateAssignment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newAssignment.title.trim()) {
+      alert('Please enter an assignment title');
+      return;
+    }
+    try {
+      setCreatingAssignment(true);
+      const res = await api.post('/assignments', {
+        title: newAssignment.title.trim(),
+        description: newAssignment.description.trim() || undefined,
+        attachmentUrl: newAssignment.attachmentUrl.trim() || undefined,
+        studentId: newAssignment.studentId || undefined,
+        dueDate: newAssignment.dueDate ? new Date(newAssignment.dueDate).toISOString() : undefined,
+      });
+      setAssignments((prev) => [res.data, ...prev]);
+      setShowCreateModal(false);
+      setNewAssignment({
+        title: '',
+        description: '',
+        attachmentUrl: '',
+        studentId: '',
+        dueDate: '',
+      });
+      alert('Assignment created successfully!');
+    } catch (err: unknown) {
+      console.error('Failed to create assignment:', err);
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      alert(msg || 'Failed to create assignment');
+    } finally {
+      setCreatingAssignment(false);
+    }
+  };
+
+  const handleDeleteAssignment = async (id: string) => {
+    if (!window.confirm('Are you sure you want to delete this assignment?')) {
+      return;
+    }
+    try {
+      await api.delete(`/assignments/${id}`);
+      setAssignments((prev) => prev.filter((item) => item.id !== id));
+    } catch (err) {
+      console.error('Failed to delete assignment:', err);
+      alert('Failed to delete assignment');
+    }
+  };
+
   useEffect(() => {
-    const fetchTeacherStats = async () => {
+    const fetchData = async () => {
       try {
         setLoading(true);
-        // Запрос к бэкенду за статистикой отправок учеников
-        const res = await api.get('/submissions/teacher-stats');
-        setStats(res.data || []);
+        const [statsRes, assignmentsRes, studentsRes] = await Promise.all([
+          api.get('/submissions/teacher-stats').catch(() => ({ data: [] })),
+          api.get('/assignments').catch(() => ({ data: [] })),
+          api.get('/assignments/students').catch(() => ({ data: [] })),
+        ]);
+        setStats(statsRes.data || []);
+        setAssignments(assignmentsRes.data || []);
+        setStudents(studentsRes.data || []);
       } catch (err) {
-        console.error('Failed to load teacher stats:', err);
-        setError('Failed to load students submissions. Please check backend connection.');
+        console.error('Failed to load dashboard data:', err);
+        setError('Failed to load dashboard data. Please check backend connection.');
       } finally {
         setLoading(false);
       }
     };
 
-    fetchTeacherStats();
+    fetchData();
   }, []);
 
   const counts = {
@@ -179,100 +254,269 @@ export default function TeacherDashboard() {
 
         {error && <div className={styles.errorBox}>{error}</div>}
 
-        {/* Таблица результатов учеников */}
-        <div className={styles.tabBar}>
+        {/* Главная панель вкладок и кнопка создания ДЗ */}
+        <div className={styles.topBarRow}>
+          <div className={styles.mainTabs} style={{ margin: 0, border: 'none', padding: 0 }}>
+            <button
+              className={`${styles.mainTabBtn} ${activeTab === 'submissions' ? styles.mainTabActive : ''}`}
+              onClick={() => setActiveTab('submissions')}
+            >
+              Сданные работы ({stats.length})
+            </button>
+            <button
+              className={`${styles.mainTabBtn} ${activeTab === 'assignments' ? styles.mainTabActive : ''}`}
+              onClick={() => setActiveTab('assignments')}
+            >
+              Выданные задания ({assignments.length})
+            </button>
+          </div>
           <button
-            className={filter === 'all' ? styles.tabActive : styles.tab}
-            onClick={() => setFilter('all')}
+            onClick={() => setShowCreateModal(true)}
+            className={styles.createAssignmentBtn}
           >
-            All ({counts.all})
-          </button>
-          <button
-            className={filter === 'submitted' ? styles.tabActive : styles.tab}
-            onClick={() => setFilter('submitted')}
-          >
-            Waiting for Review ({counts.submitted})
-          </button>
-          <button
-            className={filter === 'needs_revision' ? styles.tabActive : styles.tab}
-            onClick={() => setFilter('needs_revision')}
-          >
-            Needs Revision ({counts.needs_revision})
-          </button>
-          <button
-            className={filter === 'graded' ? styles.tabActive : styles.tab}
-            onClick={() => setFilter('graded')}
-          >
-            Graded ({counts.graded})
+            + Назначить задание
           </button>
         </div>
 
-        <div className={styles.tableContainer}>
-          {filteredStats.length === 0 ? (
-            <div className={styles.emptyState}>
-              {stats.length === 0
-                ? 'No student submissions found yet. Once students submit their homework, results will appear here.'
-                : 'No submissions found for the selected filter.'}
+        {/* Modal: Create Custom Assignment */}
+        {showCreateModal && (
+          <div className={styles.modalOverlay}>
+            <div className={styles.modalCard}>
+              <h2 className={styles.modalTitle}>Новое домашнее задание</h2>
+              <form onSubmit={handleCreateAssignment}>
+                <div className={styles.formField}>
+                  <label>Заголовок задания *</label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Например: Эссе о планах на выходные"
+                    value={newAssignment.title}
+                    onChange={(e) => setNewAssignment({ ...newAssignment, title: e.target.value })}
+                  />
+                </div>
+
+                <div className={styles.formField}>
+                  <label>Инструкция / Текст задания</label>
+                  <textarea
+                    rows={4}
+                    placeholder="Опишите, что нужно сделать ученику (слова, грамматика, вопросы)..."
+                    value={newAssignment.description}
+                    onChange={(e) => setNewAssignment({ ...newAssignment, description: e.target.value })}
+                  />
+                </div>
+
+                <div className={styles.formField}>
+                  <label>Ссылка на материал (Google Drive, YouTube, статья)</label>
+                  <input
+                    type="url"
+                    placeholder="https://..."
+                    value={newAssignment.attachmentUrl}
+                    onChange={(e) => setNewAssignment({ ...newAssignment, attachmentUrl: e.target.value })}
+                  />
+                </div>
+
+                <div className={styles.formField}>
+                  <label>Кому назначить</label>
+                  <select
+                    value={newAssignment.studentId}
+                    onChange={(e) => setNewAssignment({ ...newAssignment, studentId: e.target.value })}
+                  >
+                    <option value="">Всем ученикам</option>
+                    {students.map((st) => (
+                      <option key={st.id} value={st.id}>
+                        {st.email}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className={styles.formField}>
+                  <label>Срок сдачи (Дедлайн)</label>
+                  <input
+                    type="date"
+                    value={newAssignment.dueDate}
+                    onChange={(e) => setNewAssignment({ ...newAssignment, dueDate: e.target.value })}
+                  />
+                </div>
+
+                <div className={styles.modalActions}>
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateModal(false)}
+                    className={styles.cancelBtn}
+                  >
+                    Отмена
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={creatingAssignment}
+                    className={styles.submitModalBtn}
+                  >
+                    {creatingAssignment ? 'Создание...' : 'Назначить задание'}
+                  </button>
+                </div>
+              </form>
             </div>
-          ) : (
-            <table className={styles.statsTable}>
-              <thead>
-                <tr>
-                  <th>Student</th>
-                  <th>Lesson</th>
-                  <th>Status</th>
-                  <th>Score (%)</th>
-                  <th>Submitted At</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredStats.map((item, index) => (
-                  <tr key={item.id || index}>
-                    <td className={styles.studentName}>{item.student?.email || 'Student'}</td>
-                    <td>{item.lesson?.title || item.assignment?.lesson?.title || '1A Hello'}</td>
-                    <td>
-                      <span className={`${styles.statusBadge} ${
-                        item.status === 'graded'
-                          ? styles.statusGraded
-                          : item.status === 'needs_revision'
-                          ? styles.statusRevision
-                          : styles.statusSubmitted
-                      }`}>
-                        {item.status === 'needs_revision'
-                          ? 'Needs Revision'
-                          : item.status === 'graded'
-                          ? 'Graded'
-                          : 'Pending Review'}
-                      </span>
-                    </td>
-                    <td>
-                      <span className={`${styles.scoreBadge} ${item.score >= 80 ? styles.highScore : styles.lowScore}`}>
-                        {item.score}%
-                      </span>
-                    </td>
-                    <td>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'}</td>
-                    <td className={styles.actionCell}>
-                      <button 
-                        onClick={() => router.push(`/submissions/${item.id}`)}
-                        className={styles.gradeBtn}
-                      >
-                        View / Grade
-                      </button>
-                      <button 
-                        onClick={() => handleDeleteSubmission(item.id)}
-                        className={styles.deleteBtn}
-                        title="Delete submission"
-                      >
-                        Delete
-                      </button>
-                    </td>
+          </div>
+        )}
+
+        {/* Вкладка 1: Проверка сданных работ */}
+        {activeTab === 'submissions' && (
+          <>
+            <div className={styles.tabBar}>
+              <button
+                className={filter === 'all' ? styles.tabActive : styles.tab}
+                onClick={() => setFilter('all')}
+              >
+                All ({counts.all})
+              </button>
+              <button
+                className={filter === 'submitted' ? styles.tabActive : styles.tab}
+                onClick={() => setFilter('submitted')}
+              >
+                Waiting for Review ({counts.submitted})
+              </button>
+              <button
+                className={filter === 'needs_revision' ? styles.tabActive : styles.tab}
+                onClick={() => setFilter('needs_revision')}
+              >
+                Needs Revision ({counts.needs_revision})
+              </button>
+              <button
+                className={filter === 'graded' ? styles.tabActive : styles.tab}
+                onClick={() => setFilter('graded')}
+              >
+                Graded ({counts.graded})
+              </button>
+            </div>
+
+            <div className={styles.tableContainer}>
+              {filteredStats.length === 0 ? (
+                <div className={styles.emptyState}>
+                  {stats.length === 0
+                    ? 'No student submissions found yet. Once students submit their homework, results will appear here.'
+                    : 'No submissions found for the selected filter.'}
+                </div>
+              ) : (
+                <table className={styles.statsTable}>
+                  <thead>
+                    <tr>
+                      <th>Student</th>
+                      <th>Lesson / Assignment</th>
+                      <th>Status</th>
+                      <th>Score (%)</th>
+                      <th>Submitted At</th>
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {filteredStats.map((item, index) => (
+                      <tr key={item.id || index}>
+                        <td className={styles.studentName}>{item.student?.email || 'Student'}</td>
+                        <td>{item.lesson?.title || item.assignment?.title || item.assignment?.lesson?.title || 'Assignment'}</td>
+                        <td>
+                          <span className={`${styles.statusBadge} ${
+                            item.status === 'graded'
+                              ? styles.statusGraded
+                              : item.status === 'needs_revision'
+                              ? styles.statusRevision
+                              : styles.statusSubmitted
+                          }`}>
+                            {item.status === 'needs_revision'
+                              ? 'Needs Revision'
+                              : item.status === 'graded'
+                              ? 'Graded'
+                              : 'Pending Review'}
+                          </span>
+                        </td>
+                        <td>
+                          <span className={`${styles.scoreBadge} ${item.score >= 80 ? styles.highScore : styles.lowScore}`}>
+                            {item.score}%
+                          </span>
+                        </td>
+                        <td>{item.createdAt ? new Date(item.createdAt).toLocaleDateString() : 'N/A'}</td>
+                        <td className={styles.actionCell}>
+                          <button 
+                            onClick={() => router.push(`/submissions/${item.id}`)}
+                            className={styles.gradeBtn}
+                          >
+                            View / Grade
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteSubmission(item.id)}
+                            className={styles.deleteBtn}
+                            title="Delete submission"
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          </>
+        )}
+
+        {/* Вкладка 2: Выданные задания */}
+        {activeTab === 'assignments' && (
+          <div className={styles.tableContainer}>
+            {assignments.length === 0 ? (
+              <div className={styles.emptyState}>
+                Нет выданных заданий. Нажмите &quot;+ Назначить задание&quot;, чтобы выдать домашнюю работу ученикам.
+              </div>
+            ) : (
+              <table className={styles.statsTable}>
+                <thead>
+                  <tr>
+                    <th>Заголовок</th>
+                    <th>Инструкция</th>
+                    <th>Материал</th>
+                    <th>Кому назначено</th>
+                    <th>Дедлайн</th>
+                    <th>Сдано работ</th>
+                    <th>Действие</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
+                </thead>
+                <tbody>
+                  {assignments.map((item) => (
+                    <tr key={item.id}>
+                      <td className={styles.studentName}>{item.title}</td>
+                      <td>{item.description || '—'}</td>
+                      <td>
+                        {item.attachmentUrl ? (
+                          <a
+                            href={item.attachmentUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={styles.materialLink}
+                          >
+                            Открыть материал ↗
+                          </a>
+                        ) : (
+                          '—'
+                        )}
+                      </td>
+                      <td>{item.assignedStudent ? item.assignedStudent.email : 'Всем ученикам'}</td>
+                      <td>{item.dueDate ? new Date(item.dueDate).toLocaleDateString() : 'Бессрочно'}</td>
+                      <td>{item.submissionsCount ?? 0}</td>
+                      <td className={styles.actionCell}>
+                        <button
+                          onClick={() => handleDeleteAssignment(item.id)}
+                          className={styles.deleteBtn}
+                          title="Удалить задание"
+                        >
+                          Удалить
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
 
       </div>
     </div>

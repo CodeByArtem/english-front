@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import api from '@/lib/api';
 import styles from './assignment-detail.module.scss';
@@ -11,7 +11,8 @@ interface Assignment {
   title: string;
   description: string;
   dueDate: string;
-  status: 'pending' | 'submitted' | 'graded';
+  attachmentUrl?: string;
+  status: 'pending' | 'submitted' | 'graded' | 'needs_revision';
   submission?: {
     id: string;
     content: string;
@@ -24,12 +25,10 @@ interface Assignment {
 
 export default function AssignmentDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [content, setContent] = useState('');
-  const [file, setFile] = useState<File | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
@@ -38,10 +37,11 @@ export default function AssignmentDetailPage() {
         const response = await api.get(`/assignments/${params.id}`);
         setAssignment(response.data);
         if (response.data.submission) {
-          setContent(response.data.submission.content);
+          setContent(response.data.submission.content || '');
         }
-      } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to load assignment');
+      } catch (err: unknown) {
+        const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+        setError(msg || 'Failed to load assignment');
       } finally {
         setLoading(false);
       }
@@ -52,32 +52,25 @@ export default function AssignmentDetailPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!content.trim()) {
+      setError('Please enter your response before submitting');
+      return;
+    }
     setSubmitting(true);
+    setError('');
 
     try {
-      const formData = new FormData();
-      formData.append('content', content);
-      if (file) {
-        formData.append('file', file);
-      }
-
-      await api.post(`/assignments/${params.id}/submit`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      await api.post(`/assignments/${params.id}/submit`, {
+        content: content.trim(),
       });
 
-      router.push('/assignments');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to submit assignment');
+      const response = await api.get(`/assignments/${params.id}`);
+      setAssignment(response.data);
+    } catch (err: unknown) {
+      const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      setError(msg || 'Failed to submit assignment');
     } finally {
       setSubmitting(false);
-    }
-  };
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      setFile(e.target.files[0]);
     }
   };
 
@@ -130,6 +123,14 @@ export default function AssignmentDetailPage() {
                 {assignment.status}
               </span>
             </div>
+            {assignment.attachmentUrl && (
+              <div style={{ marginTop: '1rem', padding: '0.75rem', background: '#f0f9ff', borderRadius: '6px', border: '1px solid #bae6fd' }}>
+                <strong style={{ color: '#0369a1' }}>📎 Attached Material: </strong>
+                <a href={assignment.attachmentUrl} target="_blank" rel="noopener noreferrer" style={{ color: '#0284c7', textDecoration: 'underline' }}>
+                  Open Material Link ↗
+                </a>
+              </div>
+            )}
           </div>
         </section>
 
@@ -182,19 +183,6 @@ export default function AssignmentDetailPage() {
                     placeholder="Write your answer here..."
                     rows={8}
                   />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="file" className={styles.label}>
-                    Attach File (Optional)
-                  </label>
-                  <input
-                    id="file"
-                    type="file"
-                    className={styles.fileInput}
-                    onChange={handleFileChange}
-                  />
-                  {file && <span className={styles.fileName}>{file.name}</span>}
                 </div>
 
                 {error && <div className={styles.error}>{error}</div>}

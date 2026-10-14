@@ -61,8 +61,8 @@ export const vocabularyJobs = [
 ];
 
 export interface Lesson1BContentProps {
-  lesson: any;
-  user?: any;
+  lesson?: Record<string, unknown> | null;
+  user?: Record<string, unknown> | null;
   jobsInputs: Record<string, string>;
   readingInputs: Record<string, string>;
   onJobChange: (id: string, value: string) => void;
@@ -91,14 +91,13 @@ export interface Lesson1BContentProps {
     exercise_5a_grammar?: Record<string, string>;
     exercise_6_dialogue?: Record<string, string>;
     exercise_7a_qa?: Record<string, string>;
-    exercise_7b_profiles?: any;
+    exercise_7b_profiles?: Record<string, unknown>;
   };
   playAudio: (track: string) => void;
   playingAudio: string | null;
 }
 
 export default function Lesson1BContent({
-  lesson,
   jobsInputs = {},
   readingInputs = {},
   onJobChange,
@@ -167,8 +166,10 @@ export default function Lesson1BContent({
                   <Image
                     src={profile.imageUrl}
                     alt={profile.name}
-                    width={500}
-                    height={170}
+                    fill
+                    priority={profile.id <= 3}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    style={{ objectFit: 'cover' }}
                     unoptimized
                   />
                   <span className={styles.profileNumber}>{profile.id}</span>
@@ -387,8 +388,9 @@ export default function Lesson1BContent({
                       <Image
                         src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80"
                         alt="Lidia Nowak"
-                        width={300}
-                        height={120}
+                        fill
+                        sizes="(max-width: 768px) 50vw, 200px"
+                        style={{ objectFit: 'cover' }}
                         unoptimized
                       />
                       <span className={styles.photoLabel}>Pilot</span>
@@ -424,8 +426,9 @@ export default function Lesson1BContent({
                       <Image
                         src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80"
                         alt="Sakura Sato"
-                        width={300}
-                        height={120}
+                        fill
+                        sizes="(max-width: 768px) 50vw, 200px"
+                        style={{ objectFit: 'cover' }}
                         unoptimized
                       />
                       <span className={styles.photoLabel}>Architect</span>
