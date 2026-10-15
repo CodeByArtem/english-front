@@ -261,20 +261,20 @@ export default function TeacherDashboard() {
               className={`${styles.mainTabBtn} ${activeTab === 'submissions' ? styles.mainTabActive : ''}`}
               onClick={() => setActiveTab('submissions')}
             >
-              Сданные работы ({stats.length})
+              Student Submissions ({stats.length})
             </button>
             <button
               className={`${styles.mainTabBtn} ${activeTab === 'assignments' ? styles.mainTabActive : ''}`}
               onClick={() => setActiveTab('assignments')}
             >
-              Выданные задания ({assignments.length})
+              Assigned Tasks ({assignments.length})
             </button>
           </div>
           <button
             onClick={() => setShowCreateModal(true)}
             className={styles.createAssignmentBtn}
           >
-            + Назначить задание
+            + Assign Task
           </button>
         </div>
 
@@ -282,31 +282,31 @@ export default function TeacherDashboard() {
         {showCreateModal && (
           <div className={styles.modalOverlay}>
             <div className={styles.modalCard}>
-              <h2 className={styles.modalTitle}>Новое домашнее задание</h2>
+              <h2 className={styles.modalTitle}>New Assignment</h2>
               <form onSubmit={handleCreateAssignment}>
                 <div className={styles.formField}>
-                  <label>Заголовок задания *</label>
+                  <label>Assignment Title *</label>
                   <input
                     type="text"
                     required
-                    placeholder="Например: Эссе о планах на выходные"
+                    placeholder="e.g. Essay about weekend plans"
                     value={newAssignment.title}
                     onChange={(e) => setNewAssignment({ ...newAssignment, title: e.target.value })}
                   />
                 </div>
 
                 <div className={styles.formField}>
-                  <label>Инструкция / Текст задания</label>
+                  <label>Instructions / Task Details</label>
                   <textarea
                     rows={4}
-                    placeholder="Опишите, что нужно сделать ученику (слова, грамматика, вопросы)..."
+                    placeholder="Describe what the student needs to do (words, grammar, questions)..."
                     value={newAssignment.description}
                     onChange={(e) => setNewAssignment({ ...newAssignment, description: e.target.value })}
                   />
                 </div>
 
                 <div className={styles.formField}>
-                  <label>Ссылка на материал (Google Drive, YouTube, статья)</label>
+                  <label>Resource Link (Google Drive, YouTube, article)</label>
                   <input
                     type="url"
                     placeholder="https://..."
@@ -316,12 +316,12 @@ export default function TeacherDashboard() {
                 </div>
 
                 <div className={styles.formField}>
-                  <label>Кому назначить</label>
+                  <label>Assign To</label>
                   <select
                     value={newAssignment.studentId}
                     onChange={(e) => setNewAssignment({ ...newAssignment, studentId: e.target.value })}
                   >
-                    <option value="">Всем ученикам</option>
+                    <option value="">All Students</option>
                     {students.map((st) => (
                       <option key={st.id} value={st.id}>
                         {st.email}
@@ -331,7 +331,7 @@ export default function TeacherDashboard() {
                 </div>
 
                 <div className={styles.formField}>
-                  <label>Срок сдачи (Дедлайн)</label>
+                  <label>Due Date (Deadline)</label>
                   <input
                     type="date"
                     value={newAssignment.dueDate}
@@ -345,14 +345,14 @@ export default function TeacherDashboard() {
                     onClick={() => setShowCreateModal(false)}
                     className={styles.cancelBtn}
                   >
-                    Отмена
+                    Cancel
                   </button>
                   <button
                     type="submit"
                     disabled={creatingAssignment}
                     className={styles.submitModalBtn}
                   >
-                    {creatingAssignment ? 'Создание...' : 'Назначить задание'}
+                    {creatingAssignment ? 'Creating...' : 'Assign Task'}
                   </button>
                 </div>
               </form>
@@ -464,19 +464,19 @@ export default function TeacherDashboard() {
           <div className={styles.tableContainer}>
             {assignments.length === 0 ? (
               <div className={styles.emptyState}>
-                Нет выданных заданий. Нажмите &quot;+ Назначить задание&quot;, чтобы выдать домашнюю работу ученикам.
+                No assigned tasks yet. Click &quot;+ Assign Task&quot; to create homework for students.
               </div>
             ) : (
               <table className={styles.statsTable}>
                 <thead>
                   <tr>
-                    <th>Заголовок</th>
-                    <th>Инструкция</th>
-                    <th>Материал</th>
-                    <th>Кому назначено</th>
-                    <th>Дедлайн</th>
-                    <th>Сдано работ</th>
-                    <th>Действие</th>
+                    <th>Title</th>
+                    <th>Instructions</th>
+                    <th>Resource</th>
+                    <th>Assigned To</th>
+                    <th>Due Date</th>
+                    <th>Submissions</th>
+                    <th>Action</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -492,22 +492,22 @@ export default function TeacherDashboard() {
                             rel="noopener noreferrer"
                             className={styles.materialLink}
                           >
-                            Открыть материал ↗
+                            Open Resource ↗
                           </a>
                         ) : (
                           '—'
                         )}
                       </td>
-                      <td>{item.assignedStudent ? item.assignedStudent.email : 'Всем ученикам'}</td>
-                      <td>{item.dueDate ? new Date(item.dueDate).toLocaleDateString() : 'Бессрочно'}</td>
+                      <td>{item.assignedStudent ? item.assignedStudent.email : 'All Students'}</td>
+                      <td>{item.dueDate ? new Date(item.dueDate).toLocaleDateString() : 'No Deadline'}</td>
                       <td>{item.submissionsCount ?? 0}</td>
                       <td className={styles.actionCell}>
                         <button
                           onClick={() => handleDeleteAssignment(item.id)}
                           className={styles.deleteBtn}
-                          title="Удалить задание"
+                          title="Delete assignment"
                         >
-                          Удалить
+                          Delete
                         </button>
                       </td>
                     </tr>

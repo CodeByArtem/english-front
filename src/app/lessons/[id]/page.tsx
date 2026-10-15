@@ -7,6 +7,8 @@ import styles from './lesson.module.scss';
 import LessonContent from '@/components/LessonContent';
 import Lesson1BContent from '@/components/Lesson1BContent';
 import Lesson1CContent from '@/components/Lesson1CContent';
+import Lesson1DContent from '@/components/Lesson1DContent';
+import Lesson2AContent from '@/components/Lesson2AContent';
 
 const LessonPage = () => {
   const params = useParams();
@@ -51,6 +53,38 @@ const LessonPage = () => {
   const [textsInputs, setTextsInputs] = useState<Record<string, string>>({});
   const [questionsInputs, setQuestionsInputs] = useState<Record<string, string>>({});
   const [speakingNotes, setSpeakingNotes] = useState<string>('');
+  
+  // 1D states
+  const [ex1Location, setEx1Location] = useState<string>('');
+  const [ex2Audio, setEx2Audio] = useState<Record<string, string>>({});
+  const [ex3aOrder, setEx3aOrder] = useState<Record<string, string>>({});
+  const [ex3bContact, setEx3bContact] = useState<Record<string, string>>({});
+  const [ex4aDialogue, setEx4aDialogue] = useState<Record<string, string>>({});
+  const [ex5Personal, setEx5Personal] = useState<Record<string, string>>({});
+  const [ex6Partner, setEx6Partner] = useState<Record<string, string>>({});
+
+  const [wordsearchFound, setWordsearchFound] = useState<Record<string, string>>({});
+  const [ex2aOrder, setEx2aOrder] = useState<Record<string, string>>({});
+  const [ex2bShort, setEx2bShort] = useState<Record<string, string>>({});
+  const [ex3Be, setEx3Be] = useState<Record<string, string>>({});
+  const [ex4Jobs, setEx4Jobs] = useState<Record<string, string>>({});
+  const [ex5IsIsnt, setEx5IsIsnt] = useState<Record<string, string>>({});
+  const [ex6Corrections, setEx6Corrections] = useState<Record<string, string>>({});
+  const [ex7aNationalities, setEx7aNationalities] = useState<Record<string, string>>({});
+  const [ex7bPeople, setEx7bPeople] = useState<Record<string, string>>({});
+  const [ex8Alternatives, setEx8Alternatives] = useState<Record<string, string>>({});
+  const [ex9Text, setEx9Text] = useState<Record<string, string>>({});
+  const [reflectScores, setReflectScores] = useState<Record<string, string | number>>({});
+
+  // 2A states
+  const [ex1FamilyTree, setEx1FamilyTree] = useState<Record<string, string>>({});
+  const [ex2aTable, setEx2aTable] = useState<Record<string, string>>({});
+  const [ex3Sentences, setEx3Sentences] = useState<Record<string, string>>({});
+  const [ex4aMatch, setEx4aMatch] = useState<Record<string, string>>({});
+  const [ex4bListening, setEx4bListening] = useState<Record<string, string>>({});
+  const [ex5Grammar, setEx5Grammar] = useState<Record<string, string>>({});
+  const [ex7Dialogue, setEx7Dialogue] = useState<Record<string, string>>({});
+  const [ex8Notes, setEx8Notes] = useState<string>('');
 
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
@@ -113,6 +147,39 @@ const LessonPage = () => {
             if (ans.exercise_6_texts) setTextsInputs(ans.exercise_6_texts);
             if (ans.exercise_7a_questions) setQuestionsInputs(ans.exercise_7a_questions);
             if (ans.exercise_8b_notes) setSpeakingNotes(ans.exercise_8b_notes);
+
+            // 1D answers restore
+            if (ans.exercise_1_location?.['1'] || ans.exercise_1_location) {
+              setEx1Location(ans.exercise_1_location?.['1'] || ans.exercise_1_location);
+            }
+            if (ans.exercise_2_audio) setEx2Audio(ans.exercise_2_audio);
+            if (ans.exercise_3a_order) setEx3aOrder(ans.exercise_3a_order);
+            if (ans.exercise_3b_contact) setEx3bContact(ans.exercise_3b_contact);
+            if (ans.exercise_4a_dialogue) setEx4aDialogue(ans.exercise_4a_dialogue);
+            if (ans.exercise_5_personal) setEx5Personal(ans.exercise_5_personal);
+            if (ans.exercise_6_partner) setEx6Partner(ans.exercise_6_partner);
+            if (ans.exercise_1_wordsearch) setWordsearchFound(ans.exercise_1_wordsearch);
+            if (ans.exercise_2a_order) setEx2aOrder(ans.exercise_2a_order);
+            if (ans.exercise_2b_short) setEx2bShort(ans.exercise_2b_short);
+            if (ans.exercise_3_be) setEx3Be(ans.exercise_3_be);
+            if (ans.exercise_4_jobs) setEx4Jobs(ans.exercise_4_jobs);
+            if (ans.exercise_5_is_isnt) setEx5IsIsnt(ans.exercise_5_is_isnt);
+            if (ans.exercise_6_corrections) setEx6Corrections(ans.exercise_6_corrections);
+            if (ans.exercise_7a_nationalities) setEx7aNationalities(ans.exercise_7a_nationalities);
+            if (ans.exercise_7b_people) setEx7bPeople(ans.exercise_7b_people);
+            if (ans.exercise_8_alternatives) setEx8Alternatives(ans.exercise_8_alternatives);
+            if (ans.exercise_9_text) setEx9Text(ans.exercise_9_text);
+            if (ans.reflect_scores) setReflectScores(ans.reflect_scores);
+
+            // 2A answers restore
+            if (ans.exercise_1_family_tree) setEx1FamilyTree(ans.exercise_1_family_tree);
+            if (ans.exercise_2a_table) setEx2aTable(ans.exercise_2a_table);
+            if (ans.exercise_3_sentences) setEx3Sentences(ans.exercise_3_sentences);
+            if (ans.exercise_4a_match) setEx4aMatch(ans.exercise_4a_match);
+            if (ans.exercise_4b_listening) setEx4bListening(ans.exercise_4b_listening);
+            if (ans.exercise_5_grammar) setEx5Grammar(ans.exercise_5_grammar);
+            if (ans.exercise_7_dialogue) setEx7Dialogue(ans.exercise_7_dialogue);
+            if (ans.exercise_8_notes) setEx8Notes(ans.exercise_8_notes);
           }
         } catch {
           // Если не студент или ещё нет сдачи — продолжаем без блокировки
@@ -223,7 +290,50 @@ const LessonPage = () => {
         lesson?.title?.includes('1C') ||
         lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a44';
 
-      const answersPayload = isLesson1C
+      const isLesson1D =
+        lesson?.order === 4 ||
+        lesson?.title?.includes('1D') ||
+        lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a55';
+
+      const isLesson2A =
+        lesson?.order === 5 ||
+        lesson?.title?.includes('2A') ||
+        lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a66';
+
+      const answersPayload = isLesson2A
+        ? {
+            exercise_1_family_tree: ex1FamilyTree,
+            exercise_2a_table: ex2aTable,
+            exercise_3_sentences: ex3Sentences,
+            exercise_4a_match: ex4aMatch,
+            exercise_4b_listening: ex4bListening,
+            exercise_5_grammar: ex5Grammar,
+            exercise_7_dialogue: ex7Dialogue,
+            exercise_8_notes: ex8Notes,
+          }
+        : isLesson1D
+        ? {
+            exercise_1_location: { '1': ex1Location },
+            exercise_2_audio: ex2Audio,
+            exercise_3a_order: ex3aOrder,
+            exercise_3b_contact: ex3bContact,
+            exercise_4a_dialogue: ex4aDialogue,
+            exercise_5_personal: ex5Personal,
+            exercise_6_partner: ex6Partner,
+            exercise_1_wordsearch: wordsearchFound,
+            exercise_2a_order: ex2aOrder,
+            exercise_2b_short: ex2bShort,
+            exercise_3_be: ex3Be,
+            exercise_4_jobs: ex4Jobs,
+            exercise_5_is_isnt: ex5IsIsnt,
+            exercise_6_corrections: ex6Corrections,
+            exercise_7a_nationalities: ex7aNationalities,
+            exercise_7b_people: ex7bPeople,
+            exercise_8_alternatives: ex8Alternatives,
+            exercise_9_text: ex9Text,
+            reflect_scores: reflectScores,
+          }
+        : isLesson1C
         ? {
             exercise_1b_nationalities: nationalitiesInputs,
             exercise_2c_stress: stressInputs,
@@ -295,6 +405,14 @@ const LessonPage = () => {
     lesson?.order === 3 ||
     lesson?.title?.includes('1C') ||
     lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a44';
+  const isLesson1D =
+    lesson?.order === 4 ||
+    lesson?.title?.includes('1D') ||
+    lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a55';
+  const isLesson2A =
+    lesson?.order === 5 ||
+    lesson?.title?.includes('2A') ||
+    lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a66';
 
   return (
       <div className={styles.pageContainer}>
@@ -307,7 +425,7 @@ const LessonPage = () => {
             ← Back to Dashboard
           </button>
 
-          {isLesson1A || isLesson1B || isLesson1C ? (
+          {isLesson1A || isLesson1B || isLesson1C || isLesson1D || isLesson2A ? (
             <>
               {isLesson1A && (
                 <LessonContent
@@ -390,6 +508,96 @@ const LessonPage = () => {
                   originalAnswers={mySubmission?.answers}
                   playAudio={playAudio}
                   playingAudio={playingAudio}
+                />
+              )}
+
+              {isLesson1D && (
+                <Lesson1DContent
+                  lesson={lesson}
+                  user={user}
+                  readOnly={isLocked}
+                  playAudio={playAudio}
+                  playingAudio={playingAudio}
+                  ex1Location={ex1Location}
+                  ex2Audio={ex2Audio}
+                  ex3aOrder={ex3aOrder}
+                  ex3bContact={ex3bContact}
+                  ex4aDialogue={ex4aDialogue}
+                  ex5Personal={ex5Personal}
+                  ex6Partner={ex6Partner}
+                  wordsearchFound={wordsearchFound}
+                  ex2aOrder={ex2aOrder}
+                  ex2bShort={ex2bShort}
+                  ex3Be={ex3Be}
+                  ex4Jobs={ex4Jobs}
+                  ex5IsIsnt={ex5IsIsnt}
+                  ex6Corrections={ex6Corrections}
+                  ex7aNationalities={ex7aNationalities}
+                  ex7bPeople={ex7bPeople}
+                  ex8Alternatives={ex8Alternatives}
+                  ex9Text={ex9Text}
+                  reflectScores={reflectScores}
+                  onEx1LocationChange={(val) => setEx1Location(val)}
+                  onEx2AudioChange={(fld, val) => setEx2Audio((prev) => ({ ...prev, [fld]: val }))}
+                  onEx3aOrderChange={(id, val) => setEx3aOrder((prev) => ({ ...prev, [id]: val }))}
+                  onEx3bContactChange={(id, val) => setEx3bContact((prev) => ({ ...prev, [id]: val }))}
+                  onEx4aDialogueChange={(id, val) => setEx4aDialogue((prev) => ({ ...prev, [id]: val }))}
+                  onEx5PersonalChange={(fld, val) => setEx5Personal((prev) => ({ ...prev, [fld]: val }))}
+                  onEx6PartnerChange={(fld, val) => setEx6Partner((prev) => ({ ...prev, [fld]: val }))}
+                  onWordsearchChange={(found) => setWordsearchFound(found)}
+                  onEx2aOrderChange={(id, val) => setEx2aOrder((prev) => ({ ...prev, [id]: val }))}
+                  onEx2bShortChange={(id, val) => setEx2bShort((prev) => ({ ...prev, [id]: val }))}
+                  onEx3BeChange={(id, val) => setEx3Be((prev) => ({ ...prev, [id]: val }))}
+                  onEx4JobsChange={(id, val) => setEx4Jobs((prev) => ({ ...prev, [id]: val }))}
+                  onEx5IsIsntChange={(id, val) => setEx5IsIsnt((prev) => ({ ...prev, [id]: val }))}
+                  onEx6CorrectionsChange={(id, val) => setEx6Corrections((prev) => ({ ...prev, [id]: val }))}
+                  onEx7aNationalitiesChange={(id, val) => setEx7aNationalities((prev) => ({ ...prev, [id]: val }))}
+                  onEx7bPeopleChange={(fld, val) => setEx7bPeople((prev) => ({ ...prev, [fld]: val }))}
+                  onEx8AlternativesChange={(id, val) => setEx8Alternatives((prev) => ({ ...prev, [id]: val }))}
+                  onEx9TextChange={(id, val) => setEx9Text((prev) => ({ ...prev, [id]: val }))}
+                  onReflectChange={(id, val) => setReflectScores((prev) => ({ ...prev, [id]: val }))}
+                  originalAnswers={mySubmission?.answers}
+                />
+              )}
+
+              {isLesson2A && (
+                <Lesson2AContent
+                  lesson={lesson}
+                  user={user}
+                  readOnly={isLocked}
+                  playAudio={playAudio}
+                  playingAudio={playingAudio}
+                  ex1FamilyTree={ex1FamilyTree}
+                  ex2aTable={ex2aTable}
+                  ex3Sentences={ex3Sentences}
+                  ex4aMatch={ex4aMatch}
+                  ex4bListening={ex4bListening}
+                  ex5Grammar={ex5Grammar}
+                  ex7Dialogue={ex7Dialogue}
+                  ex8Notes={ex8Notes}
+                  onEx1FamilyTreeChange={(member, val) =>
+                    setEx1FamilyTree((prev) => ({ ...prev, [member]: val }))
+                  }
+                  onEx2aTableChange={(id, val) =>
+                    setEx2aTable((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onEx3SentencesChange={(id, val) =>
+                    setEx3Sentences((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onEx4aMatchChange={(speaker, val) =>
+                    setEx4aMatch((prev) => ({ ...prev, [speaker]: val }))
+                  }
+                  onEx4bListeningChange={(id, val) =>
+                    setEx4bListening((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onEx5GrammarChange={(id, val) =>
+                    setEx5Grammar((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onEx7DialogueChange={(id, val) =>
+                    setEx7Dialogue((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onEx8NotesChange={(val) => setEx8Notes(val)}
+                  originalAnswers={mySubmission?.answers}
                 />
               )}
 
