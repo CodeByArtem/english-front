@@ -243,7 +243,7 @@ export default function Lesson1BContent({
                   <span>Playing 1.6</span>
                 </>
               ) : (
-                '▶ Track 1.6'
+                '▶ Audio 1.6'
               )}
             </button>
           </div>
@@ -706,7 +706,7 @@ export default function Lesson1BContent({
                     <span>Playing 1.7</span>
                   </>
                 ) : (
-                  '▶ Track 1.7'
+                  '▶ Audio 1.7'
                 )}
               </button>
             </div>
@@ -757,7 +757,7 @@ export default function Lesson1BContent({
                     <span>Playing 1.8</span>
                   </>
                 ) : (
-                  '▶ Track 1.8'
+                  '▶ Audio 1.8'
                 )}
               </button>
             </div>

@@ -9,16 +9,141 @@ import Lesson1BContent from '@/components/Lesson1BContent';
 import Lesson1CContent from '@/components/Lesson1CContent';
 import Lesson1DContent from '@/components/Lesson1DContent';
 import Lesson2AContent from '@/components/Lesson2AContent';
+import Lesson2BContent from '@/components/Lesson2BContent';
+
+interface ProfilePairs {
+  woman?: { name?: string; job?: string; city?: string; country?: string };
+  man?: { name?: string; job?: string; city?: string; country?: string };
+  [key: string]: unknown;
+}
+
+interface ConferenceCard {
+  name: string;
+  city: string;
+  country: string;
+  roles: string[];
+}
+
+type AnswerValue =
+  | Record<string, string>
+  | Record<number, string>
+  | Record<string, string | number>
+  | ProfilePairs
+  | ConferenceCard
+  | string
+  | undefined;
+
+interface SubmissionAnswers {
+  [key: string]: AnswerValue;
+  flagAnswers?: Record<number, string>;
+  dialogInputs?: Record<string, string>;
+  stressTableInputs?: Record<string, string>;
+  grammarInputs?: Record<string, string>;
+  dialogue7aInputs?: Record<string, string>;
+  conferenceCard?: ConferenceCard;
+  profilePairs?: ProfilePairs;
+  text?: string;
+  // Lesson 1B
+  exercise_1b_jobs?: Record<string, string>;
+  exercise_3_reading?: Record<string, string>;
+  exercise_page9_profiles?: Record<string, string>;
+  exercise_4a_reading?: Record<string, string>;
+  exercise_5a_grammar?: Record<string, string>;
+  exercise_6_dialogue?: Record<string, string>;
+  exercise_7a_qa?: Record<string, string>;
+  exercise_7b_profiles?: ProfilePairs;
+  // Lesson 1C
+  exercise_1b_nationalities?: Record<string, string>;
+  exercise_2c_stress?: Record<string, string>;
+  exercise_3_famous?: string;
+  exercise_4a_photos?: Record<string, string>;
+  exercise_4b_tf?: Record<string, string>;
+  exercise_6_texts?: Record<string, string>;
+  exercise_7a_questions?: Record<string, string>;
+  exercise_8b_notes?: string;
+  // Lesson 2A
+  exercise_1_family_tree?: Record<string, string>;
+  exercise_2a_table?: Record<string, string>;
+  exercise_3_sentences?: Record<string, string>;
+  exercise_4a_match?: Record<string, string>;
+  exercise_4b_listening?: Record<string, string>;
+  exercise_5_grammar?: Record<string, string>;
+  exercise_6_pronunciation?: Record<string, string>;
+  exercise_7_dialogue?: Record<string, string>;
+  exercise_8_notes?: string;
+  // Lesson 2B
+  exercise_1b_vocab?: Record<string, string>;
+  exercise_3_photos?: Record<string, string>;
+  exercise_5a_picture?: string;
+  exercise_5b_dialogue?: Record<string, string>;
+  exercise_6_grammar?: Record<string, string>;
+  exercise_7a_choice?: Record<string, string>;
+  exercise_8_conversations?: Record<string, string>;
+}
+
+interface SubmissionModel {
+  id: string;
+  score?: number;
+  grade?: number;
+  status: string;
+  tutorComment?: string;
+  createdAt: string;
+  student?: { id?: string; email?: string; name?: string; role?: string };
+  lesson?: { id?: string; title?: string; order?: number };
+  assignment?: {
+    id?: string;
+    title?: string;
+    attachmentUrl?: string;
+    lesson?: { id?: string; title?: string; order?: number };
+  };
+  answers?: SubmissionAnswers;
+  reviewedAnswers?: SubmissionAnswers;
+  [key: string]: unknown;
+}
+
+interface UserModel {
+  id: string;
+  email: string;
+  role: string;
+  name?: string;
+  [key: string]: unknown;
+}
+
+const getMap = (val: AnswerValue): Record<string, string> => {
+  if (val && typeof val === 'object' && !Array.isArray(val)) {
+    return val as Record<string, string>;
+  }
+  return {};
+};
+
+const getNumMap = (val: AnswerValue): Record<number, string> => {
+  if (val && typeof val === 'object' && !Array.isArray(val)) {
+    return val as Record<number, string>;
+  }
+  return {};
+};
+
+const getScoresMap = (val: AnswerValue): Record<string, string | number> => {
+  if (val && typeof val === 'object' && !Array.isArray(val)) {
+    return val as Record<string, string | number>;
+  }
+  return {};
+};
+
+const getStr = (val: AnswerValue): string => {
+  if (typeof val === 'string') return val;
+  return '';
+};
 
 export default function SubmissionPage() {
   const params = useParams();
   const router = useRouter();
   const id = params?.id as string;
 
-  const [submission, setSubmission] = useState<any>(null);
+  const [submission, setSubmission] = useState<SubmissionModel | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserModel | null>(null);
 
   const [flagAnswers, setFlagAnswers] = useState<Record<number, string>>({});
   const [dialogInputs, setDialogInputs] = useState<Record<string, string>>({});
@@ -84,8 +209,19 @@ export default function SubmissionPage() {
   const [ex4aMatch, setEx4aMatch] = useState<Record<string, string>>({});
   const [ex4bListening, setEx4bListening] = useState<Record<string, string>>({});
   const [ex5Grammar, setEx5Grammar] = useState<Record<string, string>>({});
+  const [ex6Pronunciation, setEx6Pronunciation] = useState<Record<string, string>>({});
   const [ex7Dialogue, setEx7Dialogue] = useState<Record<string, string>>({});
   const [ex8Notes, setEx8Notes] = useState<string>('');
+
+  // 2B states
+  const [ex1bVocab, setEx1bVocab] = useState<Record<string, string>>({});
+  const [ex3Photos, setEx3Photos] = useState<Record<string, string>>({});
+  const [ex5aPicture, setEx5aPicture] = useState<Record<string, string>>({});
+  const [ex5bDialogue, setEx5bDialogue] = useState<Record<string, string>>({});
+  const [ex6Grammar, setEx6Grammar] = useState<Record<string, string>>({});
+  const [ex7aChoice, setEx7aChoice] = useState<Record<string, string>>({});
+  const [ex8Conversations, setEx8Conversations] = useState<Record<string, string>>({});
+  const [exRoomObjects, setExRoomObjects] = useState<string>('');
 
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
@@ -96,84 +232,103 @@ export default function SubmissionPage() {
   const [success, setSuccess] = useState('');
 
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
-  }, []);
-
-  useEffect(() => {
     const fetchSubmission = async () => {
       try {
         setLoading(true);
+
+        if (typeof window !== 'undefined') {
+          const storedUser = localStorage.getItem('user');
+          if (storedUser) {
+            try {
+              setUser(JSON.parse(storedUser));
+            } catch {
+              // ignore
+            }
+          }
+        }
+
         const res = await api.get(`/submissions/${id}`);
         const data = res.data;
         setSubmission(data);
         
-        // Initialize interactive state
-        const answers = data.reviewedAnswers || data.answers || {};
-        setFlagAnswers(answers.flagAnswers || {});
-        setDialogInputs(answers.dialogInputs || {});
-        setStressTableInputs(answers.stressTableInputs || {});
-        setGrammarInputs(answers.grammarInputs || {});
-        setDialogue7aInputs(answers.dialogue7aInputs || {});
-        setConferenceCard(answers.conferenceCard || { name: '', city: '', country: '', roles: [] });
-        setJobsInputs(answers.exercise_1b_jobs || answers.jobsInputs || {});
-        setReadingInputs(answers.exercise_3_reading || answers.readingInputs || {});
-        setPage9Profiles(answers.exercise_page9_profiles || {});
-        setEx4aAnswers(answers.exercise_4a_reading || {});
-        setGrammar5aInputs(answers.exercise_5a_grammar || {});
-        setEx6Answers(answers.exercise_6_dialogue || {});
-        setEx7aAnswers(answers.exercise_7a_qa || {});
-        setProfilePairs(answers.exercise_7b_profiles || {});
-        setNationalitiesInputs(answers.exercise_1b_nationalities || {});
-        setStressInputs(answers.exercise_2c_stress || {});
-        setFamousInputs(answers.exercise_3_famous || '');
-        setPhotosInputs(answers.exercise_4a_photos || {});
-        setTfInputs(answers.exercise_4b_tf || {});
-        setGrammar5aInputs1C(answers.exercise_5a_grammar || {});
-        setTextsInputs(answers.exercise_6_texts || {});
-        setQuestionsInputs(answers.exercise_7a_questions || {});
-        setSpeakingNotes(answers.exercise_8b_notes || '');
+        const answers: SubmissionAnswers = data.reviewedAnswers || data.answers || {};
+        setFlagAnswers(getNumMap(answers.flagAnswers));
+        setDialogInputs(getMap(answers.dialogInputs));
+        setStressTableInputs(getMap(answers.stressTableInputs));
+        setGrammarInputs(getMap(answers.grammarInputs));
+        setDialogue7aInputs(getMap(answers.dialogue7aInputs));
+        setConferenceCard((answers.conferenceCard as ConferenceCard) || { name: '', city: '', country: '', roles: [] });
+        setJobsInputs(getMap(answers.exercise_1b_jobs || answers.jobsInputs));
+        setReadingInputs(getMap(answers.exercise_3_reading || answers.readingInputs));
+        setPage9Profiles(getMap(answers.exercise_page9_profiles));
+        setEx4aAnswers(getMap(answers.exercise_4a_reading));
+        setGrammar5aInputs(getMap(answers.exercise_5a_grammar));
+        setEx6Answers(getMap(answers.exercise_6_dialogue));
+        setEx7aAnswers(getMap(answers.exercise_7a_qa));
+        setProfilePairs((answers.exercise_7b_profiles as ProfilePairs) || {});
+        setNationalitiesInputs(getMap(answers.exercise_1b_nationalities));
+        setStressInputs(getMap(answers.exercise_2c_stress));
+        setFamousInputs(getStr(answers.exercise_3_famous));
+        setPhotosInputs(getMap(answers.exercise_4a_photos));
+        setTfInputs(getMap(answers.exercise_4b_tf));
+        setGrammar5aInputs1C(getMap(answers.exercise_5a_grammar));
+        setTextsInputs(getMap(answers.exercise_6_texts));
+        setQuestionsInputs(getMap(answers.exercise_7a_questions));
+        setSpeakingNotes(getStr(answers.exercise_8b_notes));
 
         // 1D answers restore
-        if (answers.exercise_1_location?.['1'] || answers.exercise_1_location) {
-          setEx1Location(answers.exercise_1_location?.['1'] || answers.exercise_1_location);
+        const loc = answers.exercise_1_location;
+        if (loc && typeof loc === 'object' && '1' in loc) {
+          setEx1Location(String((loc as Record<string, string>)['1']));
+        } else if (typeof loc === 'string') {
+          setEx1Location(loc);
         }
-        if (answers.exercise_2_audio) setEx2Audio(answers.exercise_2_audio);
-        if (answers.exercise_3a_order) setEx3aOrder(answers.exercise_3a_order);
-        if (answers.exercise_3b_contact) setEx3bContact(answers.exercise_3b_contact);
-        if (answers.exercise_4a_dialogue) setEx4aDialogue(answers.exercise_4a_dialogue);
-        if (answers.exercise_5_personal) setEx5Personal(answers.exercise_5_personal);
-        if (answers.exercise_6_partner) setEx6Partner(answers.exercise_6_partner);
-        if (answers.exercise_1_wordsearch) setWordsearchFound(answers.exercise_1_wordsearch);
-        if (answers.exercise_2a_order) setEx2aOrder(answers.exercise_2a_order);
-        if (answers.exercise_2b_short) setEx2bShort(answers.exercise_2b_short);
-        if (answers.exercise_3_be) setEx3Be(answers.exercise_3_be);
-        if (answers.exercise_4_jobs) setEx4Jobs(answers.exercise_4_jobs);
-        if (answers.exercise_5_is_isnt) setEx5IsIsnt(answers.exercise_5_is_isnt);
-        if (answers.exercise_6_corrections) setEx6Corrections(answers.exercise_6_corrections);
-        if (answers.exercise_7a_nationalities) setEx7aNationalities(answers.exercise_7a_nationalities);
-        if (answers.exercise_7b_people) setEx7bPeople(answers.exercise_7b_people);
-        if (answers.exercise_8_alternatives) setEx8Alternatives(answers.exercise_8_alternatives);
-        if (answers.exercise_9_text) setEx9Text(answers.exercise_9_text);
-        if (answers.reflect_scores) setReflectScores(answers.reflect_scores);
+        if (answers.exercise_2_audio) setEx2Audio(getMap(answers.exercise_2_audio));
+        if (answers.exercise_3a_order) setEx3aOrder(getMap(answers.exercise_3a_order));
+        if (answers.exercise_3b_contact) setEx3bContact(getMap(answers.exercise_3b_contact));
+        if (answers.exercise_4a_dialogue) setEx4aDialogue(getMap(answers.exercise_4a_dialogue));
+        if (answers.exercise_5_personal) setEx5Personal(getMap(answers.exercise_5_personal));
+        if (answers.exercise_6_partner) setEx6Partner(getMap(answers.exercise_6_partner));
+        if (answers.exercise_1_wordsearch) setWordsearchFound(getMap(answers.exercise_1_wordsearch));
+        if (answers.exercise_2a_order) setEx2aOrder(getMap(answers.exercise_2a_order));
+        if (answers.exercise_2b_short) setEx2bShort(getMap(answers.exercise_2b_short));
+        if (answers.exercise_3_be) setEx3Be(getMap(answers.exercise_3_be));
+        if (answers.exercise_4_jobs) setEx4Jobs(getMap(answers.exercise_4_jobs));
+        if (answers.exercise_5_is_isnt) setEx5IsIsnt(getMap(answers.exercise_5_is_isnt));
+        if (answers.exercise_6_corrections) setEx6Corrections(getMap(answers.exercise_6_corrections));
+        if (answers.exercise_7a_nationalities) setEx7aNationalities(getMap(answers.exercise_7a_nationalities));
+        if (answers.exercise_7b_people) setEx7bPeople(getMap(answers.exercise_7b_people));
+        if (answers.exercise_8_alternatives) setEx8Alternatives(getMap(answers.exercise_8_alternatives));
+        if (answers.exercise_9_text) setEx9Text(getMap(answers.exercise_9_text));
+        if (answers.reflect_scores) setReflectScores(getScoresMap(answers.reflect_scores));
 
         // 2A answers restore
-        if (answers.exercise_1_family_tree) setEx1FamilyTree(answers.exercise_1_family_tree);
-        if (answers.exercise_2a_table) setEx2aTable(answers.exercise_2a_table);
-        if (answers.exercise_3_sentences) setEx3Sentences(answers.exercise_3_sentences);
-        if (answers.exercise_4a_match) setEx4aMatch(answers.exercise_4a_match);
-        if (answers.exercise_4b_listening) setEx4bListening(answers.exercise_4b_listening);
-        if (answers.exercise_5_grammar) setEx5Grammar(answers.exercise_5_grammar);
-        if (answers.exercise_7_dialogue) setEx7Dialogue(answers.exercise_7_dialogue);
-        if (answers.exercise_8_notes) setEx8Notes(answers.exercise_8_notes);
+        if (answers.exercise_1_family_tree) setEx1FamilyTree(getMap(answers.exercise_1_family_tree));
+        if (answers.exercise_2a_table) setEx2aTable(getMap(answers.exercise_2a_table));
+        if (answers.exercise_3_sentences) setEx3Sentences(getMap(answers.exercise_3_sentences));
+        if (answers.exercise_4a_match) setEx4aMatch(getMap(answers.exercise_4a_match));
+        if (answers.exercise_4b_listening) setEx4bListening(getMap(answers.exercise_4b_listening));
+        if (answers.exercise_5_grammar) setEx5Grammar(getMap(answers.exercise_5_grammar));
+        if (answers.exercise_6_pronunciation) setEx6Pronunciation(getMap(answers.exercise_6_pronunciation));
+        if (answers.exercise_7_dialogue) setEx7Dialogue(getMap(answers.exercise_7_dialogue));
+        if (answers.exercise_8_notes) setEx8Notes(getStr(answers.exercise_8_notes));
+
+        // 2B answers restore
+        if (answers.exercise_1b_vocab) setEx1bVocab(getMap(answers.exercise_1b_vocab));
+        if (answers.exercise_3_photos) setEx3Photos(getMap(answers.exercise_3_photos));
+        if (answers.exercise_5a_picture) setEx5aPicture(getMap(answers.exercise_5a_picture));
+        if (answers.exercise_5b_dialogue) setEx5bDialogue(getMap(answers.exercise_5b_dialogue));
+        if (answers.exercise_6_grammar) setEx6Grammar(getMap(answers.exercise_6_grammar));
+        if (answers.exercise_7a_choice) setEx7aChoice(getMap(answers.exercise_7a_choice));
+        if (answers.exercise_8_conversations) setEx8Conversations(getMap(answers.exercise_8_conversations));
+        if (answers.exercise_room_objects) setExRoomObjects(getStr(answers.exercise_room_objects));
         
         if (data.grade !== null) setGrade(data.grade);
         if (data.tutorComment) setTutorComment(data.tutorComment);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Failed to load submission:', err);
-        setError(err.response?.data?.message || 'Failed to load submission details.');
+        const axiosErr = err as { response?: { data?: { message?: string } } };
+        setError(axiosErr.response?.data?.message || 'Failed to load submission details.');
       } finally {
         setLoading(false);
       }
@@ -275,7 +430,23 @@ export default function SubmissionPage() {
         lesson?.title?.includes('2A') ||
         lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a66';
 
-      const payloadAnswers = isLesson2A
+      const isLesson2B =
+        lesson?.order === 6 ||
+        lesson?.title?.includes('2B') ||
+        lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a77';
+
+      const payloadAnswers = isLesson2B
+        ? {
+            exercise_1b_vocab: ex1bVocab,
+            exercise_3_photos: ex3Photos,
+            exercise_5a_picture: ex5aPicture,
+            exercise_5b_dialogue: ex5bDialogue,
+            exercise_6_grammar: ex6Grammar,
+            exercise_7a_choice: ex7aChoice,
+            exercise_8_conversations: ex8Conversations,
+            exercise_room_objects: exRoomObjects,
+          }
+        : isLesson2A
         ? {
             exercise_1_family_tree: ex1FamilyTree,
             exercise_2a_table: ex2aTable,
@@ -283,6 +454,7 @@ export default function SubmissionPage() {
             exercise_4a_match: ex4aMatch,
             exercise_4b_listening: ex4bListening,
             exercise_5_grammar: ex5Grammar,
+            exercise_6_pronunciation: ex6Pronunciation,
             exercise_7_dialogue: ex7Dialogue,
             exercise_8_notes: ex8Notes,
           }
@@ -361,63 +533,77 @@ export default function SubmissionPage() {
 
   const handleReset = () => {
     if (!submission) return;
-    const original = submission.answers || {};
-    setFlagAnswers(original.flagAnswers || {});
-    setDialogInputs(original.dialogInputs || {});
-    setStressTableInputs(original.stressTableInputs || {});
-    setGrammarInputs(original.grammarInputs || {});
-    setDialogue7aInputs(original.dialogue7aInputs || {});
-    setConferenceCard(original.conferenceCard || { name: '', city: '', country: '', roles: [] });
-    setJobsInputs(original.exercise_1b_jobs || original.jobsInputs || {});
-    setReadingInputs(original.exercise_3_reading || original.readingInputs || {});
-    setPage9Profiles(original.exercise_page9_profiles || {});
-    setEx4aAnswers(original.exercise_4a_reading || {});
-    setGrammar5aInputs(original.exercise_5a_grammar || {});
-    setEx6Answers(original.exercise_6_dialogue || {});
-    setEx7aAnswers(original.exercise_7a_qa || {});
-    setProfilePairs(original.exercise_7b_profiles || {});
-    setNationalitiesInputs(original.exercise_1b_nationalities || {});
-    setStressInputs(original.exercise_2c_stress || {});
-    setFamousInputs(original.exercise_3_famous || '');
-    setPhotosInputs(original.exercise_4a_photos || {});
-    setTfInputs(original.exercise_4b_tf || {});
-    setGrammar5aInputs1C(original.exercise_5a_grammar || {});
-    setTextsInputs(original.exercise_6_texts || {});
-    setQuestionsInputs(original.exercise_7a_questions || {});
-    setSpeakingNotes(original.exercise_8b_notes || '');
+    const original: SubmissionAnswers = submission.answers || {};
+    setFlagAnswers(getNumMap(original.flagAnswers));
+    setDialogInputs(getMap(original.dialogInputs));
+    setStressTableInputs(getMap(original.stressTableInputs));
+    setGrammarInputs(getMap(original.grammarInputs));
+    setDialogue7aInputs(getMap(original.dialogue7aInputs));
+    setConferenceCard((original.conferenceCard as ConferenceCard) || { name: '', city: '', country: '', roles: [] });
+    setJobsInputs(getMap(original.exercise_1b_jobs || original.jobsInputs));
+    setReadingInputs(getMap(original.exercise_3_reading || original.readingInputs));
+    setPage9Profiles(getMap(original.exercise_page9_profiles));
+    setEx4aAnswers(getMap(original.exercise_4a_reading));
+    setGrammar5aInputs(getMap(original.exercise_5a_grammar));
+    setEx6Answers(getMap(original.exercise_6_dialogue));
+    setEx7aAnswers(getMap(original.exercise_7a_qa));
+    setProfilePairs((original.exercise_7b_profiles as ProfilePairs) || {});
+    setNationalitiesInputs(getMap(original.exercise_1b_nationalities));
+    setStressInputs(getMap(original.exercise_2c_stress));
+    setFamousInputs(getStr(original.exercise_3_famous));
+    setPhotosInputs(getMap(original.exercise_4a_photos));
+    setTfInputs(getMap(original.exercise_4b_tf));
+    setGrammar5aInputs1C(getMap(original.exercise_5a_grammar));
+    setTextsInputs(getMap(original.exercise_6_texts));
+    setQuestionsInputs(getMap(original.exercise_7a_questions));
+    setSpeakingNotes(getStr(original.exercise_8b_notes));
 
     // 1D reset
-    if (original.exercise_1_location?.['1'] || original.exercise_1_location) {
-      setEx1Location(original.exercise_1_location?.['1'] || original.exercise_1_location);
+    const loc = original.exercise_1_location;
+    if (loc && typeof loc === 'object' && '1' in loc) {
+      setEx1Location(String((loc as Record<string, string>)['1']));
+    } else if (typeof loc === 'string') {
+      setEx1Location(loc);
     }
-    setEx2Audio(original.exercise_2_audio || {});
-    setEx3aOrder(original.exercise_3a_order || {});
-    setEx3bContact(original.exercise_3b_contact || {});
-    setEx4aDialogue(original.exercise_4a_dialogue || {});
-    setEx5Personal(original.exercise_5_personal || {});
-    setEx6Partner(original.exercise_6_partner || {});
-    setWordsearchFound(original.exercise_1_wordsearch || {});
-    setEx2aOrder(original.exercise_2a_order || {});
-    setEx2bShort(original.exercise_2b_short || {});
-    setEx3Be(original.exercise_3_be || {});
-    setEx4Jobs(original.exercise_4_jobs || {});
-    setEx5IsIsnt(original.exercise_5_is_isnt || {});
-    setEx6Corrections(original.exercise_6_corrections || {});
-    setEx7aNationalities(original.exercise_7a_nationalities || {});
-    setEx7bPeople(original.exercise_7b_people || {});
-    setEx8Alternatives(original.exercise_8_alternatives || {});
-    setEx9Text(original.exercise_9_text || {});
-    setReflectScores(original.reflect_scores || {});
+    setEx2Audio(getMap(original.exercise_2_audio));
+    setEx3aOrder(getMap(original.exercise_3a_order));
+    setEx3bContact(getMap(original.exercise_3b_contact));
+    setEx4aDialogue(getMap(original.exercise_4a_dialogue));
+    setEx5Personal(getMap(original.exercise_5_personal));
+    setEx6Partner(getMap(original.exercise_6_partner));
+    setWordsearchFound(getMap(original.exercise_1_wordsearch));
+    setEx2aOrder(getMap(original.exercise_2a_order));
+    setEx2bShort(getMap(original.exercise_2b_short));
+    setEx3Be(getMap(original.exercise_3_be));
+    setEx4Jobs(getMap(original.exercise_4_jobs));
+    setEx5IsIsnt(getMap(original.exercise_5_is_isnt));
+    setEx6Corrections(getMap(original.exercise_6_corrections));
+    setEx7aNationalities(getMap(original.exercise_7a_nationalities));
+    setEx7bPeople(getMap(original.exercise_7b_people));
+    setEx8Alternatives(getMap(original.exercise_8_alternatives));
+    setEx9Text(getMap(original.exercise_9_text));
+    setReflectScores(getScoresMap(original.reflect_scores));
 
     // 2A reset
-    setEx1FamilyTree(original.exercise_1_family_tree || {});
-    setEx2aTable(original.exercise_2a_table || {});
-    setEx3Sentences(original.exercise_3_sentences || {});
-    setEx4aMatch(original.exercise_4a_match || {});
-    setEx4bListening(original.exercise_4b_listening || {});
-    setEx5Grammar(original.exercise_5_grammar || {});
-    setEx7Dialogue(original.exercise_7_dialogue || {});
-    setEx8Notes(original.exercise_8_notes || '');
+    setEx1FamilyTree(getMap(original.exercise_1_family_tree));
+    setEx2aTable(getMap(original.exercise_2a_table));
+    setEx3Sentences(getMap(original.exercise_3_sentences));
+    setEx4aMatch(getMap(original.exercise_4a_match));
+    setEx4bListening(getMap(original.exercise_4b_listening));
+    setEx5Grammar(getMap(original.exercise_5_grammar));
+    setEx6Pronunciation(getMap(original.exercise_6_pronunciation));
+    setEx7Dialogue(getMap(original.exercise_7_dialogue));
+    setEx8Notes(getStr(original.exercise_8_notes));
+
+    // 2B reset
+    setEx1bVocab(getMap(original.exercise_1b_vocab));
+    setEx3Photos(getMap(original.exercise_3_photos));
+    setEx5aPicture(getMap(original.exercise_5a_picture));
+    setEx5bDialogue(getMap(original.exercise_5b_dialogue));
+    setEx6Grammar(getMap(original.exercise_6_grammar));
+    setEx7aChoice(getMap(original.exercise_7a_choice));
+    setEx8Conversations(getMap(original.exercise_8_conversations));
+    setExRoomObjects(getStr(original.exercise_room_objects));
 
     setSuccess('Reset to student answers');
   };
@@ -445,6 +631,10 @@ export default function SubmissionPage() {
     lesson?.order === 5 ||
     lesson?.title?.includes('2A') ||
     lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a66';
+  const isLesson2B =
+    lesson?.order === 6 ||
+    lesson?.title?.includes('2B') ||
+    lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a77';
   const isCustomAssignment = Boolean(
     submission.answers?.text || (!lesson && submission.assignment),
   );
@@ -473,7 +663,7 @@ export default function SubmissionPage() {
               Student Response Text:
             </h3>
             <div style={{ whiteSpace: 'pre-wrap', background: 'white', padding: '1.25rem', borderRadius: '6px', border: '1px solid #cbd5e1', fontSize: '1rem', lineHeight: '1.6' }}>
-              {submission.answers?.text || (typeof submission.answers === 'string' ? submission.answers : 'No text content in submission')}
+              {String(submission.answers?.text || (typeof submission.answers === 'string' ? submission.answers : 'No text content in submission'))}
             </div>
             {submission.assignment?.attachmentUrl && (
               <div style={{ marginTop: '1rem', fontSize: '0.9rem' }}>
@@ -593,6 +783,45 @@ export default function SubmissionPage() {
             onReflectChange={(id, val) => setReflectScores((prev) => ({ ...prev, [id]: val }))}
             originalAnswers={submission.answers}
           />
+        ) : isLesson2B ? (
+          <Lesson2BContent
+            lesson={lesson}
+            user={submission.student}
+            readOnly={!isTutor}
+            playAudio={playAudio}
+            playingAudio={playingAudio}
+            ex1bVocab={ex1bVocab}
+            ex3Photos={ex3Photos}
+            ex5aPicture={ex5aPicture}
+            ex5bDialogue={ex5bDialogue}
+            ex6Grammar={ex6Grammar}
+            ex7aChoice={ex7aChoice}
+            ex8Conversations={ex8Conversations}
+            exRoomObjects={exRoomObjects}
+            onEx1bVocabChange={(vid, val) =>
+              setEx1bVocab((prev) => ({ ...prev, [vid]: val }))
+            }
+            onEx3PhotosChange={(pid, val) =>
+              setEx3Photos((prev) => ({ ...prev, [pid]: val }))
+            }
+            onEx5aPictureChange={(aid, val) =>
+              setEx5aPicture((prev) => ({ ...prev, [aid]: val }))
+            }
+            onEx5bDialogueChange={(did, val) =>
+              setEx5bDialogue((prev) => ({ ...prev, [did]: val }))
+            }
+            onEx6GrammarChange={(gid, val) =>
+              setEx6Grammar((prev) => ({ ...prev, [gid]: val }))
+            }
+            onEx7aChoiceChange={(cid, val) =>
+              setEx7aChoice((prev) => ({ ...prev, [cid]: val }))
+            }
+            onEx8ConversationsChange={(cid, val) =>
+              setEx8Conversations((prev) => ({ ...prev, [cid]: val }))
+            }
+            onExRoomObjectsChange={(val) => setExRoomObjects(val)}
+            originalAnswers={submission.answers}
+          />
         ) : isLesson2A ? (
           <Lesson2AContent
             lesson={lesson}
@@ -606,6 +835,7 @@ export default function SubmissionPage() {
             ex4aMatch={ex4aMatch}
             ex4bListening={ex4bListening}
             ex5Grammar={ex5Grammar}
+            ex6Pronunciation={ex6Pronunciation}
             ex7Dialogue={ex7Dialogue}
             ex8Notes={ex8Notes}
             onEx1FamilyTreeChange={(member, val) =>
@@ -625,6 +855,9 @@ export default function SubmissionPage() {
             }
             onEx5GrammarChange={(gid, val) =>
               setEx5Grammar((prev) => ({ ...prev, [gid]: val }))
+            }
+            onEx6PronunciationChange={(pid, val) =>
+              setEx6Pronunciation((prev) => ({ ...prev, [pid]: val }))
             }
             onEx7DialogueChange={(did, val) =>
               setEx7Dialogue((prev) => ({ ...prev, [did]: val }))

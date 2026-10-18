@@ -78,6 +78,7 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
     ex4aMatch = {},
     ex4bListening = {},
     ex5Grammar = {},
+    ex6Pronunciation = {},
     ex7Dialogue = {},
     ex8Notes = '',
 
@@ -88,8 +89,11 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
     onEx4aMatchChange = () => {},
     onEx4bListeningChange = () => {},
     onEx5GrammarChange = () => {},
+    onEx6PronunciationChange = () => {},
     onEx7DialogueChange = () => {},
     onEx8NotesChange = () => {},
+
+    originalAnswers,
   } = props;
   return (
     <div className={styles.pageContainer}>
@@ -118,6 +122,7 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
               <p><strong>Grammar:</strong> possessive <em>&apos;s</em>, <em>I/my, you/your,</em> etc.</p>
               <p><strong>Vocabulary:</strong> family</p>
             </div>
+
 
             {/* Vocabulary Titles */}
             <div>
@@ -445,7 +450,7 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
               <button
                 type="button"
                 onClick={() => playAudio('2.1')}
-                className={styles.audioBtn}
+                className={`${styles.audioBtn} ${playingAudio === '2.1' ? styles.playing : ''}`}
                 disabled={readOnly}
               >
                 <span className={styles.diamondIcon}>
@@ -588,7 +593,7 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
                 <button
                   type="button"
                   onClick={() => playAudio('2.2')}
-                  className={styles.audioBtn}
+                  className={`${styles.audioBtn} ${playingAudio === '2.2' ? styles.playing : ''}`}
                   disabled={readOnly}
                 >
                   <span className={styles.diamondIcon}>
@@ -640,7 +645,22 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
 
               {/* 4b Complete sentences */}
               <div style={{ fontSize: '11.5px', lineHeight: 1.5 }}>
-                <p style={{ fontWeight: 700, margin: '4px 0' }}>b Listen again and complete the sentences:</p>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '4px 0' }}>
+                  <span style={{ fontWeight: 700 }}>b</span>
+                  <button
+                    type="button"
+                    onClick={() => playAudio('2.2')}
+                    className={`${styles.audioBtn} ${playingAudio === '2.2' ? styles.playing : ''}`}
+                    disabled={readOnly}
+                  >
+                    <span className={styles.diamondIcon}>
+                      <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" /></svg>
+                    </span>
+                    <span>2.2</span>
+                    <span>{playingAudio === '2.2' ? 'Playing...' : 'Audio'}</span>
+                  </button>
+                  <span style={{ fontWeight: 700 }}>Listen again and complete the sentences:</span>
+                </div>
                 <ol style={{ paddingLeft: '1.25rem', margin: 0, display: 'flex', flexDirection: 'column', gap: '6px' }}>
                   <li>
                     1. This is my family. This is <strong>my</strong>{' '}
@@ -825,21 +845,95 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
             </div>
 
             {/* Pronunciation 6 */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
-              <span style={{ color: '#d32027', fontWeight: 800 }}>6 a</span>
-              <button
-                type="button"
-                onClick={() => playAudio('2.3')}
-                className={styles.audioBtn}
-                disabled={readOnly}
-              >
-                <span className={styles.diamondIcon}>
-                  <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" /></svg>
+            <div style={{ marginTop: '0.75rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px' }}>
+                <span style={{ color: '#d32027', fontWeight: 800 }}>6 a</span>
+                <button
+                  type="button"
+                  onClick={() => playAudio('2.3')}
+                  className={`${styles.audioBtn} ${playingAudio === '2.3' ? styles.playing : ''}`}
+                  disabled={readOnly}
+                >
+                  <span className={styles.diamondIcon}>
+                    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" /></svg>
+                  </span>
+                  <span>2.3</span>
+                  <span>{playingAudio === '2.3' ? 'Playing...' : 'Audio'}</span>
+                </button>
+                <span style={{ color: '#475569', fontWeight: 600 }}>
+                  Listen to the sentences. Do the words in blue sound the same or different?
                 </span>
-                <span>2.3</span>
-                <span>{playingAudio === '2.3' ? 'Playing...' : 'Audio'}</span>
-              </button>
-              <span style={{ color: '#475569', fontWeight: 600 }}>Listen: same or different pronunciation?</span>
+              </div>
+
+              <div className={styles.pronunciationBox}>
+                {[
+                  {
+                    id: '1',
+                    num: '1',
+                    sentA: <span>a <span className={styles.targetWord}>They&apos;re</span> from the UK.</span>,
+                    sentB: <span>b <span className={styles.targetWord}>Their</span> mother is English.</span>,
+                  },
+                  {
+                    id: '2',
+                    num: '2',
+                    sentA: <span>a <span className={styles.targetWord}>He&apos;s</span> an office worker.</span>,
+                    sentB: <span>b <span className={styles.targetWord}>His</span> sister is a nurse.</span>,
+                  },
+                  {
+                    id: '3',
+                    num: '3',
+                    sentA: <span>a <span className={styles.targetWord}>Your</span> family is great.</span>,
+                    sentB: <span>b <span className={styles.targetWord}>You&apos;re</span> from a big family.</span>,
+                  },
+                ].map((item) => {
+                  const currentVal = (ex6Pronunciation[item.id] || '').toUpperCase();
+                  const origVal = (
+                    (originalAnswers?.exercise_6_pronunciation as Record<string, string> | undefined)?.[item.id] || ''
+                  ).toUpperCase();
+                  return (
+                    <div key={item.id} className={styles.pronPairCard}>
+                      <div className={styles.sentences}>
+                        <div style={{ fontWeight: 700, color: '#1e293b' }}>Pair {item.num}:</div>
+                        <div>{item.sentA}</div>
+                        <div>{item.sentB}</div>
+                      </div>
+
+                      <div className={styles.choiceGroup}>
+                        <button
+                          type="button"
+                          disabled={readOnly}
+                          onClick={() => onEx6PronunciationChange(item.id, 'S')}
+                          className={`${styles.choiceBtn} ${currentVal === 'S' || currentVal === 'SAME' ? styles.active : ''}`}
+                          aria-label={`Pair ${item.num} Same`}
+                        >
+                          [ S ] Same
+                        </button>
+                        <button
+                          type="button"
+                          disabled={readOnly}
+                          onClick={() => onEx6PronunciationChange(item.id, 'D')}
+                          className={`${styles.choiceBtn} ${currentVal === 'D' || currentVal === 'DIFFERENT' ? styles.active : ''}`}
+                          aria-label={`Pair ${item.num} Different`}
+                        >
+                          [ D ] Different
+                        </button>
+
+                        {readOnly && origVal && (
+                          <span style={{ fontSize: '11px', color: '#64748b', marginLeft: '6px' }}>
+                            (Student: <strong>{origVal}</strong>)
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* 6b Listen again and repeat */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', marginTop: '8px' }}>
+                <span style={{ color: '#d32027', fontWeight: 800 }}>b</span>
+                <span style={{ color: '#475569', fontWeight: 600 }}>Listen again and repeat.</span>
+              </div>
             </div>
           </div>
 
@@ -852,7 +946,7 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
                 <button
                   type="button"
                   onClick={() => playAudio('2.4')}
-                  className={styles.audioBtn}
+                  className={`${styles.audioBtn} ${playingAudio === '2.4' ? styles.playing : ''}`}
                   disabled={readOnly}
                 >
                   <span className={styles.diamondIcon}>

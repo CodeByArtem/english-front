@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import styles from '@/app/lessons/[id]/lesson.module.scss';
 
 const countriesList = [
@@ -24,8 +25,18 @@ const flagsData = [
 ];
 
 interface LessonContentProps {
-    lesson: any;
-    user?: any;
+    lesson?: {
+        id?: string;
+        title?: string;
+        order?: number;
+        [key: string]: unknown;
+    } | null;
+    user?: {
+        id?: string;
+        name?: string;
+        email?: string;
+        [key: string]: unknown;
+    } | null;
     flagAnswers: Record<number, string>;
     dialogInputs: Record<string, string>;
     stressTableInputs: Record<string, string>;
@@ -128,35 +139,71 @@ const LessonContent: React.FC<LessonContentProps> = ({
                 <div className={styles.photosArea}>
                     <div className={styles.photoRow}>
                         <div className={styles.photoCard}>
-                            <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop"
-                                 alt="John Miller"/>
+                            <Image
+                                src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop"
+                                alt="John Miller"
+                                width={400}
+                                height={300}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                unoptimized
+                            />
                             <span className={styles.photoTag}><b>A</b> John Miller, the UK</span>
                         </div>
                         <div className={styles.photoCard}>
-                            <img src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=400&h=300&fit=crop"
-                                 alt="Maria Fernandez"/>
+                            <Image
+                                src="https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=400&h=300&fit=crop"
+                                alt="Maria Fernandez"
+                                width={400}
+                                height={300}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                unoptimized
+                            />
                             <span className={styles.photoTag}><b>B</b> Maria Fernandez, Spain</span>
                         </div>
                         <div className={styles.photoCard}>
-                            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=300&fit=crop"
-                                 alt="Ela Atan"/>
+                            <Image
+                                src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=300&fit=crop"
+                                alt="Ela Atan"
+                                width={400}
+                                height={300}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                unoptimized
+                            />
                             <span className={styles.photoTag}><b>C</b> Ela Atan, Turkey</span>
                         </div>
                     </div>
                     <div className={styles.photoRow}>
                         <div className={styles.photoCard}>
-                            <img src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=300&fit=crop"
-                                 alt="David Lee"/>
+                            <Image
+                                src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&h=300&fit=crop"
+                                alt="David Lee"
+                                width={400}
+                                height={300}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                unoptimized
+                            />
                             <span className={styles.photoTag}><b>D</b> David Lee, the US</span>
                         </div>
                         <div className={styles.photoCard}>
-                            <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=300&fit=crop"
-                                 alt="Anna Novak"/>
+                            <Image
+                                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400&h=300&fit=crop"
+                                alt="Anna Novak"
+                                width={400}
+                                height={300}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                unoptimized
+                            />
                             <span className={styles.photoTag}><b>E</b> Anna Novak, Poland</span>
                         </div>
                         <div className={styles.photoCard}>
-                            <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=300&fit=crop"
-                                 alt="Marco Rossi"/>
+                            <Image
+                                src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=300&fit=crop"
+                                alt="Marco Rossi"
+                                width={400}
+                                height={300}
+                                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                unoptimized
+                            />
                             <span className={styles.photoTag}><b>F</b> Marco Rossi, Italy</span>
                         </div>
                     </div>
@@ -185,7 +232,14 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 <div key={f.id} className={styles.flagCard}>
                                     <div className={styles.flagImageWrap}>
                                         <span className={styles.flagId}>{f.id}</span>
-                                        <img src={f.flagUrl} alt={f.country} className={styles.flagImg}/>
+                                        <Image
+                                            src={f.flagUrl}
+                                            alt={f.country}
+                                            width={160}
+                                            height={100}
+                                            className={styles.flagImg}
+                                            unoptimized
+                                        />
                                     </div>
                                     <select
                                         value={flagAnswers[f.id] || ""}
@@ -217,7 +271,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                     <span>Playing...</span>
                                 </>
                             ) : (
-                                '▶ Track 1.1'
+                                '▶ Audio 1.1'
                             )}
                         </button>
                         <span>Listen and check your answers. Then listen again and repeat.</span>
@@ -241,7 +295,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                         <span>Playing...</span>
                                     </>
                                 ) : (
-                                    '▶ Track 1.2'
+                                    '▶ Audio 1.2'
                                 )}
                             </button>
                             <span>Listen and complete the table.</span>
@@ -373,15 +427,21 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                     <span>Playing...</span>
                                 </>
                             ) : (
-                                '▶ Track 1.3'
+                                '▶ Audio 1.3'
                             )}
                         </button>
                         <span style={{fontSize: '0.9rem'}}>Listen to two conversations at a language conference. Complete them with the correct countries.</span>
                     </div>
 
                     <div className={styles.confImageWrap}>
-                        <img src="https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=800"
-                             alt="Conference"/>
+                        <Image
+                            src="https://images.pexels.com/photos/1181406/pexels-photo-1181406.jpeg?auto=compress&cs=tinysrgb&w=800"
+                            alt="Conference"
+                            width={800}
+                            height={450}
+                            style={{ width: '100%', height: 'auto', display: 'block' }}
+                            unoptimized
+                        />
                     </div>
 
                     {/* Conversation 1 */}
@@ -600,7 +660,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                         <span>Playing...</span>
                                     </>
                                 ) : (
-                                    '▶ Track 1.4'
+                                    '▶ Audio 1.4'
                                 )}
                             </button>
                             <span>Listen to the sentences. Notice the pronunciation of the short forms in <span className={styles.blueHighlight}>blue</span>.</span>
@@ -709,7 +769,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                         <span>Playing...</span>
                                     </>
                                 ) : (
-                                    '▶ Track 1.5'
+                                    '▶ Audio 1.5'
                                 )}
                             </button>
                             <span>Listen and check your answers.</span>
@@ -735,7 +795,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 <p><span>City:</span> Buenos Aires</p>
                                 <p><span>Country:</span> Argentina</p>
                                 <div className={styles.flagBadge}>
-                                    <img src="https://flagcdn.com/w80/ar.png" alt="Argentina" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    <Image src="https://flagcdn.com/w80/ar.png" alt="Argentina" width={80} height={50} style={{ width: '100%', height: '100%', objectFit: 'cover' }} unoptimized />
                                 </div>
                             </div>
 
@@ -745,7 +805,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 <p><span>City:</span> São Paulo</p>
                                 <p><span>Country:</span> Brazil</p>
                                 <div className={styles.flagBadge}>
-                                    <img src="https://flagcdn.com/w80/br.png" alt="Brazil" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    <Image src="https://flagcdn.com/w80/br.png" alt="Brazil" width={80} height={50} style={{ width: '100%', height: '100%', objectFit: 'cover' }} unoptimized />
                                 </div>
                             </div>
 
@@ -755,7 +815,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 <p><span>City:</span> Milan</p>
                                 <p><span>Country:</span> Italy</p>
                                 <div className={styles.flagBadge}>
-                                    <img src="https://flagcdn.com/w80/it.png" alt="Italy" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    <Image src="https://flagcdn.com/w80/it.png" alt="Italy" width={80} height={50} style={{ width: '100%', height: '100%', objectFit: 'cover' }} unoptimized />
                                 </div>
                             </div>
 
@@ -765,7 +825,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 <p><span>City:</span> Warsaw</p>
                                 <p><span>Country:</span> Poland</p>
                                 <div className={styles.flagBadge}>
-                                    <img src="https://flagcdn.com/w80/pl.png" alt="Poland" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                    <Image src="https://flagcdn.com/w80/pl.png" alt="Poland" width={80} height={50} style={{ width: '100%', height: '100%', objectFit: 'cover' }} unoptimized />
                                 </div>
                             </div>
                         </div>

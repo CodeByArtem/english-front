@@ -192,6 +192,34 @@
   &:hover {
     background: #e2e8f0;
   }
+
+  &.playing {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #b91c1c;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.audioBarWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-left: 2.5rem;
+  margin-top: 0.5rem;
+  padding: 6px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #475569;
 }
 
 .usefulPhrasesBox {

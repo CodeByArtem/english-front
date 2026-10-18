@@ -278,6 +278,7 @@ export default function Lesson1DContent({
           <span>ask for and give contact information</span>
         </div>
 
+
         {/* Two-Column Grid */}
         <div className={styles.grid12}>
           {/* Left Column: Exercises 1, 2, 3, 4 */}
@@ -316,7 +317,7 @@ export default function Lesson1DContent({
                 <button
                   type="button"
                   onClick={() => playAudio('1.14')}
-                  className={styles.audioBtn}
+                  className={`${styles.audioBtn} ${playingAudio === '1.14' ? styles.playing : ''}`}
                   disabled={readOnly}
                 >
                   <span className={styles.diamondIcon}>
@@ -569,7 +570,7 @@ export default function Lesson1DContent({
                 <button
                   type="button"
                   onClick={() => playAudio('1.15')}
-                  className={styles.audioBtn}
+                  className={`${styles.audioBtn} ${playingAudio === '1.15' ? styles.playing : ''}`}
                   disabled={readOnly}
                 >
                   <span className={styles.diamondIcon}>

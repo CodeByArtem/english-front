@@ -389,6 +389,78 @@
   }
 }
 
+/* Pronunciation Exercise 6 */
+.pronunciationBox {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+
+  .pronPairCard {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    padding: 8px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+
+    .sentences {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      font-size: 12.5px;
+      color: #334155;
+
+      .targetWord {
+        color: #0284c7;
+        font-weight: 700;
+      }
+    }
+
+    .choiceGroup {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+
+      .choiceBtn {
+        border: 1px solid #cbd5e1;
+        background: #f8fafc;
+        color: #475569;
+        font-weight: 700;
+        font-size: 11.5px;
+        padding: 4px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:hover:not(:disabled) {
+          border-color: #0284c7;
+          background: #f0f9ff;
+          color: #0284c7;
+        }
+
+        &.active {
+          background: #0284c7;
+          border-color: #0284c7;
+          color: #ffffff;
+        }
+
+        &:disabled {
+          cursor: not-allowed;
+          opacity: 0.7;
+        }
+      }
+    }
+  }
+}
+
 /* Dialogue with Selectable Alternatives */
 .dialogue15 {
   display: flex;
@@ -460,7 +532,6 @@
   }
 }
 
-/* Audio button */
 .audioBtn {
   background: #f1f5f9;
   border: 1px solid #cbd5e1;
@@ -478,6 +549,32 @@
   &:hover {
     background: #fee2e2;
   }
+
+  &.playing {
+    background: #fee2e2;
+    border-color: #ef4444;
+    color: #b91c1c;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.audioBarWrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding: 6px 12px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #475569;
 }
 
 .diamondIcon {

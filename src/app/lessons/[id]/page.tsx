@@ -9,15 +9,44 @@ import Lesson1BContent from '@/components/Lesson1BContent';
 import Lesson1CContent from '@/components/Lesson1CContent';
 import Lesson1DContent from '@/components/Lesson1DContent';
 import Lesson2AContent from '@/components/Lesson2AContent';
+import Lesson2BContent from '@/components/Lesson2BContent';
+
+interface LessonModel {
+  id: string;
+  title: string;
+  order?: number;
+  content?: string;
+  theory?: string;
+  answerKey?: Record<string, unknown>;
+  [key: string]: unknown;
+}
+
+interface UserModel {
+  id: string;
+  email: string;
+  role: string;
+  name?: string;
+  [key: string]: unknown;
+}
+
+interface SubmissionModel {
+  id: string;
+  score?: number;
+  grade?: number;
+  status: string;
+  tutorComment?: string;
+  answers?: Record<string, Record<string, string> | string>;
+  [key: string]: unknown;
+}
 
 const LessonPage = () => {
   const params = useParams();
   const router = useRouter();
   const lessonId = params?.id as string;
 
-  const [lesson, setLesson] = useState<any>(null);
+  const [lesson, setLesson] = useState<LessonModel | null>(null);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserModel | null>(null);
 
   const [flagAnswers, setFlagAnswers] = useState<Record<number, string>>({});
   const [dialogInputs, setDialogInputs] = useState<Record<string, string>>({});
@@ -83,13 +112,24 @@ const LessonPage = () => {
   const [ex4aMatch, setEx4aMatch] = useState<Record<string, string>>({});
   const [ex4bListening, setEx4bListening] = useState<Record<string, string>>({});
   const [ex5Grammar, setEx5Grammar] = useState<Record<string, string>>({});
+  const [ex6Pronunciation, setEx6Pronunciation] = useState<Record<string, string>>({});
   const [ex7Dialogue, setEx7Dialogue] = useState<Record<string, string>>({});
   const [ex8Notes, setEx8Notes] = useState<string>('');
+  
+  // 2B states
+  const [ex1bVocab, setEx1bVocab] = useState<Record<string, string>>({});
+  const [ex3Photos, setEx3Photos] = useState<Record<string, string>>({});
+  const [ex5aPicture, setEx5aPicture] = useState<Record<string, string>>({});
+  const [ex5bDialogue, setEx5bDialogue] = useState<Record<string, string>>({});
+  const [ex6Grammar, setEx6Grammar] = useState<Record<string, string>>({});
+  const [ex7aChoice, setEx7aChoice] = useState<Record<string, string>>({});
+  const [ex8Conversations, setEx8Conversations] = useState<Record<string, string>>({});
+  const [exRoomObjects, setExRoomObjects] = useState<string>('');
 
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
   const [submitting, setSubmitting] = useState(false);
-  const [mySubmission, setMySubmission] = useState<any>(null);
+  const [mySubmission, setMySubmission] = useState<SubmissionModel | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -178,8 +218,19 @@ const LessonPage = () => {
             if (ans.exercise_4a_match) setEx4aMatch(ans.exercise_4a_match);
             if (ans.exercise_4b_listening) setEx4bListening(ans.exercise_4b_listening);
             if (ans.exercise_5_grammar) setEx5Grammar(ans.exercise_5_grammar);
+            if (ans.exercise_6_pronunciation) setEx6Pronunciation(ans.exercise_6_pronunciation);
             if (ans.exercise_7_dialogue) setEx7Dialogue(ans.exercise_7_dialogue);
             if (ans.exercise_8_notes) setEx8Notes(ans.exercise_8_notes);
+
+            // 2B answers restore
+            if (ans.exercise_1b_vocab) setEx1bVocab(ans.exercise_1b_vocab);
+            if (ans.exercise_3_photos) setEx3Photos(ans.exercise_3_photos);
+            if (ans.exercise_5a_picture) setEx5aPicture(ans.exercise_5a_picture);
+            if (ans.exercise_5b_dialogue) setEx5bDialogue(ans.exercise_5b_dialogue);
+            if (ans.exercise_6_grammar) setEx6Grammar(ans.exercise_6_grammar);
+            if (ans.exercise_7a_choice) setEx7aChoice(ans.exercise_7a_choice);
+            if (ans.exercise_8_conversations) setEx8Conversations(ans.exercise_8_conversations);
+            if (ans.exercise_room_objects) setExRoomObjects(ans.exercise_room_objects);
           }
         } catch {
           // Если не студент или ещё нет сдачи — продолжаем без блокировки
@@ -300,7 +351,23 @@ const LessonPage = () => {
         lesson?.title?.includes('2A') ||
         lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a66';
 
-      const answersPayload = isLesson2A
+      const isLesson2B =
+        lesson?.order === 6 ||
+        lesson?.title?.includes('2B') ||
+        lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a77';
+
+      const answersPayload = isLesson2B
+        ? {
+            exercise_1b_vocab: ex1bVocab,
+            exercise_3_photos: ex3Photos,
+            exercise_5a_picture: ex5aPicture,
+            exercise_5b_dialogue: ex5bDialogue,
+            exercise_6_grammar: ex6Grammar,
+            exercise_7a_choice: ex7aChoice,
+            exercise_8_conversations: ex8Conversations,
+            exercise_room_objects: exRoomObjects,
+          }
+        : isLesson2A
         ? {
             exercise_1_family_tree: ex1FamilyTree,
             exercise_2a_table: ex2aTable,
@@ -308,6 +375,7 @@ const LessonPage = () => {
             exercise_4a_match: ex4aMatch,
             exercise_4b_listening: ex4bListening,
             exercise_5_grammar: ex5Grammar,
+            exercise_6_pronunciation: ex6Pronunciation,
             exercise_7_dialogue: ex7Dialogue,
             exercise_8_notes: ex8Notes,
           }
@@ -373,15 +441,16 @@ const LessonPage = () => {
       const { score } = response.data;
       setMySubmission(response.data);
       setSuccessMessage(`Results submitted! Score: ${score}%`);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Failed to submit results:', err);
       let msg = 'Failed to submit answers. Please try again.';
       
-      if (err.response) {
-        if (err.response.status === 401 || err.response.status === 403) {
+      const axiosError = err as { response?: { status?: number; data?: { message?: string } } };
+      if (axiosError.response) {
+        if (axiosError.response.status === 401 || axiosError.response.status === 403) {
           msg = "Only students can submit";
-        } else if (err.response.data?.message) {
-          msg = err.response.data.message;
+        } else if (axiosError.response.data?.message) {
+          msg = axiosError.response.data.message;
         }
       }
       
@@ -413,6 +482,10 @@ const LessonPage = () => {
     lesson?.order === 5 ||
     lesson?.title?.includes('2A') ||
     lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a66';
+  const isLesson2B =
+    lesson?.order === 6 ||
+    lesson?.title?.includes('2B') ||
+    lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a77';
 
   return (
       <div className={styles.pageContainer}>
@@ -425,7 +498,7 @@ const LessonPage = () => {
             ← Back to Dashboard
           </button>
 
-          {isLesson1A || isLesson1B || isLesson1C || isLesson1D || isLesson2A ? (
+          {isLesson1A || isLesson1B || isLesson1C || isLesson1D || isLesson2A || isLesson2B ? (
             <>
               {isLesson1A && (
                 <LessonContent
@@ -573,6 +646,7 @@ const LessonPage = () => {
                   ex4aMatch={ex4aMatch}
                   ex4bListening={ex4bListening}
                   ex5Grammar={ex5Grammar}
+                  ex6Pronunciation={ex6Pronunciation}
                   ex7Dialogue={ex7Dialogue}
                   ex8Notes={ex8Notes}
                   onEx1FamilyTreeChange={(member, val) =>
@@ -593,10 +667,54 @@ const LessonPage = () => {
                   onEx5GrammarChange={(id, val) =>
                     setEx5Grammar((prev) => ({ ...prev, [id]: val }))
                   }
+                  onEx6PronunciationChange={(id, val) =>
+                    setEx6Pronunciation((prev) => ({ ...prev, [id]: val }))
+                  }
                   onEx7DialogueChange={(id, val) =>
                     setEx7Dialogue((prev) => ({ ...prev, [id]: val }))
                   }
                   onEx8NotesChange={(val) => setEx8Notes(val)}
+                  originalAnswers={mySubmission?.answers}
+                />
+              )}
+
+              {isLesson2B && (
+                <Lesson2BContent
+                  lesson={lesson}
+                  user={user}
+                  readOnly={isLocked}
+                  playAudio={playAudio}
+                  playingAudio={playingAudio}
+                  ex1bVocab={ex1bVocab}
+                  ex3Photos={ex3Photos}
+                  ex5aPicture={ex5aPicture}
+                  ex5bDialogue={ex5bDialogue}
+                  ex6Grammar={ex6Grammar}
+                  ex7aChoice={ex7aChoice}
+                  ex8Conversations={ex8Conversations}
+                  exRoomObjects={exRoomObjects}
+                  onEx1bVocabChange={(id, val) =>
+                    setEx1bVocab((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onEx3PhotosChange={(id, val) =>
+                    setEx3Photos((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onEx5aPictureChange={(id, val) =>
+                    setEx5aPicture((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onEx5bDialogueChange={(id, val) =>
+                    setEx5bDialogue((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onEx6GrammarChange={(id, val) =>
+                    setEx6Grammar((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onEx7aChoiceChange={(id, val) =>
+                    setEx7aChoice((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onEx8ConversationsChange={(id, val) =>
+                    setEx8Conversations((prev) => ({ ...prev, [id]: val }))
+                  }
+                  onExRoomObjectsChange={(val) => setExRoomObjects(val)}
                   originalAnswers={mySubmission?.answers}
                 />
               )}
