@@ -10,6 +10,7 @@ import Lesson1CContent from '@/components/Lesson1CContent';
 import Lesson1DContent from '@/components/Lesson1DContent';
 import Lesson2AContent from '@/components/Lesson2AContent';
 import Lesson2BContent from '@/components/Lesson2BContent';
+import { SubmissionAudioMeta } from '@/components/AudioAnswerRecorder/SubmissionAudioPlayer';
 
 interface LessonModel {
   id: string;
@@ -36,6 +37,7 @@ interface SubmissionModel {
   status: string;
   tutorComment?: string;
   answers?: Record<string, Record<string, string> | string>;
+  audios?: SubmissionAudioMeta[];
   [key: string]: unknown;
 }
 
@@ -132,6 +134,12 @@ const LessonPage = () => {
   const [mySubmission, setMySubmission] = useState<SubmissionModel | null>(null);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  // Audio recording states for Lesson 2B
+  const [audioFile, setAudioFile] = useState<{ blob: Blob; mimeType: string } | null>(null);
+  const [audioUploadSubmissionId, setAudioUploadSubmissionId] = useState<string | null>(null);
+  const [audioUploadError, setAudioUploadError] = useState<string | null>(null);
+  const [retryingAudio, setRetryingAudio] = useState(false);
 
   useEffect(() => {
     const fetchLessonData = async () => {
@@ -320,6 +328,61 @@ const LessonPage = () => {
     });
   };
 
+  const uploadAudioFile = async (
+    submissionId: string,
+    audio: { blob: Blob; mimeType: string },
+  ) => {
+    const extension = audio.mimeType.includes('mp4')
+      ? 'mp4'
+      : audio.mimeType.includes('ogg')
+      ? 'ogg'
+      : 'webm';
+    const file = new File([audio.blob], `exercise_8.${extension}`, {
+      type: audio.mimeType,
+    });
+    const formData = new FormData();
+    formData.append('file', file);
+
+    // ВАЖНО: не задаем Content-Type вручную, позволяем Axios и браузеру выставить multipart/form-data с boundary
+    await api.post(`/submissions/${submissionId}/audio/exercise_8`, formData, {
+      headers: {
+        'Content-Type': undefined,
+      },
+    });
+  };
+
+  const handleRetryAudio = async () => {
+    if (!audioUploadSubmissionId || !audioFile) return;
+    setRetryingAudio(true);
+    setAudioUploadError(null);
+    try {
+      await uploadAudioFile(audioUploadSubmissionId, audioFile);
+      setMySubmission((prev) =>
+        prev
+          ? {
+              ...prev,
+              audios: [
+                ...(prev.audios?.filter((a) => a.exerciseKey !== 'exercise_8') || []),
+                {
+                  exerciseKey: 'exercise_8',
+                  mimeType: audioFile.mimeType,
+                  sizeBytes: audioFile.blob.size,
+                },
+              ],
+            }
+          : null,
+      );
+      setAudioFile(null);
+      setAudioUploadSubmissionId(null);
+      setSuccessMessage('Voice answer uploaded successfully!');
+    } catch (err) {
+      console.error('Retry audio upload failed:', err);
+      setAudioUploadError('Failed to upload audio recording. Please try again.');
+    } finally {
+      setRetryingAudio(false);
+    }
+  };
+
   const handleSubmitResults = async () => {
     if (!lesson?.id) {
       setErrorMessage("Lesson is not loaded yet");
@@ -438,9 +501,41 @@ const LessonPage = () => {
         answers: answersPayload,
       });
 
-      const { score } = response.data;
+      const { score, id: submissionId } = response.data;
       setMySubmission(response.data);
-      setSuccessMessage(`Results submitted! Score: ${score}%`);
+
+      // Загрузка аудиофайла на созданный submissionId
+      if (audioFile && submissionId) {
+        setAudioUploadSubmissionId(submissionId);
+        try {
+          await uploadAudioFile(submissionId, audioFile);
+          setMySubmission((prev) =>
+            prev
+              ? {
+                  ...prev,
+                  audios: [
+                    ...(prev.audios?.filter((a) => a.exerciseKey !== 'exercise_8') || []),
+                    {
+                      exerciseKey: 'exercise_8',
+                      mimeType: audioFile.mimeType,
+                      sizeBytes: audioFile.blob.size,
+                    },
+                  ],
+                }
+              : null,
+          );
+          setAudioFile(null);
+          setAudioUploadSubmissionId(null);
+          setAudioUploadError(null);
+          setSuccessMessage(`Results and audio answer submitted! Score: ${score}%`);
+        } catch (audioErr) {
+          console.error('Audio upload failed:', audioErr);
+          setSuccessMessage(`Results submitted! Score: ${score}%`);
+          setAudioUploadError('Text answers saved, but failed to upload audio recording. Please click "Retry Audio Upload".');
+        }
+      } else {
+        setSuccessMessage(`Results submitted! Score: ${score}%`);
+      }
     } catch (err: unknown) {
       console.error('Failed to submit results:', err);
       let msg = 'Failed to submit answers. Please try again.';
@@ -715,7 +810,12 @@ const LessonPage = () => {
                     setEx8Conversations((prev) => ({ ...prev, [id]: val }))
                   }
                   onExRoomObjectsChange={(val) => setExRoomObjects(val)}
+                  onAudioBlobChange={(blob, mimeType) =>
+                    setAudioFile(blob ? { blob, mimeType } : null)
+                  }
                   originalAnswers={mySubmission?.answers}
+                  submissionId={mySubmission?.id}
+                  submittedAudios={mySubmission?.audios}
                 />
               )}
 
@@ -761,6 +861,19 @@ const LessonPage = () => {
                 )}
                 {errorMessage && (
                     <p className={styles.errorText}>{errorMessage}</p>
+                )}
+                {audioUploadError && (
+                  <div style={{ marginTop: '0.75rem', padding: '0.75rem', background: '#fef2f2', border: '1px solid #fecaca', borderRadius: '8px', color: '#b91c1c' }}>
+                    <p style={{ margin: '0 0 0.5rem 0', fontSize: '0.9rem' }}>{audioUploadError}</p>
+                    <button
+                      type="button"
+                      onClick={handleRetryAudio}
+                      disabled={retryingAudio}
+                      style={{ padding: '0.4rem 0.8rem', background: '#b91c1c', color: '#fff', border: 'none', borderRadius: '6px', fontSize: '0.85rem', fontWeight: 600, cursor: 'pointer' }}
+                    >
+                      {retryingAudio ? 'Uploading...' : 'Retry Audio Upload'}
+                    </button>
+                  </div>
                 )}
               </div>
             </>

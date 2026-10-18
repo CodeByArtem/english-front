@@ -3,6 +3,10 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import styles from './lesson2b.module.scss';
+import AudioAnswerRecorder from './AudioAnswerRecorder/AudioAnswerRecorder';
+import SubmissionAudioPlayer, {
+  SubmissionAudioMeta,
+} from './AudioAnswerRecorder/SubmissionAudioPlayer';
 
 export interface Lesson2BContentProps {
   lesson?: Record<string, unknown> | null;
@@ -20,6 +24,12 @@ export interface Lesson2BContentProps {
   ex7aChoice?: Record<string, string>;
   ex8Conversations?: Record<string, string>;
   exRoomObjects?: string;
+
+  // Audio recording & review
+  audioBlob?: Blob | null;
+  onAudioBlobChange?: (blob: Blob | null, mimeType: string) => void;
+  submissionId?: string;
+  submittedAudios?: SubmissionAudioMeta[];
 
   // Handlers
   onEx1bVocabChange?: (id: string, value: string) => void;
@@ -117,6 +127,9 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
     onEx7aChoiceChange = () => {},
     onEx8ConversationsChange = () => {},
     onExRoomObjectsChange = () => {},
+    onAudioBlobChange,
+    submissionId,
+    submittedAudios,
   } = props;
 
   const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
@@ -1573,6 +1586,23 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                   </div>
                 </div>
               </div>
+
+              {/* Устное задание к упражнению 8: запись голосового ответа */}
+              {!readOnly && (
+                <AudioAnswerRecorder
+                  onAudioChange={onAudioBlobChange}
+                  readOnly={readOnly}
+                />
+              )}
+
+              {/* Прослушивание отправленной аудиозаписи (для учителя или ученика в режиме просмотра) */}
+              {submissionId && (
+                <SubmissionAudioPlayer
+                  submissionId={submissionId}
+                  exerciseKey="exercise_8"
+                  audios={submittedAudios}
+                />
+              )}
             </div>
 
             {/* Exercise 9 */}

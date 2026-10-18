@@ -10,6 +10,7 @@ import Lesson1CContent from '@/components/Lesson1CContent';
 import Lesson1DContent from '@/components/Lesson1DContent';
 import Lesson2AContent from '@/components/Lesson2AContent';
 import Lesson2BContent from '@/components/Lesson2BContent';
+import { SubmissionAudioMeta } from '@/components/AudioAnswerRecorder/SubmissionAudioPlayer';
 
 interface ProfilePairs {
   woman?: { name?: string; job?: string; city?: string; country?: string };
@@ -98,6 +99,7 @@ interface SubmissionModel {
   };
   answers?: SubmissionAnswers;
   reviewedAnswers?: SubmissionAnswers;
+  audios?: SubmissionAudioMeta[];
   [key: string]: unknown;
 }
 
@@ -521,7 +523,10 @@ export default function SubmissionPage() {
       setSuccess(targetStatus === 'needs_revision' ? 'Returned for revision!' : 'Graded successfully!');
       // Refresh data
       const res = await api.get(`/submissions/${id}`);
-      setSubmission(res.data);
+      setSubmission((prev) => ({
+        ...res.data,
+        audios: res.data.audios ?? prev?.audios ?? [],
+      }));
     } catch (err: unknown) {
       console.error('Failed to save review:', err);
       const msg = (err as { response?: { data?: { message?: string } } })?.response?.data?.message;
@@ -821,6 +826,8 @@ export default function SubmissionPage() {
             }
             onExRoomObjectsChange={(val) => setExRoomObjects(val)}
             originalAnswers={submission.answers}
+            submissionId={submission.id}
+            submittedAudios={submission.audios}
           />
         ) : isLesson2A ? (
           <Lesson2AContent

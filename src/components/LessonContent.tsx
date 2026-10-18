@@ -146,6 +146,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 height={300}
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 unoptimized
+                                loading="eager"
                             />
                             <span className={styles.photoTag}><b>A</b> John Miller, the UK</span>
                         </div>
@@ -157,6 +158,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 height={300}
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 unoptimized
+                                loading="eager"
                             />
                             <span className={styles.photoTag}><b>B</b> Maria Fernandez, Spain</span>
                         </div>
@@ -168,6 +170,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 height={300}
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 unoptimized
+                                loading="eager"
                             />
                             <span className={styles.photoTag}><b>C</b> Ela Atan, Turkey</span>
                         </div>
@@ -181,6 +184,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 height={300}
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 unoptimized
+                                loading="eager"
                             />
                             <span className={styles.photoTag}><b>D</b> David Lee, the US</span>
                         </div>
@@ -192,6 +196,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 height={300}
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 unoptimized
+                                loading="eager"
                             />
                             <span className={styles.photoTag}><b>E</b> Anna Novak, Poland</span>
                         </div>
@@ -203,6 +208,7 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 height={300}
                                 style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                                 unoptimized
+                                loading="eager"
                             />
                             <span className={styles.photoTag}><b>F</b> Marco Rossi, Italy</span>
                         </div>
