@@ -2,12 +2,16 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
+import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
+import { verifyAnswer, getExerciseKey, LessonAnswerKey } from '@/lib/answerVerification';
 import styles from './lesson1d.module.scss';
 
 export interface Lesson1DContentProps {
   lesson?: Record<string, unknown> | null;
   user?: Record<string, unknown> | null;
   readOnly?: boolean;
+  isTeacherReview?: boolean;
+  answerKey?: LessonAnswerKey | null;
   playAudio: (track: string) => void;
   playingAudio: string | null;
 
@@ -120,6 +124,8 @@ const TARGET_WORDS: Record<string, { name: string; cells: [number, number][] }> 
 export default function Lesson1DContent({
   _lesson,
   readOnly = false,
+  isTeacherReview = false,
+  answerKey = null,
   playAudio,
   playingAudio,
 
@@ -179,6 +185,19 @@ export default function Lesson1DContent({
   _onEx7bPeopleChange?: (field: string, value: string) => void;
   _originalAnswers?: Record<string, unknown>;
 }) {
+  const ex1Key = getExerciseKey(answerKey, 'exercise_1_location');
+  const ex2Key = getExerciseKey(answerKey, 'exercise_2_audio');
+  const ex3bKey = getExerciseKey(answerKey, 'exercise_3b_contact');
+  const ex4aKey = getExerciseKey(answerKey, 'exercise_4a_dialogue');
+  const ex2aKey = getExerciseKey(answerKey, 'exercise_2a_order');
+  const ex3BeKey = getExerciseKey(answerKey, 'exercise_3_be');
+  const ex4JobsKey = getExerciseKey(answerKey, 'exercise_4_jobs');
+  const ex5IsIsntKey = getExerciseKey(answerKey, 'exercise_5_is_isnt');
+  const ex6Key = getExerciseKey(answerKey, 'exercise_6_corrections');
+  const ex7aKey = getExerciseKey(answerKey, 'exercise_7a_nationalities');
+  const ex8Key = getExerciseKey(answerKey, 'exercise_8_alternatives');
+  const ex9Key = getExerciseKey(answerKey, 'exercise_9_text');
+
   // Wordsearch selection state: array of [row, col]
   const [selectedCells, setSelectedCells] = useState<[number, number][]>([]);
   const [lastMessage, setLastMessage] = useState<string>('');
@@ -288,25 +307,37 @@ export default function Lesson1DContent({
               <p className={styles.exTitle}>
                 <span className={styles.exNum}>1</span>
                 <span>Look at the photo. Work in pairs. Where are the people?</span>
+                <TeacherAnswerBadge
+                  result={isTeacherReview ? verifyAnswer(ex1Location, ex1Key?.['1'] || ex1Key?.['location'] || (typeof ex1Key === 'string' || Array.isArray(ex1Key) ? ex1Key : undefined)) : null}
+                  isTeacherReview={isTeacherReview}
+                />
               </p>
               <div style={{ paddingLeft: '1.5rem', display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
                 {[
                   { key: 'a', label: 'a at a conference' },
                   { key: 'b', label: 'b in a language school' },
                   { key: 'c', label: 'c in a hotel' },
-                ].map((opt) => (
-                  <label key={opt.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                    <input
-                      type="radio"
-                      name="ex1Location"
-                      value={opt.key}
-                      checked={ex1Location === opt.key}
-                      onChange={(e) => onEx1LocationChange(e.target.value)}
-                      disabled={readOnly}
-                    />
-                    <span>{opt.label}</span>
-                  </label>
-                ))}
+                ].map((opt) => {
+                  const isChecked = ex1Location === opt.key;
+                  const vRes = isTeacherReview && isChecked
+                    ? verifyAnswer(ex1Location, ex1Key?.['1'] || ex1Key?.['location'] || (typeof ex1Key === 'string' || Array.isArray(ex1Key) ? ex1Key : undefined))
+                    : null;
+                  const validClass = vRes?.status === 'correct' ? styles.choiceValid : vRes?.status === 'incorrect' ? styles.choiceInvalid : '';
+
+                  return (
+                    <label key={opt.key} className={validClass} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', padding: '2px 4px', borderRadius: '4px' }}>
+                      <input
+                        type="radio"
+                        name="ex1Location"
+                        value={opt.key}
+                        checked={isChecked}
+                        onChange={(e) => onEx1LocationChange(e.target.value)}
+                        disabled={readOnly}
+                      />
+                      <span>{opt.label}</span>
+                    </label>
+                  );
+                })}
               </div>
             </div>
 
@@ -329,29 +360,31 @@ export default function Lesson1DContent({
                 <span>Listen to the conversation. Who is the student? Where is she from?</span>
               </p>
               <div style={{ paddingLeft: '1.5rem', marginTop: '6px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <div>
-                  <label style={{ marginRight: '6px', fontWeight: 600 }}>Student:</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontWeight: 600 }}>Student:</label>
                   <input
                     type="text"
                     value={ex2Audio.student || ''}
                     onChange={(e) => onEx2AudioChange('student', e.target.value)}
                     disabled={readOnly}
                     placeholder="e.g. Selin"
-                    className={styles.textInputLine}
+                    className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex2Audio.student, ex2Key?.['student']).status === 'correct' ? styles.inputValid : verifyAnswer(ex2Audio.student, ex2Key?.['student']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                     style={{ width: '140px' }}
                   />
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex2Audio.student, ex2Key?.['student']) : null} isTeacherReview={isTeacherReview} />
                 </div>
-                <div>
-                  <label style={{ marginRight: '6px', fontWeight: 600 }}>From:</label>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <label style={{ fontWeight: 600 }}>From:</label>
                   <input
                     type="text"
                     value={ex2Audio.country || ''}
                     onChange={(e) => onEx2AudioChange('country', e.target.value)}
                     disabled={readOnly}
                     placeholder="e.g. Turkey"
-                    className={styles.textInputLine}
+                    className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex2Audio.country, ex2Key?.['country']).status === 'correct' ? styles.inputValid : verifyAnswer(ex2Audio.country, ex2Key?.['country']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                     style={{ width: '140px' }}
                   />
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex2Audio.country, ex2Key?.['country']) : null} isTeacherReview={isTeacherReview} />
                 </div>
               </div>
             </div>
@@ -411,9 +444,10 @@ export default function Lesson1DContent({
                           onChange={(e) => onEx3bContactChange('1', e.target.value)}
                           disabled={readOnly}
                           placeholder="First name"
-                          className={styles.textInputLine}
+                          className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3bContact['1'], ex3bKey?.['1']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3bContact['1'], ex3bKey?.['1']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                           style={{ width: '120px' }}
                         />
+                        <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3bContact['1'], ex3bKey?.['1']) : null} isTeacherReview={isTeacherReview} />
                         <span>: Selin</span>
                       </div>
                       <div className={styles.cardRow}>
@@ -424,9 +458,10 @@ export default function Lesson1DContent({
                           onChange={(e) => onEx3bContactChange('2', e.target.value)}
                           disabled={readOnly}
                           placeholder="Family name"
-                          className={styles.textInputLine}
+                          className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3bContact['2'], ex3bKey?.['2']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3bContact['2'], ex3bKey?.['2']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                           style={{ width: '120px' }}
                         />
+                        <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3bContact['2'], ex3bKey?.['2']) : null} isTeacherReview={isTeacherReview} />
                         <span>: Atakan</span>
                       </div>
                       <div className={styles.cardRow}>
@@ -437,9 +472,10 @@ export default function Lesson1DContent({
                           onChange={(e) => onEx3bContactChange('3', e.target.value)}
                           disabled={readOnly}
                           placeholder="Phone number"
-                          className={styles.textInputLine}
+                          className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3bContact['3'], ex3bKey?.['3']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3bContact['3'], ex3bKey?.['3']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                           style={{ width: '120px' }}
                         />
+                        <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3bContact['3'], ex3bKey?.['3']) : null} isTeacherReview={isTeacherReview} />
                         <span>: 020-555-7645</span>
                       </div>
                       <div className={styles.cardRow}>
@@ -450,9 +486,10 @@ export default function Lesson1DContent({
                           onChange={(e) => onEx3bContactChange('4', e.target.value)}
                           disabled={readOnly}
                           placeholder="Email address"
-                          className={styles.textInputLine}
+                          className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3bContact['4'], ex3bKey?.['4']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3bContact['4'], ex3bKey?.['4']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                           style={{ width: '120px' }}
                         />
+                        <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3bContact['4'], ex3bKey?.['4']) : null} isTeacherReview={isTeacherReview} />
                         <span>: selin2000@dmail.com</span>
                       </div>
                     </div>
@@ -470,7 +507,7 @@ export default function Lesson1DContent({
               </p>
 
               <div className={styles.dialogueBox}>
-                <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
                   <strong>A: </strong>
                   <sup>1</sup>
                   <input
@@ -479,14 +516,15 @@ export default function Lesson1DContent({
                     onChange={(e) => onEx4aDialogueChange('1', e.target.value)}
                     disabled={readOnly}
                     placeholder="e.g. What's your name"
-                    className={styles.textInputLine}
+                    className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex4aDialogue['1'], ex4aKey?.['1']).status === 'correct' ? styles.inputValid : verifyAnswer(ex4aDialogue['1'], ex4aKey?.['1']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                     style={{ width: '220px' }}
                   />
                   <span>?</span>
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex4aDialogue['1'], ex4aKey?.['1']) : null} isTeacherReview={isTeacherReview} />
                 </div>
                 <div><strong>B:</strong> Dieter Neumann.</div>
 
-                <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
                   <strong>A: </strong>
                   <sup>2</sup>
                   <input
@@ -495,14 +533,15 @@ export default function Lesson1DContent({
                     onChange={(e) => onEx4aDialogueChange('2', e.target.value)}
                     disabled={readOnly}
                     placeholder="e.g. How do you spell your"
-                    className={styles.textInputLine}
+                    className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex4aDialogue['2'], ex4aKey?.['2']).status === 'correct' ? styles.inputValid : verifyAnswer(ex4aDialogue['2'], ex4aKey?.['2']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                     style={{ width: '200px' }}
                   />
                   <span> first name?</span>
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex4aDialogue['2'], ex4aKey?.['2']) : null} isTeacherReview={isTeacherReview} />
                 </div>
                 <div><strong>B:</strong> D - I - E - T - E - R.</div>
 
-                <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
                   <strong>A:</strong> And <sup>3</sup>
                   <input
                     type="text"
@@ -510,14 +549,15 @@ export default function Lesson1DContent({
                     onChange={(e) => onEx4aDialogueChange('3', e.target.value)}
                     disabled={readOnly}
                     placeholder="e.g. what's your family name"
-                    className={styles.textInputLine}
+                    className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex4aDialogue['3'], ex4aKey?.['3']).status === 'correct' ? styles.inputValid : verifyAnswer(ex4aDialogue['3'], ex4aKey?.['3']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                     style={{ width: '210px' }}
                   />
                   <span> again?</span>
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex4aDialogue['3'], ex4aKey?.['3']) : null} isTeacherReview={isTeacherReview} />
                 </div>
                 <div><strong>B:</strong> Neumann. That&apos;s N - E - U - M - A - N - N.</div>
 
-                <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
                   <strong>A: </strong>
                   <sup>4</sup>
                   <input
@@ -526,14 +566,15 @@ export default function Lesson1DContent({
                     onChange={(e) => onEx4aDialogueChange('4', e.target.value)}
                     disabled={readOnly}
                     placeholder="e.g. What's your phone number"
-                    className={styles.textInputLine}
+                    className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex4aDialogue['4'], ex4aKey?.['4']).status === 'correct' ? styles.inputValid : verifyAnswer(ex4aDialogue['4'], ex4aKey?.['4']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                     style={{ width: '220px' }}
                   />
                   <span>?</span>
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex4aDialogue['4'], ex4aKey?.['4']) : null} isTeacherReview={isTeacherReview} />
                 </div>
                 <div><strong>B:</strong> It&apos;s 07700 900617.</div>
 
-                <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
                   <strong>A:</strong> Sorry, <sup>5</sup>
                   <input
                     type="text"
@@ -541,14 +582,15 @@ export default function Lesson1DContent({
                     onChange={(e) => onEx4aDialogueChange('5', e.target.value)}
                     disabled={readOnly}
                     placeholder="e.g. can you say that again"
-                    className={styles.textInputLine}
+                    className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex4aDialogue['5'], ex4aKey?.['5']).status === 'correct' ? styles.inputValid : verifyAnswer(ex4aDialogue['5'], ex4aKey?.['5']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                     style={{ width: '210px' }}
                   />
                   <span>?</span>
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex4aDialogue['5'], ex4aKey?.['5']) : null} isTeacherReview={isTeacherReview} />
                 </div>
                 <div><strong>B:</strong> 07700 900617.</div>
 
-                <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
                   <strong>A:</strong> And <sup>6</sup>
                   <input
                     type="text"
@@ -556,10 +598,11 @@ export default function Lesson1DContent({
                     onChange={(e) => onEx4aDialogueChange('6', e.target.value)}
                     disabled={readOnly}
                     placeholder="e.g. what's your email address"
-                    className={styles.textInputLine}
+                    className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex4aDialogue['6'], ex4aKey?.['6']).status === 'correct' ? styles.inputValid : verifyAnswer(ex4aDialogue['6'], ex4aKey?.['6']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                     style={{ width: '220px' }}
                   />
                   <span>?</span>
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex4aDialogue['6'], ex4aKey?.['6']) : null} isTeacherReview={isTeacherReview} />
                 </div>
                 <div><strong>B:</strong> It&apos;s dietern@intertalk.com.</div>
               </div>
@@ -833,69 +876,39 @@ export default function Lesson1DContent({
                     <p className={styles.exampleBlue} style={{ margin: '2px 0 0 16px' }}>I am from Brazil.</p>
                   </div>
 
-                  <div>
-                    <span style={{ fontWeight: 700, marginRight: '6px' }}>2.</span>
-                    <span>am / London / from / not / I</span>
-                    <div style={{ marginTop: '2px', paddingLeft: '16px' }}>
-                      <input
-                        type="text"
-                        value={ex2aOrder['2'] || ''}
-                        onChange={(e) => onEx2aOrderChange('2', e.target.value)}
-                        disabled={readOnly}
-                        placeholder="Write the sentence..."
-                        className={styles.textInputLine}
-                        style={{ width: '100%' }}
-                      />
-                    </div>
-                  </div>
+                  {[
+                    { id: '2', prompt: 'am / London / from / not / I' },
+                    { id: '3', prompt: 'you / class / my / in / Are ?' },
+                    { id: '4', prompt: 'are / Where / from / you ?' },
+                    { id: '5', prompt: 'my / you / are / No, / in / class / not' },
+                  ].map((item) => {
+                    const currentVal = ex2aOrder[item.id] || '';
+                    const vRes = isTeacherReview ? verifyAnswer(currentVal, ex2aKey?.[item.id]) : null;
+                    const validClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
 
-                  <div>
-                    <span style={{ fontWeight: 700, marginRight: '6px' }}>3.</span>
-                    <span>you / class / my / in / Are ?</span>
-                    <div style={{ marginTop: '2px', paddingLeft: '16px' }}>
-                      <input
-                        type="text"
-                        value={ex2aOrder['3'] || ''}
-                        onChange={(e) => onEx2aOrderChange('3', e.target.value)}
-                        disabled={readOnly}
-                        placeholder="Write the sentence..."
-                        className={styles.textInputLine}
-                        style={{ width: '100%' }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <span style={{ fontWeight: 700, marginRight: '6px' }}>4.</span>
-                    <span>are / Where / from / you ?</span>
-                    <div style={{ marginTop: '2px', paddingLeft: '16px' }}>
-                      <input
-                        type="text"
-                        value={ex2aOrder['4'] || ''}
-                        onChange={(e) => onEx2aOrderChange('4', e.target.value)}
-                        disabled={readOnly}
-                        placeholder="Write the sentence..."
-                        className={styles.textInputLine}
-                        style={{ width: '100%' }}
-                      />
-                    </div>
-                  </div>
-
-                  <div>
-                    <span style={{ fontWeight: 700, marginRight: '6px' }}>5.</span>
-                    <span>my / you / are / No, / in / class / not</span>
-                    <div style={{ marginTop: '2px', paddingLeft: '16px' }}>
-                      <input
-                        type="text"
-                        value={ex2aOrder['5'] || ''}
-                        onChange={(e) => onEx2aOrderChange('5', e.target.value)}
-                        disabled={readOnly}
-                        placeholder="Write the sentence..."
-                        className={styles.textInputLine}
-                        style={{ width: '100%' }}
-                      />
-                    </div>
-                  </div>
+                    return (
+                      <div key={item.id}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <span style={{ fontWeight: 700, marginRight: '6px' }}>{item.id}.</span>
+                            <span>{item.prompt}</span>
+                          </div>
+                          <TeacherAnswerBadge result={vRes} isTeacherReview={isTeacherReview} />
+                        </div>
+                        <div style={{ marginTop: '2px', paddingLeft: '16px' }}>
+                          <input
+                            type="text"
+                            value={currentVal}
+                            onChange={(e) => onEx2aOrderChange(item.id, e.target.value)}
+                            disabled={readOnly}
+                            placeholder="Write the sentence..."
+                            className={`${styles.textInputLine} ${validClass}`}
+                            style={{ width: '100%' }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -916,18 +929,20 @@ export default function Lesson1DContent({
                       value={ex3Be['1_a'] || ''}
                       onChange={(e) => onEx3BeChange('1_a', e.target.value)}
                       disabled={readOnly}
-                      className={styles.textInputLine}
+                      className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3Be['1_a'], ex3BeKey?.['1_a']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3Be['1_a'], ex3BeKey?.['1_a']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                       style={{ width: '50px' }}
                     />
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3Be['1_a'], ex3BeKey?.['1_a']) : null} isTeacherReview={isTeacherReview} />
                     <span> you from Spain? B: No, I </span>
                     <input
                       type="text"
                       value={ex3Be['1_b'] || ''}
                       onChange={(e) => onEx3BeChange('1_b', e.target.value)}
                       disabled={readOnly}
-                      className={styles.textInputLine}
+                      className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3Be['1_b'], ex3BeKey?.['1_b']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3Be['1_b'], ex3BeKey?.['1_b']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                       style={{ width: '50px' }}
                     />
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3Be['1_b'], ex3BeKey?.['1_b']) : null} isTeacherReview={isTeacherReview} />
                     <span> from Mexico.</span>
                   </div>
 
@@ -940,36 +955,40 @@ export default function Lesson1DContent({
                       value={ex3Be['2_a1'] || ''}
                       onChange={(e) => onEx3BeChange('2_a1', e.target.value)}
                       disabled={readOnly}
-                      className={styles.textInputLine}
+                      className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3Be['2_a1'], ex3BeKey?.['2_a1']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3Be['2_a1'], ex3BeKey?.['2_a1']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                       style={{ width: '45px' }}
                     />
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3Be['2_a1'], ex3BeKey?.['2_a1']) : null} isTeacherReview={isTeacherReview} />
                     <span> in Class 4. </span>
                     <input
                       type="text"
                       value={ex3Be['2_a2'] || ''}
                       onChange={(e) => onEx3BeChange('2_a2', e.target.value)}
                       disabled={readOnly}
-                      className={styles.textInputLine}
+                      className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3Be['2_a2'], ex3BeKey?.['2_a2']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3Be['2_a2'], ex3BeKey?.['2_a2']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                       style={{ width: '45px' }}
                     />
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3Be['2_a2'], ex3BeKey?.['2_a2']) : null} isTeacherReview={isTeacherReview} />
                     <span> you? B: No, I </span>
                     <input
                       type="text"
                       value={ex3Be['2_b1'] || ''}
                       onChange={(e) => onEx3BeChange('2_b1', e.target.value)}
                       disabled={readOnly}
-                      className={styles.textInputLine}
+                      className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3Be['2_b1'], ex3BeKey?.['2_b1']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3Be['2_b1'], ex3BeKey?.['2_b1']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                       style={{ width: '60px' }}
                     />
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3Be['2_b1'], ex3BeKey?.['2_b1']) : null} isTeacherReview={isTeacherReview} />
                     <span>. I </span>
                     <input
                       type="text"
                       value={ex3Be['2_b2'] || ''}
                       onChange={(e) => onEx3BeChange('2_b2', e.target.value)}
                       disabled={readOnly}
-                      className={styles.textInputLine}
+                      className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3Be['2_b2'], ex3BeKey?.['2_b2']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3Be['2_b2'], ex3BeKey?.['2_b2']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                       style={{ width: '45px' }}
                     />
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3Be['2_b2'], ex3BeKey?.['2_b2']) : null} isTeacherReview={isTeacherReview} />
                     <span> in Class 3.</span>
                   </div>
 
@@ -982,27 +1001,30 @@ export default function Lesson1DContent({
                       value={ex3Be['3_a1'] || ''}
                       onChange={(e) => onEx3BeChange('3_a1', e.target.value)}
                       disabled={readOnly}
-                      className={styles.textInputLine}
+                      className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3Be['3_a1'], ex3BeKey?.['3_a1']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3Be['3_a1'], ex3BeKey?.['3_a1']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                       style={{ width: '45px' }}
                     />
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3Be['3_a1'], ex3BeKey?.['3_a1']) : null} isTeacherReview={isTeacherReview} />
                     <span> Tomoko. I </span>
                     <input
                       type="text"
                       value={ex3Be['3_a2'] || ''}
                       onChange={(e) => onEx3BeChange('3_a2', e.target.value)}
                       disabled={readOnly}
-                      className={styles.textInputLine}
+                      className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3Be['3_a2'], ex3BeKey?.['3_a2']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3Be['3_a2'], ex3BeKey?.['3_a2']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                       style={{ width: '45px' }}
                     />
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3Be['3_a2'], ex3BeKey?.['3_a2']) : null} isTeacherReview={isTeacherReview} />
                     <span> from Japan. B: Nice to meet you. I </span>
                     <input
                       type="text"
                       value={ex3Be['3_b'] || ''}
                       onChange={(e) => onEx3BeChange('3_b', e.target.value)}
                       disabled={readOnly}
-                      className={styles.textInputLine}
+                      className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3Be['3_b'], ex3BeKey?.['3_b']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3Be['3_b'], ex3BeKey?.['3_b']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                       style={{ width: '45px' }}
                     />
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3Be['3_b'], ex3BeKey?.['3_b']) : null} isTeacherReview={isTeacherReview} />
                     <span> Burak from Turkey.</span>
                   </div>
 
@@ -1015,18 +1037,20 @@ export default function Lesson1DContent({
                       value={ex3Be['4_a'] || ''}
                       onChange={(e) => onEx3BeChange('4_a', e.target.value)}
                       disabled={readOnly}
-                      className={styles.textInputLine}
+                      className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3Be['4_a'], ex3BeKey?.['4_a']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3Be['4_a'], ex3BeKey?.['4_a']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                       style={{ width: '50px' }}
                     />
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3Be['4_a'], ex3BeKey?.['4_a']) : null} isTeacherReview={isTeacherReview} />
                     <span> I late? B: No, you </span>
                     <input
                       type="text"
                       value={ex3Be['4_b'] || ''}
                       onChange={(e) => onEx3BeChange('4_b', e.target.value)}
                       disabled={readOnly}
-                      className={styles.textInputLine}
+                      className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex3Be['4_b'], ex3BeKey?.['4_b']).status === 'correct' ? styles.inputValid : verifyAnswer(ex3Be['4_b'], ex3BeKey?.['4_b']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                       style={{ width: '65px' }}
                     />
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex3Be['4_b'], ex3BeKey?.['4_b']) : null} isTeacherReview={isTeacherReview} />
                     <span> late.</span>
                   </div>
                 </div>
@@ -1044,90 +1068,35 @@ export default function Lesson1DContent({
                     <strong>1. </strong>
                     <span className={styles.exampleBlue}>football player</span>
                   </div>
-                  <div>
-                    <strong>2. </strong>
-                    <input
-                      type="text"
-                      value={ex4Jobs['2'] || ''}
-                      onChange={(e) => onEx4JobsChange('2', e.target.value)}
-                      disabled={readOnly}
-                      placeholder="s_____ t______"
-                      className={styles.textInputLine}
-                      style={{ width: '120px' }}
-                    />
-                  </div>
-                  <div>
-                    <strong>3. </strong>
-                    <input
-                      type="text"
-                      value={ex4Jobs['3'] || ''}
-                      onChange={(e) => onEx4JobsChange('3', e.target.value)}
-                      disabled={readOnly}
-                      placeholder="f____r"
-                      className={styles.textInputLine}
-                      style={{ width: '120px' }}
-                    />
-                  </div>
-                  <div>
-                    <strong>4. </strong>
-                    <input
-                      type="text"
-                      value={ex4Jobs['4'] || ''}
-                      onChange={(e) => onEx4JobsChange('4', e.target.value)}
-                      disabled={readOnly}
-                      placeholder="o_____ w_____"
-                      className={styles.textInputLine}
-                      style={{ width: '120px' }}
-                    />
-                  </div>
-                  <div>
-                    <strong>5. </strong>
-                    <input
-                      type="text"
-                      value={ex4Jobs['5'] || ''}
-                      onChange={(e) => onEx4JobsChange('5', e.target.value)}
-                      disabled={readOnly}
-                      placeholder="p___t"
-                      className={styles.textInputLine}
-                      style={{ width: '120px' }}
-                    />
-                  </div>
-                  <div>
-                    <strong>6. </strong>
-                    <input
-                      type="text"
-                      value={ex4Jobs['6'] || ''}
-                      onChange={(e) => onEx4JobsChange('6', e.target.value)}
-                      disabled={readOnly}
-                      placeholder="d____r"
-                      className={styles.textInputLine}
-                      style={{ width: '120px' }}
-                    />
-                  </div>
-                  <div>
-                    <strong>7. </strong>
-                    <input
-                      type="text"
-                      value={ex4Jobs['7'] || ''}
-                      onChange={(e) => onEx4JobsChange('7', e.target.value)}
-                      disabled={readOnly}
-                      placeholder="t___ d_____"
-                      className={styles.textInputLine}
-                      style={{ width: '120px' }}
-                    />
-                  </div>
-                  <div>
-                    <strong>8. </strong>
-                    <input
-                      type="text"
-                      value={ex4Jobs['8'] || ''}
-                      onChange={(e) => onEx4JobsChange('8', e.target.value)}
-                      disabled={readOnly}
-                      placeholder="n___e"
-                      className={styles.textInputLine}
-                      style={{ width: '120px' }}
-                    />
-                  </div>
+                  {[
+                    { id: '2', placeholder: 's_____ t______' },
+                    { id: '3', placeholder: 'f____r' },
+                    { id: '4', placeholder: 'o_____ w_____' },
+                    { id: '5', placeholder: 'p___t' },
+                    { id: '6', placeholder: 'd____r' },
+                    { id: '7', placeholder: 't___ d_____' },
+                    { id: '8', placeholder: 'n___e' },
+                  ].map((job) => {
+                    const currentVal = ex4Jobs[job.id] || '';
+                    const vRes = isTeacherReview ? verifyAnswer(currentVal, ex4JobsKey?.[job.id]) : null;
+                    const validClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+
+                    return (
+                      <div key={job.id} style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <strong>{job.id}. </strong>
+                        <input
+                          type="text"
+                          value={currentVal}
+                          onChange={(e) => onEx4JobsChange(job.id, e.target.value)}
+                          disabled={readOnly}
+                          placeholder={job.placeholder}
+                          className={`${styles.textInputLine} ${validClass}`}
+                          style={{ width: '120px' }}
+                        />
+                        <TeacherAnswerBadge result={vRes} isTeacherReview={isTeacherReview} />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1146,23 +1115,34 @@ export default function Lesson1DContent({
                     { id: '4', prompt: 'The White House in New York.' },
                     { id: '5', prompt: 'Pete a doctor?' },
                     { id: '6', prompt: 'No, he.' },
-                  ].map((item) => (
-                    <div key={item.id}>
-                      <span style={{ fontWeight: 700, marginRight: '6px' }}>{item.id}.</span>
-                      <span>{item.prompt}</span>
-                      <div style={{ paddingLeft: '16px', marginTop: '2px' }}>
-                        <input
-                          type="text"
-                          value={ex5IsIsnt[item.id] || ''}
-                          onChange={(e) => onEx5IsIsntChange(item.id, e.target.value)}
-                          disabled={readOnly}
-                          placeholder="Correct sentence..."
-                          className={styles.textInputLine}
-                          style={{ width: '100%' }}
-                        />
+                  ].map((item) => {
+                    const currentVal = ex5IsIsnt[item.id] || '';
+                    const vRes = isTeacherReview ? verifyAnswer(currentVal, ex5IsIsntKey?.[item.id]) : null;
+                    const validClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+
+                    return (
+                      <div key={item.id}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <span style={{ fontWeight: 700, marginRight: '6px' }}>{item.id}.</span>
+                            <span>{item.prompt}</span>
+                          </div>
+                          <TeacherAnswerBadge result={vRes} isTeacherReview={isTeacherReview} />
+                        </div>
+                        <div style={{ paddingLeft: '16px', marginTop: '2px' }}>
+                          <input
+                            type="text"
+                            value={currentVal}
+                            onChange={(e) => onEx5IsIsntChange(item.id, e.target.value)}
+                            disabled={readOnly}
+                            placeholder="Correct sentence..."
+                            className={`${styles.textInputLine} ${validClass}`}
+                            style={{ width: '100%' }}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -1188,23 +1168,34 @@ export default function Lesson1DContent({
                     { id: '3', prompt: 'The students are at a British university. (American)' },
                     { id: '4', prompt: 'Celine Dion is from Spain. (Canada)' },
                     { id: '5', prompt: 'We are from Spain. (all over the world)' },
-                  ].map((item) => (
-                    <div key={item.id}>
-                      <span style={{ fontWeight: 700, marginRight: '6px' }}>{item.id}.</span>
-                      <span>{item.prompt}</span>
-                      <div style={{ paddingLeft: '16px', marginTop: '2px' }}>
-                        <input
-                          type="text"
-                          value={ex6Corrections[item.id] || ''}
-                          onChange={(e) => onEx6CorrectionsChange(item.id, e.target.value)}
-                          disabled={readOnly}
-                          placeholder="Write correct sentence..."
-                          className={styles.textInputLine}
-                          style={{ width: '100%' }}
-                        />
+                  ].map((item) => {
+                    const currentVal = ex6Corrections[item.id] || '';
+                    const vRes = isTeacherReview ? verifyAnswer(currentVal, ex6Key?.[item.id]) : null;
+                    const validClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+
+                    return (
+                      <div key={item.id}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                          <div>
+                            <span style={{ fontWeight: 700, marginRight: '6px' }}>{item.id}.</span>
+                            <span>{item.prompt}</span>
+                          </div>
+                          <TeacherAnswerBadge result={vRes} isTeacherReview={isTeacherReview} />
+                        </div>
+                        <div style={{ paddingLeft: '16px', marginTop: '2px' }}>
+                          <input
+                            type="text"
+                            value={currentVal}
+                            onChange={(e) => onEx6CorrectionsChange(item.id, e.target.value)}
+                            disabled={readOnly}
+                            placeholder="Write correct sentence..."
+                            className={`${styles.textInputLine} ${validClass}`}
+                            style={{ width: '100%' }}
+                          />
+                        </div>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1233,22 +1224,29 @@ export default function Lesson1DContent({
                     { id: '8', prompt: "Sergio's from Mexico. Sergio's" },
                     { id: '9', prompt: "Agnieszka's from Poland. Agnieszka's" },
                     { id: '10', prompt: "Anurak's from Thailand. Anurak's" },
-                  ].map((item) => (
-                    <div key={item.id}>
-                      <span style={{ fontWeight: 700, marginRight: '6px' }}>{item.id}.</span>
-                      <span>{item.prompt} </span>
-                      <input
-                        type="text"
-                        value={ex7aNationalities[item.id] || ''}
-                        onChange={(e) => onEx7aNationalitiesChange(item.id, e.target.value)}
-                        disabled={readOnly}
-                        placeholder="Nationality"
-                        className={styles.textInputLine}
-                        style={{ width: '110px' }}
-                      />
-                      <span>.</span>
-                    </div>
-                  ))}
+                  ].map((item) => {
+                    const currentVal = ex7aNationalities[item.id] || '';
+                    const vRes = isTeacherReview ? verifyAnswer(currentVal, ex7aKey?.[item.id]) : null;
+                    const validClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+
+                    return (
+                      <div key={item.id} style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap' }}>
+                        <span style={{ fontWeight: 700, marginRight: '6px' }}>{item.id}.</span>
+                        <span>{item.prompt} </span>
+                        <input
+                          type="text"
+                          value={currentVal}
+                          onChange={(e) => onEx7aNationalitiesChange(item.id, e.target.value)}
+                          disabled={readOnly}
+                          placeholder="Nationality"
+                          className={`${styles.textInputLine} ${validClass}`}
+                          style={{ width: '110px' }}
+                        />
+                        <span>.</span>
+                        <TeacherAnswerBadge result={vRes} isTeacherReview={isTeacherReview} />
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -1267,12 +1265,14 @@ export default function Lesson1DContent({
                       value={ex8Alternatives['1'] || ''}
                       onChange={(e) => onEx8AlternativesChange('1', e.target.value)}
                       disabled={readOnly}
+                      className={isTeacherReview ? (verifyAnswer(ex8Alternatives['1'], ex8Key?.['1']).status === 'correct' ? styles.choiceValid : verifyAnswer(ex8Alternatives['1'], ex8Key?.['1']).status === 'incorrect' ? styles.choiceInvalid : '') : ''}
                       style={{ padding: '2px 4px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                     >
                       <option value="">-- select --</option>
                       <option value="We're">We&apos;re</option>
                       <option value="They're">They&apos;re</option>
                     </select>
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex8Alternatives['1'], ex8Key?.['1']) : null} isTeacherReview={isTeacherReview} />
                     <span> from Mexico.</span>
                   </div>
 
@@ -1283,12 +1283,14 @@ export default function Lesson1DContent({
                       value={ex8Alternatives['2'] || ''}
                       onChange={(e) => onEx8AlternativesChange('2', e.target.value)}
                       disabled={readOnly}
+                      className={isTeacherReview ? (verifyAnswer(ex8Alternatives['2'], ex8Key?.['2']).status === 'correct' ? styles.choiceValid : verifyAnswer(ex8Alternatives['2'], ex8Key?.['2']).status === 'incorrect' ? styles.choiceInvalid : '') : ''}
                       style={{ padding: '2px 4px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                     >
                       <option value="">-- select --</option>
                       <option value="we are">we are</option>
                       <option value="are we">are we</option>
                     </select>
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex8Alternatives['2'], ex8Key?.['2']) : null} isTeacherReview={isTeacherReview} />
                     <span> in Classroom 2 today?</span>
                   </div>
 
@@ -1299,12 +1301,14 @@ export default function Lesson1DContent({
                       value={ex8Alternatives['3'] || ''}
                       onChange={(e) => onEx8AlternativesChange('3', e.target.value)}
                       disabled={readOnly}
+                      className={isTeacherReview ? (verifyAnswer(ex8Alternatives['3'], ex8Key?.['3']).status === 'correct' ? styles.choiceValid : verifyAnswer(ex8Alternatives['3'], ex8Key?.['3']).status === 'incorrect' ? styles.choiceInvalid : '') : ''}
                       style={{ padding: '2px 4px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                     >
                       <option value="">-- select --</option>
                       <option value="Are they">Are they</option>
                       <option value="They are">They are</option>
                     </select>
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex8Alternatives['3'], ex8Key?.['3']) : null} isTeacherReview={isTeacherReview} />
                     <span> British.</span>
                   </div>
 
@@ -1315,34 +1319,40 @@ export default function Lesson1DContent({
                       value={ex8Alternatives['4_a'] || ''}
                       onChange={(e) => onEx8AlternativesChange('4_a', e.target.value)}
                       disabled={readOnly}
+                      className={isTeacherReview ? (verifyAnswer(ex8Alternatives['4_a'], ex8Key?.['4_a']).status === 'correct' ? styles.choiceValid : verifyAnswer(ex8Alternatives['4_a'], ex8Key?.['4_a']).status === 'incorrect' ? styles.choiceInvalid : '') : ''}
                       style={{ padding: '2px 4px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                     >
                       <option value="">-- select --</option>
                       <option value="Are we">Are we</option>
                       <option value="Are you">Are you</option>
                     </select>
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex8Alternatives['4_a'], ex8Key?.['4_a']) : null} isTeacherReview={isTeacherReview} />
                     <span> from Tokyo? B: </span>
                     <select
                       value={ex8Alternatives['4_b1'] || ''}
                       onChange={(e) => onEx8AlternativesChange('4_b1', e.target.value)}
                       disabled={readOnly}
+                      className={isTeacherReview ? (verifyAnswer(ex8Alternatives['4_b1'], ex8Key?.['4_b1']).status === 'correct' ? styles.choiceValid : verifyAnswer(ex8Alternatives['4_b1'], ex8Key?.['4_b1']).status === 'incorrect' ? styles.choiceInvalid : '') : ''}
                       style={{ padding: '2px 4px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                     >
                       <option value="">-- select --</option>
                       <option value="We aren't">We aren&apos;t</option>
                       <option value="They aren't">They aren&apos;t</option>
                     </select>
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex8Alternatives['4_b1'], ex8Key?.['4_b1']) : null} isTeacherReview={isTeacherReview} />
                     <span> from Tokyo. </span>
                     <select
                       value={ex8Alternatives['4_b2'] || ''}
                       onChange={(e) => onEx8AlternativesChange('4_b2', e.target.value)}
                       disabled={readOnly}
+                      className={isTeacherReview ? (verifyAnswer(ex8Alternatives['4_b2'], ex8Key?.['4_b2']).status === 'correct' ? styles.choiceValid : verifyAnswer(ex8Alternatives['4_b2'], ex8Key?.['4_b2']).status === 'incorrect' ? styles.choiceInvalid : '') : ''}
                       style={{ padding: '2px 4px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                     >
                       <option value="">-- select --</option>
                       <option value="You're">You&apos;re</option>
                       <option value="We're">We&apos;re</option>
                     </select>
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex8Alternatives['4_b2'], ex8Key?.['4_b2']) : null} isTeacherReview={isTeacherReview} />
                     <span> from Osaka.</span>
                   </div>
 
@@ -1353,12 +1363,14 @@ export default function Lesson1DContent({
                       value={ex8Alternatives['5'] || ''}
                       onChange={(e) => onEx8AlternativesChange('5', e.target.value)}
                       disabled={readOnly}
+                      className={isTeacherReview ? (verifyAnswer(ex8Alternatives['5'], ex8Key?.['5']).status === 'correct' ? styles.choiceValid : verifyAnswer(ex8Alternatives['5'], ex8Key?.['5']).status === 'incorrect' ? styles.choiceInvalid : '') : ''}
                       style={{ padding: '2px 4px', borderRadius: '4px', border: '1px solid #cbd5e1' }}
                     >
                       <option value="">-- select --</option>
                       <option value="You aren't">You aren&apos;t</option>
                       <option value="They aren't">They aren&apos;t</option>
                     </select>
+                    <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex8Alternatives['5'], ex8Key?.['5']) : null} isTeacherReview={isTeacherReview} />
                     <span> late.</span>
                   </div>
                 </div>
@@ -1378,27 +1390,30 @@ export default function Lesson1DContent({
                     value={ex9Text['1'] || ''}
                     onChange={(e) => onEx9TextChange('1', e.target.value)}
                     disabled={readOnly}
-                    className={styles.textInputLine}
+                    className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex9Text['1'], ex9Key?.['1']).status === 'correct' ? styles.inputValid : verifyAnswer(ex9Text['1'], ex9Key?.['1']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                     style={{ width: '55px' }}
                   />
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex9Text['1'], ex9Key?.['1']) : null} isTeacherReview={isTeacherReview} />
                   <span> my friends in London. I&apos;m from the UK, but Nick and Kelly </span>
                   <input
                     type="text"
                     value={ex9Text['2'] || ''}
                     onChange={(e) => onEx9TextChange('2', e.target.value)}
                     disabled={readOnly}
-                    className={styles.textInputLine}
+                    className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex9Text['2'], ex9Key?.['2']).status === 'correct' ? styles.inputValid : verifyAnswer(ex9Text['2'], ex9Key?.['2']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                     style={{ width: '65px' }}
                   />
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex9Text['2'], ex9Key?.['2']) : null} isTeacherReview={isTeacherReview} />
                   <span> British. They </span>
                   <input
                     type="text"
                     value={ex9Text['3'] || ''}
                     onChange={(e) => onEx9TextChange('3', e.target.value)}
                     disabled={readOnly}
-                    className={styles.textInputLine}
+                    className={`${styles.textInputLine} ${isTeacherReview ? (verifyAnswer(ex9Text['3'], ex9Key?.['3']).status === 'correct' ? styles.inputValid : verifyAnswer(ex9Text['3'], ex9Key?.['3']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
                     style={{ width: '55px' }}
                   />
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(ex9Text['3'], ex9Key?.['3']) : null} isTeacherReview={isTeacherReview} />
                   <span> from Canada.</span>
                 </div>
               </div>

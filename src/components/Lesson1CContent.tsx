@@ -2,6 +2,8 @@
 
 import React from 'react';
 import Image from 'next/image';
+import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
+import { verifyAnswer, getExerciseKey, LessonAnswerKey } from '@/lib/answerVerification';
 import styles from './lesson1c.module.scss';
 
 export const countriesData = [
@@ -56,6 +58,8 @@ export interface Lesson1CContentProps {
   onQuestionsChange: (id: string, value: string) => void;
   onSpeakingNotesChange?: (value: string) => void;
   readOnly?: boolean;
+  isTeacherReview?: boolean;
+  answerKey?: LessonAnswerKey | null;
   originalAnswers?: {
     exercise_1b_nationalities?: Record<string, string>;
     exercise_2c_stress?: Record<string, string>;
@@ -91,10 +95,20 @@ export default function Lesson1CContent({
   onQuestionsChange,
   onSpeakingNotesChange = () => {},
   readOnly = false,
+  isTeacherReview = false,
+  answerKey = null,
   originalAnswers,
   playAudio,
   playingAudio,
 }: Lesson1CContentProps) {
+  const ex1bKey = getExerciseKey(answerKey, 'exercise_1b_nationalities');
+  const ex2cKey = getExerciseKey(answerKey, 'exercise_2c_stress');
+  const ex4aKey = getExerciseKey(answerKey, 'exercise_4a_photos');
+  const ex4bKey = getExerciseKey(answerKey, 'exercise_4b_tf');
+  const ex5aKey = getExerciseKey(answerKey, 'exercise_5a_grammar');
+  const ex6Key = getExerciseKey(answerKey, 'exercise_6_texts');
+  const ex7aKey = getExerciseKey(answerKey, 'exercise_7a_questions');
+
   return (
     <div className={styles.pageContainer}>
       {/* ================= TEXTBOOK PAGE 10 ================= */}
@@ -181,6 +195,8 @@ export default function Lesson1CContent({
                   const currentVal = nationalitiesInputs[c.id] || '';
                   const origVal = originalAnswers?.exercise_1b_nationalities?.[c.id];
                   const isChanged = origVal !== undefined && origVal !== currentVal;
+                  const vRes = isTeacherReview ? verifyAnswer(currentVal, ex1bKey?.[c.id]) : null;
+                  const validClass = vRes?.status === 'correct' ? styles.choiceValid : vRes?.status === 'incorrect' ? styles.choiceInvalid : '';
 
                   return (
                     <div key={c.id} className={styles.matchRow}>
@@ -191,7 +207,7 @@ export default function Lesson1CContent({
                         value={currentVal}
                         onChange={(e) => onNationalitiesChange(c.id, e.target.value)}
                         disabled={readOnly}
-                        className={`${styles.matchSelect} ${isChanged ? 'border-amber-500' : ''}`}
+                        className={`${styles.matchSelect} ${validClass} ${isChanged ? 'border-amber-500' : ''}`}
                       >
                         <option value="">-- select --</option>
                         {nationalitiesList.map((nat) => (
@@ -200,6 +216,7 @@ export default function Lesson1CContent({
                           </option>
                         ))}
                       </select>
+                      <TeacherAnswerBadge result={vRes} isTeacherReview={isTeacherReview} />
                     </div>
                   );
                 })}
@@ -248,21 +265,30 @@ export default function Lesson1CContent({
                     { id: '3', text: '3. Japan / Japanese' },
                     { id: '4', text: '4. Mexico / Mexican' },
                     { id: '5', text: '5. Poland / Polish' },
-                  ].map((item) => (
-                    <div key={item.id} className={styles.stressRow}>
-                      <span>{item.text}</span>
-                      <select
-                        value={stressInputs[item.id] || ''}
-                        onChange={(e) => onStressChange(item.id, e.target.value)}
-                        disabled={readOnly}
-                        className={styles.stressSelect}
-                      >
-                        <option value="">--</option>
-                        <option value="S">S (Same)</option>
-                        <option value="D">D (Different)</option>
-                      </select>
-                    </div>
-                  ))}
+                  ].map((item) => {
+                    const currentVal = stressInputs[item.id] || '';
+                    const vRes = isTeacherReview ? verifyAnswer(currentVal, ex2cKey?.[item.id]) : null;
+                    const validClass = vRes?.status === 'correct' ? styles.choiceValid : vRes?.status === 'incorrect' ? styles.choiceInvalid : '';
+
+                    return (
+                      <div key={item.id} className={styles.stressRow}>
+                        <span>{item.text}</span>
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                          <select
+                            value={currentVal}
+                            onChange={(e) => onStressChange(item.id, e.target.value)}
+                            disabled={readOnly}
+                            className={`${styles.stressSelect} ${validClass}`}
+                          >
+                            <option value="">--</option>
+                            <option value="S">S (Same)</option>
+                            <option value="D">D (Different)</option>
+                          </select>
+                          <TeacherAnswerBadge result={vRes} isTeacherReview={isTeacherReview} />
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -337,27 +363,36 @@ export default function Lesson1CContent({
                     id: '5',
                     text: "And this is my friend Marvin. He's from London, but he's in Vancouver in Canada now.",
                   },
-                ].map((item) => (
-                  <div key={item.id} className={styles.blogParagraph}>
-                    <select
-                      value={photosInputs[item.id] || ''}
-                      onChange={(e) => onPhotosChange(item.id, e.target.value)}
-                      disabled={readOnly}
-                      className={styles.paraMatchSelect}
-                      title={`Match photo for paragraph ${item.id}`}
-                    >
-                      <option value="">?</option>
-                      <option value="A">A</option>
-                      <option value="B">B</option>
-                      <option value="C">C</option>
-                      <option value="D">D</option>
-                      <option value="E">E</option>
-                    </select>
-                    <p>
-                      <strong>{item.id}.</strong> {item.text}
-                    </p>
-                  </div>
-                ))}
+                ].map((item) => {
+                  const currentVal = photosInputs[item.id] || '';
+                  const vRes = isTeacherReview ? verifyAnswer(currentVal, ex4aKey?.[item.id]) : null;
+                  const validClass = vRes?.status === 'correct' ? styles.choiceValid : vRes?.status === 'incorrect' ? styles.choiceInvalid : '';
+
+                  return (
+                    <div key={item.id} className={styles.blogParagraph}>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                        <select
+                          value={currentVal}
+                          onChange={(e) => onPhotosChange(item.id, e.target.value)}
+                          disabled={readOnly}
+                          className={`${styles.paraMatchSelect} ${validClass}`}
+                          title={`Match photo for paragraph ${item.id}`}
+                        >
+                          <option value="">?</option>
+                          <option value="A">A</option>
+                          <option value="B">B</option>
+                          <option value="C">C</option>
+                          <option value="D">D</option>
+                          <option value="E">E</option>
+                        </select>
+                        <TeacherAnswerBadge result={vRes} isTeacherReview={isTeacherReview} />
+                      </div>
+                      <p>
+                        <strong>{item.id}.</strong> {item.text}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
             </div>
 
@@ -378,21 +413,30 @@ export default function Lesson1CContent({
                   { id: '3', text: '3. The office manager is Thai.' },
                   { id: '4', text: '4. Tim, Annie and Dan are in the UK now.' },
                   { id: '5', text: '5. Marvin is from Vancouver.' },
-                ].map((item) => (
-                  <div key={item.id} className={styles.tfRow}>
-                    <span>{item.text}</span>
-                    <select
-                      value={tfInputs[item.id] || ''}
-                      onChange={(e) => onTfChange(item.id, e.target.value)}
-                      disabled={readOnly}
-                      className={styles.tfSelect}
-                    >
-                      <option value="">--</option>
-                      <option value="T">T (True)</option>
-                      <option value="F">F (False)</option>
-                    </select>
-                  </div>
-                ))}
+                ].map((item) => {
+                  const currentVal = tfInputs[item.id] || '';
+                  const vRes = isTeacherReview ? verifyAnswer(currentVal, ex4bKey?.[item.id]) : null;
+                  const validClass = vRes?.status === 'correct' ? styles.choiceValid : vRes?.status === 'incorrect' ? styles.choiceInvalid : '';
+
+                  return (
+                    <div key={item.id} className={styles.tfRow}>
+                      <span>{item.text}</span>
+                      <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <select
+                          value={currentVal}
+                          onChange={(e) => onTfChange(item.id, e.target.value)}
+                          disabled={readOnly}
+                          className={`${styles.tfSelect} ${validClass}`}
+                        >
+                          <option value="">--</option>
+                          <option value="T">T (True)</option>
+                          <option value="F">F (False)</option>
+                        </select>
+                        <TeacherAnswerBadge result={vRes} isTeacherReview={isTeacherReview} />
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -475,8 +519,9 @@ export default function Lesson1CContent({
                           onChange={(e) => onGrammar5aChange('1', e.target.value)}
                           placeholder="1"
                           disabled={readOnly}
-                          className={styles.tableInput}
-                        />{' '}
+                          className={`${styles.tableInput} ${isTeacherReview ? (verifyAnswer(grammar5aInputs['1'], ex5aKey?.['1']).status === 'correct' ? styles.inputValid : verifyAnswer(grammar5aInputs['1'], ex5aKey?.['1']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                        />
+                        <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(grammar5aInputs['1'], ex5aKey?.['1']) : null} isTeacherReview={isTeacherReview} />{' '}
                         football players.
                       </td>
                     </tr>
@@ -499,8 +544,9 @@ export default function Lesson1CContent({
                           onChange={(e) => onGrammar5aChange('2', e.target.value)}
                           placeholder="2"
                           disabled={readOnly}
-                          className={styles.tableInput}
-                        />.
+                          className={`${styles.tableInput} ${isTeacherReview ? (verifyAnswer(grammar5aInputs['2'], ex5aKey?.['2']).status === 'correct' ? styles.inputValid : verifyAnswer(grammar5aInputs['2'], ex5aKey?.['2']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                        />
+                        <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(grammar5aInputs['2'], ex5aKey?.['2']) : null} isTeacherReview={isTeacherReview} />.
                       </td>
                       <td>No, <strong>we aren&apos;t.</strong></td>
                     </tr>
@@ -517,8 +563,9 @@ export default function Lesson1CContent({
                           onChange={(e) => onGrammar5aChange('3', e.target.value)}
                           placeholder="3"
                           disabled={readOnly}
-                          className={styles.tableInput}
-                        />{' '}
+                          className={`${styles.tableInput} ${isTeacherReview ? (verifyAnswer(grammar5aInputs['3'], ex5aKey?.['3']).status === 'correct' ? styles.inputValid : verifyAnswer(grammar5aInputs['3'], ex5aKey?.['3']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                        />
+                        <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(grammar5aInputs['3'], ex5aKey?.['3']) : null} isTeacherReview={isTeacherReview} />{' '}
                         <strong>they</strong> in the UK?
                       </td>
                       <td>Yes, <strong>they are.</strong></td>
@@ -530,8 +577,9 @@ export default function Lesson1CContent({
                           onChange={(e) => onGrammar5aChange('4', e.target.value)}
                           placeholder="4"
                           disabled={readOnly}
-                          className={styles.tableInput}
-                        />.
+                          className={`${styles.tableInput} ${isTeacherReview ? (verifyAnswer(grammar5aInputs['4'], ex5aKey?.['4']).status === 'correct' ? styles.inputValid : verifyAnswer(grammar5aInputs['4'], ex5aKey?.['4']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                        />
+                        <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(grammar5aInputs['4'], ex5aKey?.['4']) : null} isTeacherReview={isTeacherReview} />.
                       </td>
                     </tr>
                   </tbody>
@@ -546,8 +594,9 @@ export default function Lesson1CContent({
                     onChange={(e) => onGrammar5aChange('5', e.target.value)}
                     placeholder="5"
                     disabled={readOnly}
-                    className={styles.tableInput}
-                  />{' '}
+                    className={`${styles.tableInput} ${isTeacherReview ? (verifyAnswer(grammar5aInputs['5'], ex5aKey?.['5']).status === 'correct' ? styles.inputValid : verifyAnswer(grammar5aInputs['5'], ex5aKey?.['5']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                  />
+                  <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(grammar5aInputs['5'], ex5aKey?.['5']) : null} isTeacherReview={isTeacherReview} />{' '}
                   they? – <strong>They&apos;re</strong> my friends.
                 </div>
               </div>
@@ -592,8 +641,9 @@ export default function Lesson1CContent({
                   onChange={(e) => onTextsChange('2', e.target.value)}
                   placeholder="2"
                   disabled={readOnly}
-                  className={styles.gapInput}
-                />{' '}
+                  className={`${styles.gapInput} ${isTeacherReview ? (verifyAnswer(textsInputs['2'], ex6Key?.['2']).status === 'correct' ? styles.inputValid : verifyAnswer(textsInputs['2'], ex6Key?.['2']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                />
+                <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(textsInputs['2'], ex6Key?.['2']) : null} isTeacherReview={isTeacherReview} />{' '}
                 from Poland but Lidia and Wiktor{' '}
                 <input
                   type="text"
@@ -601,8 +651,9 @@ export default function Lesson1CContent({
                   onChange={(e) => onTextsChange('3', e.target.value)}
                   placeholder="3"
                   disabled={readOnly}
-                  className={styles.gapInput}
-                />{' '}
+                  className={`${styles.gapInput} ${isTeacherReview ? (verifyAnswer(textsInputs['3'], ex6Key?.['3']).status === 'correct' ? styles.inputValid : verifyAnswer(textsInputs['3'], ex6Key?.['3']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                />
+                <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(textsInputs['3'], ex6Key?.['3']) : null} isTeacherReview={isTeacherReview} />{' '}
                 in Kraków at the moment. They{' '}
                 <input
                   type="text"
@@ -610,8 +661,9 @@ export default function Lesson1CContent({
                   onChange={(e) => onTextsChange('4', e.target.value)}
                   placeholder="4"
                   disabled={readOnly}
-                  className={styles.gapInput}
-                />{' '}
+                  className={`${styles.gapInput} ${isTeacherReview ? (verifyAnswer(textsInputs['4'], ex6Key?.['4']).status === 'correct' ? styles.inputValid : verifyAnswer(textsInputs['4'], ex6Key?.['4']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                />
+                <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(textsInputs['4'], ex6Key?.['4']) : null} isTeacherReview={isTeacherReview} />{' '}
                 at university in the UK and they{' '}
                 <input
                   type="text"
@@ -619,8 +671,9 @@ export default function Lesson1CContent({
                   onChange={(e) => onTextsChange('5', e.target.value)}
                   placeholder="5"
                   disabled={readOnly}
-                  className={styles.gapInput}
-                />{' '}
+                  className={`${styles.gapInput} ${isTeacherReview ? (verifyAnswer(textsInputs['5'], ex6Key?.['5']).status === 'correct' ? styles.inputValid : verifyAnswer(textsInputs['5'], ex6Key?.['5']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                />
+                <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(textsInputs['5'], ex6Key?.['5']) : null} isTeacherReview={isTeacherReview} />{' '}
                 very happy there.
               </div>
 
@@ -640,8 +693,9 @@ export default function Lesson1CContent({
                   onChange={(e) => onTextsChange('7', e.target.value)}
                   placeholder="7"
                   disabled={readOnly}
-                  className={styles.gapInput}
-                />{' '}
+                  className={`${styles.gapInput} ${isTeacherReview ? (verifyAnswer(textsInputs['7'], ex6Key?.['7']).status === 'correct' ? styles.inputValid : verifyAnswer(textsInputs['7'], ex6Key?.['7']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                />
+                <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(textsInputs['7'], ex6Key?.['7']) : null} isTeacherReview={isTeacherReview} />{' '}
                 American. They{' '}
                 <input
                   type="text"
@@ -649,8 +703,9 @@ export default function Lesson1CContent({
                   onChange={(e) => onTextsChange('8', e.target.value)}
                   placeholder="8"
                   disabled={readOnly}
-                  className={styles.gapInput}
-                />{' '}
+                  className={`${styles.gapInput} ${isTeacherReview ? (verifyAnswer(textsInputs['8'], ex6Key?.['8']).status === 'correct' ? styles.inputValid : verifyAnswer(textsInputs['8'], ex6Key?.['8']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                />
+                <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(textsInputs['8'], ex6Key?.['8']) : null} isTeacherReview={isTeacherReview} />{' '}
                 from different countries. Sally and Tim{' '}
                 <input
                   type="text"
@@ -658,8 +713,9 @@ export default function Lesson1CContent({
                   onChange={(e) => onTextsChange('9', e.target.value)}
                   placeholder="9"
                   disabled={readOnly}
-                  className={styles.gapInput}
-                />{' '}
+                  className={`${styles.gapInput} ${isTeacherReview ? (verifyAnswer(textsInputs['9'], ex6Key?.['9']).status === 'correct' ? styles.inputValid : verifyAnswer(textsInputs['9'], ex6Key?.['9']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                />
+                <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(textsInputs['9'], ex6Key?.['9']) : null} isTeacherReview={isTeacherReview} />{' '}
                 British. Hana and Kaito{' '}
                 <input
                   type="text"
@@ -667,8 +723,9 @@ export default function Lesson1CContent({
                   onChange={(e) => onTextsChange('10', e.target.value)}
                   placeholder="10"
                   disabled={readOnly}
-                  className={styles.gapInput}
-                />{' '}
+                  className={`${styles.gapInput} ${isTeacherReview ? (verifyAnswer(textsInputs['10'], ex6Key?.['10']).status === 'correct' ? styles.inputValid : verifyAnswer(textsInputs['10'], ex6Key?.['10']).status === 'incorrect' ? styles.inputInvalid : '') : ''}`}
+                />
+                <TeacherAnswerBadge result={isTeacherReview ? verifyAnswer(textsInputs['10'], ex6Key?.['10']) : null} isTeacherReview={isTeacherReview} />{' '}
                 Japanese.
               </div>
             </div>
@@ -698,20 +755,29 @@ export default function Lesson1CContent({
                   { id: '4', prompt: '4. where / you and your classmates / now?' },
                   { id: '5', prompt: '5. who / your teachers?' },
                   { id: '6', prompt: '6. where / your teachers / from?' },
-                ].map((q) => (
-                  <div key={q.id} className={styles.questionItem}>
-                    <label htmlFor={`q7a_${q.id}`} className={styles.promptText}>{q.prompt}</label>
-                    <input
-                      id={`q7a_${q.id}`}
-                      type="text"
-                      value={questionsInputs[q.id] || ''}
-                      onChange={(e) => onQuestionsChange(q.id, e.target.value)}
-                      placeholder="Write your question..."
-                      disabled={readOnly}
-                      className={styles.questionInput}
-                    />
-                  </div>
-                ))}
+                ].map((q) => {
+                  const currentVal = questionsInputs[q.id] || '';
+                  const vRes = isTeacherReview ? verifyAnswer(currentVal, ex7aKey?.[q.id]) : null;
+                  const validClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+
+                  return (
+                    <div key={q.id} className={styles.questionItem}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <label htmlFor={`q7a_${q.id}`} className={styles.promptText}>{q.prompt}</label>
+                        <TeacherAnswerBadge result={vRes} isTeacherReview={isTeacherReview} />
+                      </div>
+                      <input
+                        id={`q7a_${q.id}`}
+                        type="text"
+                        value={currentVal}
+                        onChange={(e) => onQuestionsChange(q.id, e.target.value)}
+                        placeholder="Write your question..."
+                        disabled={readOnly}
+                        className={`${styles.questionInput} ${validClass}`}
+                      />
+                    </div>
+                  );
+                })}
               </div>
             </div>
 

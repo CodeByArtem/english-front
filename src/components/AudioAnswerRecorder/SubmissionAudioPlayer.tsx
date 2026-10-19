@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useRef } from 'react';
-import { API_URL } from '@/lib/api';
 import styles from './SubmissionAudioPlayer.module.scss';
 
 export interface SubmissionAudioMeta {
@@ -35,7 +34,7 @@ export const SubmissionAudioPlayer: React.FC<SubmissionAudioPlayerProps> = ({
 
   const encodedId = encodeURIComponent(submissionId);
   const encodedKey = encodeURIComponent(exerciseKey);
-  const audioSrc = `${API_URL}/submissions/${encodedId}/audio/${encodedKey}${retryKey > 0 ? `?r=${retryKey}` : ''}`;
+  const audioSrc = `/api/submissions/${encodedId}/audio/${encodedKey}${retryKey > 0 ? `?r=${retryKey}` : ''}`;
 
   const handleRetry = () => {
     setLoadError(false);

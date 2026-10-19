@@ -1,0 +1,970 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  font-family: inherit;
+  color: #222222;
+}
+
+/* ========================================================================= */
+/* ================= PAGE 22: 3A MY TOWN =================================== */
+/* ========================================================================= */
+.textbookPage22 {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 2.5rem;
+  box-sizing: border-box;
+}
+
+.headerBanner22 {
+  position: relative;
+  height: 126px;
+  width: 100%;
+  overflow: hidden;
+  background: linear-gradient(90deg, #ffffff 0%, #f5f8fa 38%, #dce5ea 100%);
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.headerContent22 {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.chevronsSvg {
+  height: 100%;
+  width: 430px;
+  flex-shrink: 0;
+  display: block;
+}
+
+.badge3A {
+  position: absolute;
+  left: 84px;
+  top: 38px;
+  display: flex;
+  align-items: baseline;
+  line-height: 1;
+  font-family: 'Merriweather Sans', sans-serif;
+
+  .num3 {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 54px;
+    letter-spacing: -0.02em;
+  }
+
+  .letterA {
+    color: #ee8d83;
+    font-weight: 800;
+    font-size: 40px;
+    margin-left: 2px;
+  }
+}
+
+.titleHeading22 {
+  font-family: 'Merriweather Sans', sans-serif;
+  color: #1d4e66;
+  font-weight: 800;
+  font-size: 33px;
+  position: absolute;
+  left: 220px;
+  top: 53px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Goals box */
+.goalsCard {
+  background: #d65c48;
+  color: #ffffff;
+  padding: 0.6rem 1rem;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-left: 2.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+  width: fit-content;
+  border-radius: 3px;
+
+  .goalItem {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+
+  strong {
+    font-weight: 700;
+  }
+}
+
+/* Two-column layout */
+.grid22 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem;
+  padding: 0 1.75rem;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+    padding: 0 1rem;
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Town image thumbnail */
+.townImageWrapper {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: scale(1.005);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+}
+
+.zoomHint {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  background: rgba(17, 24, 39, 0.7);
+  color: #ffffff;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  backdrop-filter: blur(2px);
+  pointer-events: none;
+}
+
+/* Section banners */
+.sectionHeader {
+  font-family: 'Merriweather Sans', sans-serif;
+  color: #1d4e66;
+  font-size: 1.25rem;
+  font-weight: 800;
+  margin: 0.5rem 0 0.25rem 0;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 0.25rem;
+}
+
+/* Exercise headings & prompts */
+.exerciseHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.925rem;
+  color: #111827;
+  line-height: 1.45;
+  margin-bottom: 0.5rem;
+
+  .exNumber {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #d32027;
+    flex-shrink: 0;
+  }
+
+  .exLetter {
+    font-weight: 800;
+    color: #111827;
+    margin-right: 2px;
+    flex-shrink: 0;
+  }
+
+  .instruction {
+    font-weight: 600;
+  }
+}
+
+.subPrompt {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+
+  .exLetter {
+    font-weight: 800;
+    color: #111827;
+    flex-shrink: 0;
+  }
+}
+
+/* ========================================================================= */
+/* ============= UNIFIED AUDIO BUTTON (FROM LESSON 1A / UNIT 1) ============ */
+/* ========================================================================= */
+.audioBtn {
+  background: #d02a27;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-right: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+  min-width: 90px;
+  justify-content: center;
+  user-select: none;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+    background: #b91c1c;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.audioBtnActive {
+  background: #1b4c5b !important;
+  color: white;
+  padding: 0.25rem 0.75rem;
+}
+
+.equalizer {
+  display: flex;
+  align-items: flex-end;
+  height: 12px;
+  gap: 2px;
+}
+
+.bar {
+  width: 2px;
+  background: white;
+  animation: equalize 1s ease-in-out infinite;
+
+  &:nth-child(1) { height: 60%; animation-delay: -0.4s; }
+  &:nth-child(2) { height: 100%; animation-delay: -0.2s; }
+  &:nth-child(3) { height: 80%; animation-delay: -0.6s; }
+}
+
+@keyframes equalize {
+  0%, 100% { height: 30%; }
+  50% { height: 100%; }
+}
+
+/* Ex 1a Places matching grid */
+.placesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 12px;
+  padding-left: 1.25rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.placeItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+
+  .placeNum {
+    font-weight: 800;
+    color: #111827;
+    width: 18px;
+    flex-shrink: 0;
+  }
+
+  .placeName {
+    flex: 1;
+    color: #374151;
+  }
+
+  .letterSelect {
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-size: 0.825rem;
+    font-weight: 700;
+    color: #1d4e66;
+    background: #ffffff;
+    cursor: pointer;
+  }
+}
+
+/* Photos cards for Ex 3 */
+.listeningPhotosRow {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0.5rem 0;
+
+  .photoThumb {
+    position: relative;
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+
+    img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .badgeLetter {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      background: #1d4e66;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+      width: 18px;
+      height: 18px;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+}
+
+/* Matching speakers to photos */
+.speakersMatchRow {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+  padding-left: 1.25rem;
+
+  .speakerItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+
+    strong {
+      color: #111827;
+    }
+
+    select {
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #1d4e66;
+    }
+  }
+}
+
+/* Ex 4 options list */
+.choiceListEx4 {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-left: 1.25rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+
+  .personGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+
+    .personName {
+      font-weight: 800;
+      color: #1d4e66;
+      font-size: 0.9rem;
+      margin-top: 0.25rem;
+    }
+  }
+
+  .choiceQuestion {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 0.85rem;
+
+    .optionsGroup {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+
+      label {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        cursor: pointer;
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid #e2e8f0;
+        background: #f8fafc;
+        transition: all 0.15s ease;
+
+        &:hover {
+          background: #f1f5f9;
+        }
+
+        &.selectedOption {
+          background: #e0f2fe;
+          border-color: #0284c7;
+          color: #0369a1;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}
+
+/* Grammar Table Ex 5 */
+.grammarTableWrapper {
+  background: #c6d8e2;
+  background-image: repeating-linear-gradient(
+    -45deg,
+    transparent,
+    transparent 8px,
+    rgba(255, 255, 255, 0.25) 8px,
+    rgba(255, 255, 255, 0.25) 16px
+  );
+  border: 1px solid #a8c4d2;
+  border-radius: 6px;
+  padding: 0.75rem 0.85rem;
+  box-sizing: border-box;
+
+  .tableTitle {
+    color: #163645;
+    font-size: 1.05rem;
+    font-weight: 800;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+    font-size: 0.825rem;
+    background: #bdd1dc;
+    border: 1.5px solid #ffffff;
+
+    th, td {
+      border: 1.5px solid #ffffff;
+      padding: 6px 8px;
+      vertical-align: top;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    th {
+      background: #8faec0;
+      font-weight: 800;
+      color: #132f3d;
+      text-align: left;
+      font-size: 0.825rem;
+
+      &:nth-child(1) {
+        width: 26px;
+        text-align: center;
+        padding: 4px;
+      }
+    }
+
+    td {
+      background: #bdd1dc;
+      color: #3b5360;
+      line-height: 1.35;
+    }
+
+    .signCol {
+      font-weight: 800;
+      font-size: 1.15rem;
+      text-align: center;
+      width: 26px;
+      background: #9fbac9;
+      color: #132f3d;
+      user-select: none;
+      vertical-align: middle;
+      padding: 2px;
+    }
+  }
+
+  .line {
+    color: #3b5360;
+    font-size: 0.825rem;
+    line-height: 1.35;
+    white-space: nowrap;
+
+    strong {
+      color: #132f3d;
+      font-weight: 800;
+    }
+  }
+
+  .emptyLine {
+    height: 1.15rem;
+    line-height: 1.35;
+    user-select: none;
+  }
+
+  .gapLine {
+    display: flex;
+    align-items: baseline;
+    gap: 3px;
+    flex-wrap: nowrap;
+    white-space: nowrap;
+    margin-top: 3px;
+    font-size: 0.825rem;
+
+    .supNum {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #163645;
+      flex-shrink: 0;
+      vertical-align: super;
+      line-height: 1;
+    }
+
+    .gapAfter {
+      white-space: nowrap;
+      flex-shrink: 0;
+
+      strong {
+        color: #132f3d;
+        font-weight: 800;
+      }
+    }
+  }
+
+  .grammarInput {
+    border: none;
+    border-bottom: 1.5px solid #163645;
+    background: transparent;
+    padding: 0 2px;
+    font-size: 0.825rem;
+    color: #132f3d;
+    font-weight: 700;
+    outline: none;
+    width: 64px;
+    min-width: 56px;
+    max-width: 70px;
+    text-align: center;
+    box-sizing: border-box;
+    border-radius: 0;
+    transition: all 0.15s ease;
+
+    &:focus {
+      border-bottom-color: #d32027;
+      background: rgba(255, 255, 255, 0.45);
+    }
+  }
+}
+
+/* ========================================================================= */
+/* ================= PAGE 23: 3A MY TOWN (PART 2) ========================== */
+/* ========================================================================= */
+.textbookPage23 {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 2.5rem;
+  box-sizing: border-box;
+}
+
+.panoramaWrapper {
+  margin: 1.5rem 2.5rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: scale(1.005);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+}
+
+.grid23 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2rem;
+  padding: 0 2.5rem;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+}
+
+/* Sentence listening list 6a */
+.sentencesList6a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  color: #1f2937;
+
+  .sentenceItem {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+
+    strong {
+      color: #111827;
+      width: 14px;
+    }
+  }
+}
+
+/* Ex 7a Alternatives */
+.alternativesList7a {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-left: 1.25rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+
+  .altRow {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    font-size: 0.875rem;
+    flex-wrap: wrap;
+
+    .altNum {
+      font-weight: 800;
+      color: #111827;
+      width: 16px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.choicePills {
+  display: inline-flex;
+  gap: 4px;
+  margin: 0 4px;
+}
+
+.choiceBtn {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 1px 8px;
+  font-size: 0.85rem;
+  color: #334155;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: #e2e8f0;
+  }
+
+  &.choiceSelected {
+    background: #1d4e66;
+    color: #ffffff;
+    border-color: #1d4e66;
+    font-weight: 700;
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+/* Ex 7b lists */
+.lists7b {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-left: 1.25rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+
+  .listRow {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 0.875rem;
+
+    .rowNum {
+      font-weight: 800;
+      color: #111827;
+      width: 16px;
+      flex-shrink: 0;
+    }
+  }
+}
+
+.underlinedInput {
+  border: none;
+  border-bottom: 1.5px solid #94a3b8;
+  background: transparent;
+  padding: 2px 4px;
+  font-size: 0.875rem;
+  color: #1e7898;
+  font-weight: 600;
+  outline: none;
+  min-width: 80px;
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    border-bottom-color: #d32027;
+  }
+
+  &:disabled {
+    color: #334155;
+  }
+}
+
+/* Ex 8 Text fill */
+.textFillCard {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  font-size: 0.9rem;
+  color: #78350f;
+  line-height: 1.8;
+  box-sizing: border-box;
+
+  .gapIndex {
+    color: #d32027;
+    font-weight: 800;
+    font-size: 0.85rem;
+    margin-right: 2px;
+  }
+
+  .gapInput {
+    border: none;
+    border-bottom: 1.5px solid #b45309;
+    background: transparent;
+    padding: 2px 4px;
+    font-size: 0.875rem;
+    color: #92400e;
+    font-weight: 700;
+    outline: none;
+    min-width: 60px;
+
+    &:focus {
+      border-bottom-color: #d32027;
+    }
+  }
+}
+
+/* Ex 9 Sentences writing */
+.sentencesWritingGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding-left: 1.25rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+
+  .writeRow {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    font-size: 0.875rem;
+
+    .num {
+      font-weight: 800;
+      color: #111827;
+      width: 14px;
+      flex-shrink: 0;
+    }
+
+    input {
+      flex: 1;
+    }
+  }
+}
+
+/* Speaking badges */
+.speakingBadgeRow {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+
+  .stepBadge {
+    background: #d32027;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    padding: 2px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+}
+
+/* Reading badge */
+.readingBadge {
+  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+  color: #ffffff;
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(225, 29, 72, 0.25);
+  user-select: none;
+  width: fit-content;
+  align-self: flex-end;
+
+  strong {
+    font-size: 0.95rem;
+    font-weight: 800;
+  }
+
+  span {
+    font-size: 0.8rem;
+    opacity: 0.95;
+  }
+}
+
+/* Page number badges */
+.pageNumberBadge {
+  position: absolute;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  user-select: none;
+
+  &.left {
+    left: 16px;
+  }
+
+  &.right {
+    right: 24px;
+    z-index: 20;
+  }
+}
+
+/* Modal */
+.imageModalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.imageModalContent {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  img {
+    max-width: 100%;
+    max-height: 85vh;
+    object-fit: contain;
+    border-radius: 4px;
+  }
+
+  .closeBtn {
+    position: absolute;
+    top: -35px;
+    right: 0;
+    background: transparent;
+    border: none;
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+    font-weight: 700;
+  }
+}
+
+.inputValid {
+  border-color: #16a34a !important;
+  background-color: #f0fdf4 !important;
+}
+
+.inputInvalid {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+}
+
+.choiceValid {
+  border-color: #16a34a !important;
+  background-color: #f0fdf4 !important;
+  color: #15803d !important;
+}
+
+.choiceInvalid {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+  color: #b91c1c !important;
+}

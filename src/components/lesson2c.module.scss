@@ -1,0 +1,1308 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  font-family: inherit;
+  color: #1f2937;
+}
+
+/* Textbook Page Container */
+.textbookPage {
+  max-width: 900px;
+  width: 100%;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 3.5rem;
+}
+
+/* ========================================================================= */
+/* ===================== PAGE 18: BANNER & COLLAGE ========================= */
+/* ========================================================================= */
+.topSection {
+  background: #ffffff;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.topGrid {
+  display: grid;
+  grid-template-columns: 1.15fr 0.95fr 1fr;
+  gap: 4px;
+  background: #ffffff;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Column 1: Header + Goals + Photo 1 */
+.col1 {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px 6px 4px 12px;
+
+  @media (max-width: 768px) {
+    padding: 12px;
+  }
+}
+
+.headerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-top: 4px;
+}
+
+.unitBadgeWrap {
+  position: relative;
+  width: 76px;
+  height: 64px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.unitBadgePolygon {
+  position: absolute;
+  inset: 0;
+  background: #d32027;
+  clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0 100%);
+}
+
+.badgeContent {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: baseline;
+  line-height: 1;
+  padding-right: 12px;
+
+  .num2 {
+    color: #ffffff;
+    font-size: 38px;
+    font-weight: 900;
+    letter-spacing: -0.03em;
+  }
+
+  .letterC {
+    color: #fca5a5;
+    font-size: 28px;
+    font-weight: 800;
+    margin-left: 2px;
+  }
+}
+
+.titleHeading {
+  font-size: 32px;
+  font-weight: 800;
+  color: #1e3a5f;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+/* Goals Box (Salmon / Coral) */
+.goalsBox {
+  background: #e76046;
+  color: #ffffff;
+  padding: 10px 14px;
+  border-radius: 4px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  box-shadow: 0 2px 4px rgba(231, 96, 70, 0.2);
+
+  .goalItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .chevronIcon {
+      color: #ffffff;
+      flex-shrink: 0;
+    }
+
+    strong {
+      font-weight: 700;
+    }
+
+    em {
+      font-style: italic;
+    }
+  }
+}
+
+/* Column 2: Photo 3 (Top) & Photo 2 (Bottom) */
+.col2 {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Column 3: Photo 4 (Top) & Photo 5 (Middle) & Photo 6 (Bottom) */
+.col3 {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Photo Thumbnail Cards */
+.photoCard {
+  position: relative;
+  overflow: hidden;
+  background: #e2e8f0;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: scale(1.01);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 5;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #0288d1;
+    outline-offset: 2px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .photoBadge {
+    position: absolute;
+    top: 6px;
+    left: 6px;
+    background: rgba(17, 24, 39, 0.75);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 800;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    z-index: 2;
+  }
+}
+
+.photoCard1 {
+  height: 210px;
+}
+
+.photoCard2 {
+  height: 247px;
+}
+
+.photoCard3 {
+  height: 160px;
+}
+
+.photoCard4 {
+  height: 160px;
+}
+
+.photoCard5 {
+  height: 122px;
+}
+
+.photoCard6 {
+  height: 120px;
+}
+
+/* ========================================================================= */
+/* ===================== PAGE 19: TOP PHOTOS 7-10 ========================== */
+/* ========================================================================= */
+.topGrid19Wrap {
+  position: relative;
+  border-bottom: 2px solid #f1f5f9;
+  background: #ffffff;
+}
+
+.topGrid19 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 4px;
+  padding: 8px 12px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    padding: 8px;
+  }
+}
+
+.col19_1,
+.col19_2,
+.col19_3 {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.photoCard7 {
+  height: 230px;
+}
+
+.photoCard8 {
+  height: 112px;
+}
+
+.photoCard9 {
+  height: 114px;
+}
+
+.photoCard10 {
+  height: 230px;
+}
+
+/* Side ribbon tab for 2C | Numbers */
+.sideRibbonTab {
+  position: absolute;
+  top: 14px;
+  right: 0;
+  background: #d32027;
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 4px 0 0 4px;
+  font-size: 11.5px;
+  font-weight: 800;
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  letter-spacing: 0.05em;
+  box-shadow: -2px 2px 6px rgba(211, 32, 39, 0.3);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  @media (max-width: 768px) {
+    display: none;
+  }
+}
+
+/* ========================================================================= */
+/* ===================== PAGE GRID (2 COLUMNS) ============================= */
+/* ========================================================================= */
+.pageGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 2rem;
+  padding: 1.5rem 1.75rem 1rem 1.75rem;
+  box-sizing: border-box;
+
+  @media (max-width: 768px) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.75rem;
+    padding: 1.25rem 1rem;
+  }
+}
+
+.leftColumn,
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Section Title Teal */
+.sectionTitleTeal {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #00796b;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid #e0f2f1;
+  padding-bottom: 0.25rem;
+}
+
+/* Prompt Rows */
+.promptRow {
+  font-size: 0.875rem;
+  color: #1f2937;
+  line-height: 1.45;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 0.4rem;
+
+  .numberBold {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #d32027;
+    margin-right: 2px;
+  }
+
+  .letterBold {
+    font-weight: 800;
+    color: #111827;
+    margin-right: 4px;
+  }
+}
+
+.exampleNote {
+  font-size: 0.825rem;
+  color: #0288d1;
+  font-style: italic;
+  margin-bottom: 0.5rem;
+  padding-left: 1.25rem;
+}
+
+/* Word Box for Ex 1a */
+.wordBox {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  padding: 8px 12px;
+  margin: 0.4rem 0 0.75rem 1.25rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  font-size: 0.875rem;
+  color: #374151;
+
+  .wordChip {
+    font-weight: 600;
+
+    &.struck {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+  }
+}
+
+/* Ex 1a Matching Table / Rows */
+.matchGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px 10px;
+  margin-left: 1.25rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.matchItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 4px 8px;
+  min-width: 0;
+  box-sizing: border-box;
+
+  .matchNum {
+    font-weight: 800;
+    color: #111827;
+    font-size: 0.875rem;
+    width: 14px;
+    flex-shrink: 0;
+  }
+
+  .matchSelect {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 3px 6px;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    background: #ffffff;
+    color: #1f2937;
+    outline: none;
+    box-sizing: border-box;
+    text-overflow: ellipsis;
+
+    &:focus {
+      border-color: #0288d1;
+    }
+
+    &:disabled {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+  }
+}
+
+/* ========================================================================= */
+/* ============= UNIFIED AUDIO BUTTON (FROM LESSON 1A / UNIT 1) ============ */
+/* ========================================================================= */
+.audioBtn {
+  background: #d02a27;
+  color: white;
+  border: none;
+  padding: 0.25rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-right: 0.4rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+  min-width: 90px;
+  justify-content: center;
+  user-select: none;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+    background: #b91c1c;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.audioBtnActive {
+  background: #1b4c5b !important;
+  color: white;
+  padding: 0.25rem 0.75rem;
+}
+
+.equalizer {
+  display: flex;
+  align-items: flex-end;
+  height: 12px;
+  gap: 2px;
+}
+
+.bar {
+  width: 2px;
+  background: white;
+  animation: equalize 1s ease-in-out infinite;
+
+  &:nth-child(1) { height: 60%; animation-delay: -0.4s; }
+  &:nth-child(2) { height: 100%; animation-delay: -0.2s; }
+  &:nth-child(3) { height: 80%; animation-delay: -0.6s; }
+}
+
+@keyframes equalize {
+  0%, 100% { height: 30%; }
+  50% { height: 100%; }
+}
+
+/* Pills Grids for Numbers (Ex 1b & 1c) */
+.pillsGridTeal,
+.pillsGridMagenta {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0.4rem 0 0.75rem 1.25rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.pillBadgeTeal {
+  background: #00bcd4;
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(0, 188, 212, 0.3);
+  letter-spacing: 0.01em;
+  user-select: none;
+  transition: transform 0.1s ease;
+  min-width: 0;
+  box-sizing: border-box;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: #00acc1;
+  }
+}
+
+.pillBadgeMagenta {
+  background: #e91e63;
+  color: #ffffff;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 1px 3px rgba(233, 30, 99, 0.3);
+  letter-spacing: 0.01em;
+  user-select: none;
+  transition: transform 0.1s ease;
+  min-width: 0;
+  box-sizing: border-box;
+
+  &:hover {
+    transform: translateY(-1px);
+    background: #d81b60;
+  }
+
+  &.fullWidthPill {
+    grid-column: span 3;
+
+    @media (max-width: 480px) {
+      grid-column: span 2;
+    }
+  }
+}
+
+/* Exercise 2: Listen and Choose (13/30, 14/40...) */
+.choicePairsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px 16px;
+  margin-left: 1.25rem;
+  margin-top: 0.4rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pairRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .pairIndex {
+    font-weight: 800;
+    color: #111827;
+    width: 14px;
+    flex-shrink: 0;
+    font-size: 0.875rem;
+  }
+
+  .choiceButtons {
+    display: inline-flex;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    overflow: hidden;
+    background: #ffffff;
+  }
+
+  .choiceBtn {
+    border: none;
+    background: transparent;
+    padding: 3px 10px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #4b5563;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:first-child {
+      border-right: 1px solid #cbd5e1;
+    }
+
+    &:hover:not(:disabled) {
+      background: #f1f5f9;
+      color: #111827;
+    }
+
+    &.selected {
+      background: #0288d1;
+      color: #ffffff;
+    }
+
+    &:disabled {
+      cursor: default;
+    }
+  }
+}
+
+/* Exercise 3a: Sequence continuation */
+.sequenceWrap {
+  margin-left: 1.25rem;
+  margin-top: 0.3rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+
+  .sequenceHint {
+    font-size: 0.85rem;
+    color: #4b5563;
+    font-style: italic;
+    margin-bottom: 0.4rem;
+
+    .completedWord {
+      color: #0288d1;
+      font-weight: 600;
+    }
+  }
+
+  .sequenceInput {
+    width: 100%;
+    box-sizing: border-box;
+    min-width: 0;
+    padding: 6px 10px;
+    font-size: 0.875rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    outline: none;
+
+    &:focus {
+      border-color: #0288d1;
+      box-shadow: 0 0 0 2px rgba(2, 136, 209, 0.15);
+    }
+
+    &:disabled {
+      background: #f8fafc;
+      color: #64748b;
+    }
+  }
+}
+
+/* App Practice Notice Banner */
+.appBanner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: 6px;
+  padding: 6px 12px;
+  margin-left: 1.25rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+  font-size: 0.8rem;
+  color: #475569;
+
+  .phoneIcon {
+    color: #e91e63;
+    flex-shrink: 0;
+  }
+}
+
+/* Exercise 4 Profiles Card (Listening) */
+.profilesCard {
+  background: #f0fdfa;
+  border: 3px solid #00bcd4;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin-top: 0.4rem;
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: 0 4px 12px rgba(0, 188, 212, 0.1);
+}
+
+.profileSection {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &:not(:last-child) {
+    border-bottom: 1px dashed #b2ebf2;
+    padding-bottom: 12px;
+  }
+}
+
+.profileField {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.85rem;
+
+  .fieldLabel {
+    color: #374151;
+    font-weight: 500;
+    min-width: 115px;
+    flex-shrink: 0;
+  }
+
+  .fieldNameValue {
+    font-weight: 700;
+    color: #111827;
+    flex: 1;
+  }
+
+  .fieldInput {
+    flex: 1;
+    padding: 3px 8px;
+    font-size: 0.85rem;
+    border: 1px solid #b2ebf2;
+    border-radius: 4px;
+    background: #ffffff;
+    outline: none;
+    transition: border-color 0.15s ease;
+
+    &:focus {
+      border-color: #00bcd4;
+      box-shadow: 0 0 0 2px rgba(0, 188, 212, 0.2);
+    }
+
+    &:disabled {
+      background: #f1f5f9;
+      color: #64748b;
+    }
+  }
+}
+
+/* ========================================================================= */
+/* ===================== PAGE 19: GRAMMAR & SPEAKING ======================= */
+/* ========================================================================= */
+
+/* Exercise 5: Grammar Box */
+.grammarBox19 {
+  background: #f0f9ff;
+  border: 2px solid #bae6fd;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin-left: 1.25rem;
+  margin-top: 0.4rem;
+  box-shadow: 0 2px 6px rgba(2, 136, 209, 0.08);
+
+  .grammarHeader {
+    font-size: 1rem;
+    font-weight: 800;
+    color: #0369a1;
+    margin-bottom: 0.6rem;
+  }
+
+  .grammarRuleRow {
+    font-size: 0.85rem;
+    color: #334155;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 6px;
+  }
+
+  .choiceToggleGroup {
+    display: inline-flex;
+    border: 1px solid #93c5fd;
+    border-radius: 4px;
+    overflow: hidden;
+    vertical-align: middle;
+    background: #ffffff;
+    margin: 0 2px;
+  }
+
+  .toggleBtn {
+    border: none;
+    background: transparent;
+    padding: 2px 7px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #1e40af;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:first-child {
+      border-right: 1px solid #93c5fd;
+    }
+
+    &:hover:not(:disabled) {
+      background: #eff6ff;
+    }
+
+    &.selected {
+      background: #0288d1;
+      color: #ffffff;
+    }
+
+    &:disabled {
+      cursor: default;
+    }
+  }
+}
+
+/* Grammar Table */
+.grammarTableWrap {
+  margin-top: 0.75rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #ffffff;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.825rem;
+
+    tr:not(:last-child) {
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    td {
+      padding: 6px 10px;
+
+      &:first-child {
+        font-weight: 700;
+        color: #1e3a5f;
+        border-right: 1px solid #f1f5f9;
+        width: 48%;
+      }
+
+      &:last-child {
+        color: #475569;
+      }
+    }
+  }
+}
+
+/* Exercise 6 Pronunciation List */
+.pronunciationList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-left: 1.25rem;
+  margin-top: 0.4rem;
+  font-size: 0.875rem;
+}
+
+.pronunciationItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f8fafc;
+  padding: 4px 10px;
+  border-radius: 4px;
+  border-left: 3px solid #0288d1;
+
+  .itemIndex {
+    font-weight: 800;
+    color: #0288d1;
+    width: 14px;
+  }
+
+  .blueBe {
+    color: #0288d1;
+    font-weight: 800;
+  }
+}
+
+/* Exercise 7 Writing Questions */
+.questionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-left: 1.25rem;
+  margin-top: 0.4rem;
+}
+
+.questionItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 8px 12px;
+
+  .questionInputRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    .qNum {
+      font-weight: 800;
+      color: #d32027;
+      width: 14px;
+    }
+
+    .qInput {
+      flex: 1;
+      padding: 4px 8px;
+      font-size: 0.85rem;
+      border: 1px solid #cbd5e1;
+      border-radius: 4px;
+      outline: none;
+
+      &:focus {
+        border-color: #0288d1;
+        box-shadow: 0 0 0 2px rgba(2, 136, 209, 0.15);
+      }
+
+      &:disabled {
+        background: #f1f5f9;
+        color: #64748b;
+      }
+    }
+
+    .qMark {
+      font-weight: 800;
+      color: #111827;
+    }
+  }
+
+  .answerTarget {
+    padding-left: 20px;
+    font-size: 0.825rem;
+    color: #64748b;
+    font-style: italic;
+  }
+}
+
+/* Exercise 8: Family names and dialogue */
+.familyInputsRow {
+  display: flex;
+  gap: 8px;
+  margin-left: 1.25rem;
+  margin-top: 0.35rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+
+  @media (max-width: 520px) {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
+.familyItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 3px 8px;
+  box-sizing: border-box;
+  transition: border-color 0.15s ease;
+
+  &:focus-within {
+    border-color: #0288d1;
+    box-shadow: 0 0 0 2px rgba(2, 136, 209, 0.12);
+  }
+
+  .familyNum {
+    font-size: 0.8rem;
+    font-weight: 800;
+    color: #0288d1;
+    flex-shrink: 0;
+  }
+
+  .familyInput {
+    flex: 1;
+    min-width: 0;
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #1f2937;
+    outline: none;
+    padding: 2px 0;
+    box-sizing: border-box;
+
+    &::placeholder {
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+
+    &:disabled {
+      color: #64748b;
+    }
+  }
+}
+
+/* Model Dialogue Box for 8b */
+.dialogueModelBox {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-left: 3px solid #0288d1;
+  border-radius: 0 6px 6px 0;
+  padding: 6px 12px;
+  margin-left: 1.25rem;
+  margin-top: 0.35rem;
+  font-size: 0.825rem;
+  line-height: 1.45;
+  color: #0c4a6e;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-sizing: border-box;
+  width: calc(100% - 1.25rem);
+
+  .modelLine {
+    display: flex;
+    gap: 6px;
+
+    strong {
+      color: #0288d1;
+      font-weight: 800;
+      width: 16px;
+      flex-shrink: 0;
+    }
+
+    em {
+      color: #0369a1;
+      font-style: italic;
+    }
+  }
+}
+
+/* Notes wrap and input for 8b & 10 */
+.dialogueNotesWrap {
+  margin-left: 1.25rem;
+  margin-top: 0.35rem;
+  width: calc(100% - 1.25rem);
+  box-sizing: border-box;
+}
+
+.dialogueNotesInput {
+  width: 100%;
+  box-sizing: border-box;
+  min-width: 0;
+  padding: 5px 9px;
+  font-size: 0.825rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: #ffffff;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    border-color: #0288d1;
+    box-shadow: 0 0 0 2px rgba(2, 136, 209, 0.15);
+  }
+
+  &:disabled {
+    background: #f8fafc;
+    color: #64748b;
+  }
+}
+
+/* Ribbon Tags (PREPARE, SPEAK) */
+.ribbonTag {
+  display: inline-block;
+  background: #e76046;
+  color: #ffffff;
+  padding: 2px 10px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  margin-left: 1.25rem;
+  margin-top: 0.3rem;
+  margin-bottom: 0.2rem;
+  clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
+  width: fit-content;
+}
+
+/* Speaking Field Photo Card */
+.fieldPhotoCard {
+  position: relative;
+  overflow: hidden;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: #e2e8f0;
+  cursor: pointer;
+  margin-left: 1.25rem;
+  margin-top: 0.4rem;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.15s ease;
+
+  &:hover {
+    transform: scale(1.01);
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    max-height: 160px;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+/* Develop your listening banner */
+.developBanner {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  padding-right: 1.75rem;
+
+  .bannerChevron {
+    display: flex;
+    align-items: center;
+    background: #d32027;
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 700;
+    clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%);
+    box-shadow: 0 2px 6px rgba(211, 32, 39, 0.25);
+
+    span {
+      padding-left: 8px;
+    }
+  }
+}
+
+/* Page Pins */
+.pageFooter {
+  position: absolute;
+  bottom: 12px;
+  left: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.pageFooterRight {
+  position: absolute;
+  bottom: 12px;
+  right: 16px;
+  display: flex;
+  align-items: center;
+}
+
+.pagePin18,
+.pagePin19 {
+  background: #d32027;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  width: 28px;
+  height: 28px;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(211, 32, 39, 0.4);
+
+  span {
+    transform: rotate(45deg);
+  }
+}
+
+.pagePin19 {
+  border-radius: 50% 50% 0 50%;
+  transform: rotate(45deg);
+
+  span {
+    transform: rotate(-45deg);
+  }
+}
+
+/* ========================================================================= */
+/* ======================== LIGHTBOX MODAL ================================= */
+/* ========================================================================= */
+.imageLightboxOverlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  backdrop-filter: blur(4px);
+}
+
+.lightboxDialog {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  background: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+}
+
+.lightboxHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background-color: #111827;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.875rem;
+
+  .closeBtn {
+    background: transparent;
+    border: none;
+    color: #9ca3af;
+    font-size: 1.5rem;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0.25rem;
+
+    &:hover {
+      color: #ffffff;
+    }
+  }
+}
+
+.lightboxBody {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000000;
+  overflow: auto;
+
+  img {
+    max-width: 100%;
+    max-height: 80vh;
+    object-fit: contain;
+    display: block;
+  }
+}
+
+.inputValid {
+  border-color: #10b981 !important;
+  background-color: #f0fdf4 !important;
+}
+
+.inputInvalid {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+}
+
+.choiceValid {
+  border-color: #10b981 !important;
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+  font-weight: 600;
+}
+
+.choiceInvalid {
+  border-color: #ef4444 !important;
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+}
+

@@ -37,6 +37,10 @@ export default function HomePage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Зачистка устаревших токенов из localStorage, если они попали туда от старых версий кода
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+
     const fetchData = async () => {
       try {
         // allSettled: если profile вернул 401 (гость), textbooks всё равно обработается
@@ -61,11 +65,14 @@ export default function HomePage() {
 
   const handleLogout = async () => {
     try {
+      // Браузер сам отправит cookie через withCredentials — тело запроса не нужно
       await api.post('/auth/logout');
     } catch (err) {
       console.error('Logout request failed:', err);
     } finally {
+      // Удаляем все возможные данные из localStorage (токены + UI-данные)
       localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
       localStorage.removeItem('role');
       setUser(null); // мы уже на главной, остаёмся здесь как гость

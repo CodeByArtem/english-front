@@ -3,6 +3,12 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from './lesson1b.module.scss';
+import {
+  LessonAnswerKey,
+  verifyAnswer,
+  getExerciseKey,
+} from '@/lib/answerVerification';
+import TeacherAnswerBadge from './TeacherAnswerBadge';
 
 export const profilesData = [
   {
@@ -63,6 +69,8 @@ export const vocabularyJobs = [
 export interface Lesson1BContentProps {
   lesson?: Record<string, unknown> | null;
   user?: Record<string, unknown> | null;
+  isTeacherReview?: boolean;
+  answerKey?: LessonAnswerKey | null;
   jobsInputs: Record<string, string>;
   readingInputs: Record<string, string>;
   onJobChange: (id: string, value: string) => void;
@@ -97,28 +105,43 @@ export interface Lesson1BContentProps {
   playingAudio: string | null;
 }
 
-export default function Lesson1BContent({
-  jobsInputs = {},
-  readingInputs = {},
-  onJobChange,
-  onReadingChange,
-  page9Profiles = {},
-  onPage9ProfileChange = () => {},
-  ex4aAnswers = {},
-  onEx4aChange = () => {},
-  grammar5aInputs = {},
-  onGrammar5aChange = () => {},
-  ex6Answers = {},
-  onEx6Change = () => {},
-  ex7aAnswers = {},
-  onEx7aChange = () => {},
-  profilePairs = {},
-  onProfilePairChange = () => {},
-  readOnly = false,
-  originalAnswers,
-  playAudio,
-  playingAudio,
-}: Lesson1BContentProps) {
+export default function Lesson1BContent(props: Lesson1BContentProps) {
+  const {
+    jobsInputs = {},
+    readingInputs = {},
+    onJobChange,
+    onReadingChange,
+    page9Profiles = {},
+    onPage9ProfileChange = () => {},
+    ex4aAnswers = {},
+    onEx4aChange = () => {},
+    grammar5aInputs = {},
+    onGrammar5aChange = () => {},
+    ex6Answers = {},
+    onEx6Change = () => {},
+    ex7aAnswers = {},
+    onEx7aChange = () => {},
+    profilePairs = {},
+    onProfilePairChange = () => {},
+    readOnly = false,
+    originalAnswers,
+    playAudio,
+    playingAudio,
+    isTeacherReview,
+    answerKey,
+  } = props;
+
+  const activeAnswerKey: LessonAnswerKey | null =
+    answerKey || (props.lesson?.answerKey as LessonAnswerKey | undefined) || null;
+  const isReview = Boolean(isTeacherReview || (activeAnswerKey && readOnly));
+
+  const ex1bJobsKeys = getExerciseKey(activeAnswerKey, 'exercise_1b_jobs');
+  const ex3ReadingKeys = getExerciseKey(activeAnswerKey, 'exercise_3_reading');
+  const exPage9Keys = getExerciseKey(activeAnswerKey, 'exercise_page9_profiles');
+  const ex4aReadingKeys = getExerciseKey(activeAnswerKey, 'exercise_4a_reading');
+  const ex5aGrammarKeys = getExerciseKey(activeAnswerKey, 'exercise_5a_grammar');
+  const ex6DialogueKeys = getExerciseKey(activeAnswerKey, 'exercise_6_dialogue');
+  const ex7aQaKeys = getExerciseKey(activeAnswerKey, 'exercise_7a_qa');
   return (
     <div className={styles.pageContainer}>
       {/* Lesson Header */}
@@ -159,6 +182,9 @@ export default function Lesson1BContent({
             const currentVal = jobsInputs[String(profile.id)] || '';
             const origVal = originalAnswers?.exercise_1b_jobs?.[String(profile.id)];
             const isChanged = origVal !== undefined && origVal !== currentVal;
+            const verification = isReview
+              ? verifyAnswer(currentVal, ex1bJobsKeys?.[String(profile.id)])
+              : null;
 
             return (
               <div key={profile.id} className={styles.profileCard}>
@@ -187,8 +213,15 @@ export default function Lesson1BContent({
                       onChange={(e) => onJobChange(String(profile.id), e.target.value)}
                       placeholder="enter job..."
                       disabled={readOnly}
-                      className={`${styles.jobInput} ${isChanged ? styles.diffHighlight : ''}`}
+                      className={`${styles.jobInput} ${isChanged ? styles.diffHighlight : ''} ${
+                        verification?.status === 'correct'
+                          ? styles.inputValid
+                          : verification?.status === 'incorrect'
+                          ? styles.inputInvalid
+                          : ''
+                      }`}
                     />
+                    {verification && <TeacherAnswerBadge result={verification} />}
                   </div>
                 </div>
               </div>
@@ -298,6 +331,9 @@ export default function Lesson1BContent({
                 const currentVal = readingInputs[person.id] || '';
                 const origVal = originalAnswers?.exercise_3_reading?.[person.id];
                 const isChanged = origVal !== undefined && origVal !== currentVal;
+                const verification = isReview
+                  ? verifyAnswer(currentVal, ex3ReadingKeys?.[person.id])
+                  : null;
 
                 return (
                   <div key={person.id} className={styles.matchingRow}>
@@ -306,17 +342,25 @@ export default function Lesson1BContent({
                       value={currentVal}
                       onChange={(e) => onReadingChange(person.id, e.target.value)}
                       disabled={readOnly}
-                      className={`${styles.matchingSelect} ${isChanged ? styles.diffHighlight : ''}`}
+                      className={`${styles.matchingSelect} ${isChanged ? styles.diffHighlight : ''} ${
+                        verification?.status === 'correct'
+                          ? styles.inputValid
+                          : verification?.status === 'incorrect'
+                          ? styles.inputInvalid
+                          : ''
+                      }`}
                     >
                       <option value="">- select -</option>
                       <option value="a">a (office worker)</option>
                       <option value="b">b (doctor)</option>
                       <option value="c">c (nurse)</option>
                     </select>
+                    {verification && <TeacherAnswerBadge result={verification} />}
                   </div>
                 );
               })}
             </div>
+
 
             <div className={styles.matchingOptions}>
               <p><strong>a</strong> office worker</p>
@@ -382,6 +426,7 @@ export default function Lesson1BContent({
                 const currentVal = page9Profiles['lidia'] || '';
                 const origVal = originalAnswers?.exercise_page9_profiles?.['lidia'];
                 const isChanged = origVal !== undefined && origVal !== currentVal;
+                const v = isReview ? verifyAnswer(currentVal, exPage9Keys?.['lidia']) : null;
                 return (
                   <div className={styles.miniProfileCard}>
                     <div className={styles.miniPhotoWrap}>
@@ -405,8 +450,15 @@ export default function Lesson1BContent({
                           onChange={(e) => onPage9ProfileChange('lidia', e.target.value)}
                           placeholder="e.g. pilot..."
                           disabled={readOnly}
-                          className={`${styles.miniInput} ${isChanged ? styles.diffHighlight : ''}`}
+                          className={`${styles.miniInput} ${isChanged ? styles.diffHighlight : ''} ${
+                            v?.status === 'correct'
+                              ? styles.inputValid
+                              : v?.status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                          }`}
                         />
+                        {v && <TeacherAnswerBadge result={v} />}
                       </p>
                       <p><strong>City:</strong> Toruń</p>
                       <p><strong>Country:</strong> Poland</p>
@@ -420,6 +472,7 @@ export default function Lesson1BContent({
                 const currentVal = page9Profiles['sakura'] || '';
                 const origVal = originalAnswers?.exercise_page9_profiles?.['sakura'];
                 const isChanged = origVal !== undefined && origVal !== currentVal;
+                const v = isReview ? verifyAnswer(currentVal, exPage9Keys?.['sakura']) : null;
                 return (
                   <div className={styles.miniProfileCard}>
                     <div className={styles.miniPhotoWrap}>
@@ -443,8 +496,15 @@ export default function Lesson1BContent({
                           onChange={(e) => onPage9ProfileChange('sakura', e.target.value)}
                           placeholder="e.g. architect..."
                           disabled={readOnly}
-                          className={`${styles.miniInput} ${isChanged ? styles.diffHighlight : ''}`}
+                          className={`${styles.miniInput} ${isChanged ? styles.diffHighlight : ''} ${
+                            v?.status === 'correct'
+                              ? styles.inputValid
+                              : v?.status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                          }`}
                         />
+                        {v && <TeacherAnswerBadge result={v} />}
                       </p>
                       <p><strong>City:</strong> Nagoya</p>
                       <p><strong>Country:</strong> Japan</p>
@@ -494,13 +554,25 @@ export default function Lesson1BContent({
                 const currentVal = ex4aAnswers[item.id] || '';
                 const origVal = originalAnswers?.exercise_4a_reading?.[item.id];
                 const isChanged = origVal !== undefined && origVal !== currentVal;
+                const verification = isReview
+                  ? verifyAnswer(currentVal, ex4aReadingKeys?.[item.id])
+                  : null;
 
                 return (
                   <div key={item.id} className={styles.ex4aItem}>
                     <p>{item.q}</p>
                     <div className={styles.radioGroup}>
                       {item.options.map((opt) => (
-                        <label key={opt.val}>
+                        <label
+                          key={opt.val}
+                          className={
+                            verification && currentVal === opt.val
+                              ? verification.status === 'correct'
+                                ? styles.choiceValid
+                                : styles.choiceInvalid
+                              : ''
+                          }
+                        >
                           <input
                             type="radio"
                             name={`ex4a_${item.id}`}
@@ -514,12 +586,14 @@ export default function Lesson1BContent({
                           <span>{opt.text}</span>
                         </label>
                       ))}
+                      {verification && <TeacherAnswerBadge result={verification} />}
                     </div>
                   </div>
                 );
               })}
             </div>
           </section>
+
 
           {/* Exercise 4b */}
           <section className={styles.sectionCard}>
@@ -567,19 +641,34 @@ export default function Lesson1BContent({
                   <tr>
                     <td>
                       She{' '}
-                      <input
-                        type="text"
-                        value={grammar5aInputs['1'] || ''}
-                        onChange={(e) => onGrammar5aChange('1', e.target.value)}
-                        placeholder="?"
-                        disabled={readOnly}
-                        className={`${styles.grammarInput} ${
-                          originalAnswers?.exercise_5a_grammar?.['1'] !== undefined &&
-                          originalAnswers?.exercise_5a_grammar?.['1'] !== (grammar5aInputs['1'] || '')
-                            ? styles.diffHighlight
-                            : ''
-                        }`}
-                      />{' '}
+                      {(() => {
+                        const val = grammar5aInputs['1'] || '';
+                        const v = isReview ? verifyAnswer(val, ex5aGrammarKeys?.['1']) : null;
+                        return (
+                          <>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onGrammar5aChange('1', e.target.value)}
+                              placeholder="?"
+                              disabled={readOnly}
+                              className={`${styles.grammarInput} ${
+                                originalAnswers?.exercise_5a_grammar?.['1'] !== undefined &&
+                                originalAnswers?.exercise_5a_grammar?.['1'] !== val
+                                  ? styles.diffHighlight
+                                  : ''
+                              } ${
+                                v?.status === 'correct'
+                                  ? styles.inputValid
+                                  : v?.status === 'incorrect'
+                                  ? styles.inputInvalid
+                                  : ''
+                              }`}
+                            />
+                            {v && <TeacherAnswerBadge result={v} />}
+                          </>
+                        );
+                      })()}{' '}
                       a doctor.
                     </td>
                     <td>She <strong>isn&apos;t</strong> from Canada.</td>
@@ -587,36 +676,66 @@ export default function Lesson1BContent({
                   <tr>
                     <td>
                       It{' '}
-                      <input
-                        type="text"
-                        value={grammar5aInputs['2'] || ''}
-                        onChange={(e) => onGrammar5aChange('2', e.target.value)}
-                        placeholder="?"
-                        disabled={readOnly}
-                        className={`${styles.grammarInput} ${
-                          originalAnswers?.exercise_5a_grammar?.['2'] !== undefined &&
-                          originalAnswers?.exercise_5a_grammar?.['2'] !== (grammar5aInputs['2'] || '')
-                            ? styles.diffHighlight
-                            : ''
-                        }`}
-                      />{' '}
+                      {(() => {
+                        const val = grammar5aInputs['2'] || '';
+                        const v = isReview ? verifyAnswer(val, ex5aGrammarKeys?.['2']) : null;
+                        return (
+                          <>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onGrammar5aChange('2', e.target.value)}
+                              placeholder="?"
+                              disabled={readOnly}
+                              className={`${styles.grammarInput} ${
+                                originalAnswers?.exercise_5a_grammar?.['2'] !== undefined &&
+                                originalAnswers?.exercise_5a_grammar?.['2'] !== val
+                                  ? styles.diffHighlight
+                                  : ''
+                              } ${
+                                v?.status === 'correct'
+                                  ? styles.inputValid
+                                  : v?.status === 'incorrect'
+                                  ? styles.inputInvalid
+                                  : ''
+                              }`}
+                            />
+                            {v && <TeacherAnswerBadge result={v} />}
+                          </>
+                        );
+                      })()}{' '}
                       a small hospital.
                     </td>
                     <td>
                       It{' '}
-                      <input
-                        type="text"
-                        value={grammar5aInputs['3'] || ''}
-                        onChange={(e) => onGrammar5aChange('3', e.target.value)}
-                        placeholder="?"
-                        disabled={readOnly}
-                        className={`${styles.grammarInput} ${
-                          originalAnswers?.exercise_5a_grammar?.['3'] !== undefined &&
-                          originalAnswers?.exercise_5a_grammar?.['3'] !== (grammar5aInputs['3'] || '')
-                            ? styles.diffHighlight
-                            : ''
-                        }`}
-                      />{' '}
+                      {(() => {
+                        const val = grammar5aInputs['3'] || '';
+                        const v = isReview ? verifyAnswer(val, ex5aGrammarKeys?.['3']) : null;
+                        return (
+                          <>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onGrammar5aChange('3', e.target.value)}
+                              placeholder="?"
+                              disabled={readOnly}
+                              className={`${styles.grammarInput} ${
+                                originalAnswers?.exercise_5a_grammar?.['3'] !== undefined &&
+                                originalAnswers?.exercise_5a_grammar?.['3'] !== val
+                                  ? styles.diffHighlight
+                                  : ''
+                              } ${
+                                v?.status === 'correct'
+                                  ? styles.inputValid
+                                  : v?.status === 'incorrect'
+                                  ? styles.inputInvalid
+                                  : ''
+                              }`}
+                            />
+                            {v && <TeacherAnswerBadge result={v} />}
+                          </>
+                        );
+                      })()}{' '}
                       a big hospital.
                     </td>
                   </tr>
@@ -657,23 +776,39 @@ export default function Lesson1BContent({
                 </div>
                 <div>
                   <strong>Answer:</strong> She{' '}
-                  <input
-                    type="text"
-                    value={grammar5aInputs['4'] || ''}
-                    onChange={(e) => onGrammar5aChange('4', e.target.value)}
-                    placeholder="?"
-                    disabled={readOnly}
-                    className={`${styles.grammarInput} ${
-                      originalAnswers?.exercise_5a_grammar?.['4'] !== undefined &&
-                      originalAnswers?.exercise_5a_grammar?.['4'] !== (grammar5aInputs['4'] || '')
-                        ? styles.diffHighlight
-                        : ''
-                    }`}
-                  />{' '}
+                  {(() => {
+                    const val = grammar5aInputs['4'] || '';
+                    const v = isReview ? verifyAnswer(val, ex5aGrammarKeys?.['4']) : null;
+                    return (
+                      <>
+                        <input
+                          type="text"
+                          value={val}
+                          onChange={(e) => onGrammar5aChange('4', e.target.value)}
+                          placeholder="?"
+                          disabled={readOnly}
+                          className={`${styles.grammarInput} ${
+                            originalAnswers?.exercise_5a_grammar?.['4'] !== undefined &&
+                            originalAnswers?.exercise_5a_grammar?.['4'] !== val
+                              ? styles.diffHighlight
+                              : ''
+                          } ${
+                            v?.status === 'correct'
+                              ? styles.inputValid
+                              : v?.status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                          }`}
+                        />
+                        {v && <TeacherAnswerBadge result={v} />}
+                      </>
+                    );
+                  })()}{' '}
                   from Spain.
                 </div>
               </div>
             </div>
+
           </section>
 
           {/* Audio 5b & 5c */}
@@ -768,173 +903,308 @@ export default function Lesson1BContent({
               </p>
               <p>
                 <span className={styles.speakerB}>B:</span> Yes,{' '}
-                <select
-                  value={ex6Answers['1'] || ''}
-                  onChange={(e) => onEx6Change('1', e.target.value)}
-                  disabled={readOnly}
-                  className={`${styles.inlineSelect} ${
-                    originalAnswers?.exercise_6_dialogue?.['1'] !== undefined &&
-                    originalAnswers?.exercise_6_dialogue?.['1'] !== (ex6Answers['1'] || '')
-                      ? styles.diffHighlight
-                      : ''
-                  }`}
-                >
-                  <option value="">- select -</option>
-                  <option value="'m">&apos;m</option>
-                  <option value="it is">it is</option>
-                </select>{' '}
+                {(() => {
+                  const val = ex6Answers['1'] || '';
+                  const v = isReview ? verifyAnswer(val, ex6DialogueKeys?.['1']) : null;
+                  return (
+                    <>
+                      <select
+                        value={val}
+                        onChange={(e) => onEx6Change('1', e.target.value)}
+                        disabled={readOnly}
+                        className={`${styles.inlineSelect} ${
+                          originalAnswers?.exercise_6_dialogue?.['1'] !== undefined &&
+                          originalAnswers?.exercise_6_dialogue?.['1'] !== val
+                            ? styles.diffHighlight
+                            : ''
+                        } ${
+                          v?.status === 'correct'
+                            ? styles.inputValid
+                            : v?.status === 'incorrect'
+                            ? styles.inputInvalid
+                            : ''
+                        }`}
+                      >
+                        <option value="">- select -</option>
+                        <option value="'m">&apos;m</option>
+                        <option value="it is">it is</option>
+                      </select>
+                      {v && <TeacherAnswerBadge result={v} />}
+                    </>
+                  );
+                })()}{' '}
                 a football player in the UK.
               </p>
               <p>
                 <span className={styles.speakerA}>A:</span>{' '}
-                <select
-                  value={ex6Answers['2'] || ''}
-                  onChange={(e) => onEx6Change('2', e.target.value)}
-                  disabled={readOnly}
-                  className={`${styles.inlineSelect} ${
-                    originalAnswers?.exercise_6_dialogue?.['2'] !== undefined &&
-                    originalAnswers?.exercise_6_dialogue?.['2'] !== (ex6Answers['2'] || '')
-                      ? styles.diffHighlight
-                      : ''
-                  }`}
-                >
-                  <option value="">- select -</option>
-                  <option value="It is">It is</option>
-                  <option value="Is it">Is it</option>
-                </select>{' '}
+                {(() => {
+                  const val = ex6Answers['2'] || '';
+                  const v = isReview ? verifyAnswer(val, ex6DialogueKeys?.['2']) : null;
+                  return (
+                    <>
+                      <select
+                        value={val}
+                        onChange={(e) => onEx6Change('2', e.target.value)}
+                        disabled={readOnly}
+                        className={`${styles.inlineSelect} ${
+                          originalAnswers?.exercise_6_dialogue?.['2'] !== undefined &&
+                          originalAnswers?.exercise_6_dialogue?.['2'] !== val
+                            ? styles.diffHighlight
+                            : ''
+                        } ${
+                          v?.status === 'correct'
+                            ? styles.inputValid
+                            : v?.status === 'incorrect'
+                            ? styles.inputInvalid
+                            : ''
+                        }`}
+                      >
+                        <option value="">- select -</option>
+                        <option value="It is">It is</option>
+                        <option value="Is it">Is it</option>
+                      </select>
+                      {v && <TeacherAnswerBadge result={v} />}
+                    </>
+                  );
+                })()}{' '}
                 a good team?
               </p>
               <p>
                 <span className={styles.speakerB}>B:</span> Yes,{' '}
-                <select
-                  value={ex6Answers['3'] || ''}
-                  onChange={(e) => onEx6Change('3', e.target.value)}
-                  disabled={readOnly}
-                  className={`${styles.inlineSelect} ${
-                    originalAnswers?.exercise_6_dialogue?.['3'] !== undefined &&
-                    originalAnswers?.exercise_6_dialogue?.['3'] !== (ex6Answers['3'] || '')
-                      ? styles.diffHighlight
-                      : ''
-                  }`}
-                >
-                  <option value="">- select -</option>
-                  <option value="it is">it is</option>
-                  <option value="it's">it&apos;s</option>
-                </select>
+                {(() => {
+                  const val = ex6Answers['3'] || '';
+                  const v = isReview ? verifyAnswer(val, ex6DialogueKeys?.['3']) : null;
+                  return (
+                    <>
+                      <select
+                        value={val}
+                        onChange={(e) => onEx6Change('3', e.target.value)}
+                        disabled={readOnly}
+                        className={`${styles.inlineSelect} ${
+                          originalAnswers?.exercise_6_dialogue?.['3'] !== undefined &&
+                          originalAnswers?.exercise_6_dialogue?.['3'] !== val
+                            ? styles.diffHighlight
+                            : ''
+                        } ${
+                          v?.status === 'correct'
+                            ? styles.inputValid
+                            : v?.status === 'incorrect'
+                            ? styles.inputInvalid
+                            : ''
+                        }`}
+                      >
+                        <option value="">- select -</option>
+                        <option value="it is">it is</option>
+                        <option value="it's">it&apos;s</option>
+                      </select>
+                      {v && <TeacherAnswerBadge result={v} />}
+                    </>
+                  );
+                })()}
                 .
               </p>
               <p>
                 <span className={styles.speakerA}>A:</span>{' '}
-                <select
-                  value={ex6Answers['4'] || ''}
-                  onChange={(e) => onEx6Change('4', e.target.value)}
-                  disabled={readOnly}
-                  className={`${styles.inlineSelect} ${
-                    originalAnswers?.exercise_6_dialogue?.['4'] !== undefined &&
-                    originalAnswers?.exercise_6_dialogue?.['4'] !== (ex6Answers['4'] || '')
-                      ? styles.diffHighlight
-                      : ''
-                  }`}
-                >
-                  <option value="">- select -</option>
-                  <option value="Is the manager">Is the manager</option>
-                  <option value="The manager is">The manager is</option>
-                </select>{' '}
+                {(() => {
+                  const val = ex6Answers['4'] || '';
+                  const v = isReview ? verifyAnswer(val, ex6DialogueKeys?.['4']) : null;
+                  return (
+                    <>
+                      <select
+                        value={val}
+                        onChange={(e) => onEx6Change('4', e.target.value)}
+                        disabled={readOnly}
+                        className={`${styles.inlineSelect} ${
+                          originalAnswers?.exercise_6_dialogue?.['4'] !== undefined &&
+                          originalAnswers?.exercise_6_dialogue?.['4'] !== val
+                            ? styles.diffHighlight
+                            : ''
+                        } ${
+                          v?.status === 'correct'
+                            ? styles.inputValid
+                            : v?.status === 'incorrect'
+                            ? styles.inputInvalid
+                            : ''
+                        }`}
+                      >
+                        <option value="">- select -</option>
+                        <option value="Is the manager">Is the manager</option>
+                        <option value="The manager is">The manager is</option>
+                      </select>
+                      {v && <TeacherAnswerBadge result={v} />}
+                    </>
+                  );
+                })()}{' '}
                 nice?
               </p>
               <p>
                 <span className={styles.speakerB}>B:</span> Yes,{' '}
-                <select
-                  value={ex6Answers['5'] || ''}
-                  onChange={(e) => onEx6Change('5', e.target.value)}
-                  disabled={readOnly}
-                  className={`${styles.inlineSelect} ${
-                    originalAnswers?.exercise_6_dialogue?.['5'] !== undefined &&
-                    originalAnswers?.exercise_6_dialogue?.['5'] !== (ex6Answers['5'] || '')
-                      ? styles.diffHighlight
-                      : ''
-                  }`}
-                >
-                  <option value="">- select -</option>
-                  <option value="he's">he&apos;s</option>
-                  <option value="is he">is he</option>
-                </select>{' '}
+                {(() => {
+                  const val = ex6Answers['5'] || '';
+                  const v = isReview ? verifyAnswer(val, ex6DialogueKeys?.['5']) : null;
+                  return (
+                    <>
+                      <select
+                        value={val}
+                        onChange={(e) => onEx6Change('5', e.target.value)}
+                        disabled={readOnly}
+                        className={`${styles.inlineSelect} ${
+                          originalAnswers?.exercise_6_dialogue?.['5'] !== undefined &&
+                          originalAnswers?.exercise_6_dialogue?.['5'] !== val
+                            ? styles.diffHighlight
+                            : ''
+                        } ${
+                          v?.status === 'correct'
+                            ? styles.inputValid
+                            : v?.status === 'incorrect'
+                            ? styles.inputInvalid
+                            : ''
+                        }`}
+                      >
+                        <option value="">- select -</option>
+                        <option value="he's">he&apos;s</option>
+                        <option value="is he">is he</option>
+                      </select>
+                      {v && <TeacherAnswerBadge result={v} />}
+                    </>
+                  );
+                })()}{' '}
                 OK.
               </p>
               <p>
                 <span className={styles.speakerA}>A:</span>{' '}
-                <select
-                  value={ex6Answers['6'] || ''}
-                  onChange={(e) => onEx6Change('6', e.target.value)}
-                  disabled={readOnly}
-                  className={`${styles.inlineSelect} ${
-                    originalAnswers?.exercise_6_dialogue?.['6'] !== undefined &&
-                    originalAnswers?.exercise_6_dialogue?.['6'] !== (ex6Answers['6'] || '')
-                      ? styles.diffHighlight
-                      : ''
-                  }`}
-                >
-                  <option value="">- select -</option>
-                  <option value="He's">He&apos;s</option>
-                  <option value="Is he">Is he</option>
-                </select>{' '}
+                {(() => {
+                  const val = ex6Answers['6'] || '';
+                  const v = isReview ? verifyAnswer(val, ex6DialogueKeys?.['6']) : null;
+                  return (
+                    <>
+                      <select
+                        value={val}
+                        onChange={(e) => onEx6Change('6', e.target.value)}
+                        disabled={readOnly}
+                        className={`${styles.inlineSelect} ${
+                          originalAnswers?.exercise_6_dialogue?.['6'] !== undefined &&
+                          originalAnswers?.exercise_6_dialogue?.['6'] !== val
+                            ? styles.diffHighlight
+                            : ''
+                        } ${
+                          v?.status === 'correct'
+                            ? styles.inputValid
+                            : v?.status === 'incorrect'
+                            ? styles.inputInvalid
+                            : ''
+                        }`}
+                      >
+                        <option value="">- select -</option>
+                        <option value="He's">He&apos;s</option>
+                        <option value="Is he">Is he</option>
+                      </select>
+                      {v && <TeacherAnswerBadge result={v} />}
+                    </>
+                  );
+                })()}{' '}
                 from the UK?
               </p>
               <p>
                 <span className={styles.speakerB}>B:</span> No,{' '}
-                <select
-                  value={ex6Answers['7'] || ''}
-                  onChange={(e) => onEx6Change('7', e.target.value)}
-                  disabled={readOnly}
-                  className={`${styles.inlineSelect} ${
-                    originalAnswers?.exercise_6_dialogue?.['7'] !== undefined &&
-                    originalAnswers?.exercise_6_dialogue?.['7'] !== (ex6Answers['7'] || '')
-                      ? styles.diffHighlight
-                      : ''
-                  }`}
-                >
-                  <option value="">- select -</option>
-                  <option value="he isn't">he isn&apos;t</option>
-                  <option value="not">not</option>
-                </select>
+                {(() => {
+                  const val = ex6Answers['7'] || '';
+                  const v = isReview ? verifyAnswer(val, ex6DialogueKeys?.['7']) : null;
+                  return (
+                    <>
+                      <select
+                        value={val}
+                        onChange={(e) => onEx6Change('7', e.target.value)}
+                        disabled={readOnly}
+                        className={`${styles.inlineSelect} ${
+                          originalAnswers?.exercise_6_dialogue?.['7'] !== undefined &&
+                          originalAnswers?.exercise_6_dialogue?.['7'] !== val
+                            ? styles.diffHighlight
+                            : ''
+                        } ${
+                          v?.status === 'correct'
+                            ? styles.inputValid
+                            : v?.status === 'incorrect'
+                            ? styles.inputInvalid
+                            : ''
+                        }`}
+                      >
+                        <option value="">- select -</option>
+                        <option value="he isn't">he isn&apos;t</option>
+                        <option value="not">not</option>
+                      </select>
+                      {v && <TeacherAnswerBadge result={v} />}
+                    </>
+                  );
+                })()}
                 .
               </p>
               <p>
                 <span className={styles.speakerA}>A:</span> Where{' '}
-                <select
-                  value={ex6Answers['8'] || ''}
-                  onChange={(e) => onEx6Change('8', e.target.value)}
-                  disabled={readOnly}
-                  className={`${styles.inlineSelect} ${
-                    originalAnswers?.exercise_6_dialogue?.['8'] !== undefined &&
-                    originalAnswers?.exercise_6_dialogue?.['8'] !== (ex6Answers['8'] || '')
-                      ? styles.diffHighlight
-                      : ''
-                  }`}
-                >
-                  <option value="">- select -</option>
-                  <option value="'s he">&apos;s he</option>
-                  <option value="he">he</option>
-                </select>{' '}
+                {(() => {
+                  const val = ex6Answers['8'] || '';
+                  const v = isReview ? verifyAnswer(val, ex6DialogueKeys?.['8']) : null;
+                  return (
+                    <>
+                      <select
+                        value={val}
+                        onChange={(e) => onEx6Change('8', e.target.value)}
+                        disabled={readOnly}
+                        className={`${styles.inlineSelect} ${
+                          originalAnswers?.exercise_6_dialogue?.['8'] !== undefined &&
+                          originalAnswers?.exercise_6_dialogue?.['8'] !== val
+                            ? styles.diffHighlight
+                            : ''
+                        } ${
+                          v?.status === 'correct'
+                            ? styles.inputValid
+                            : v?.status === 'incorrect'
+                            ? styles.inputInvalid
+                            : ''
+                        }`}
+                      >
+                        <option value="">- select -</option>
+                        <option value="'s he">&apos;s he</option>
+                        <option value="he">he</option>
+                      </select>
+                      {v && <TeacherAnswerBadge result={v} />}
+                    </>
+                  );
+                })()}{' '}
                 from?
               </p>
               <p>
                 <span className={styles.speakerB}>B:</span>{' '}
-                <select
-                  value={ex6Answers['9'] || ''}
-                  onChange={(e) => onEx6Change('9', e.target.value)}
-                  disabled={readOnly}
-                  className={`${styles.inlineSelect} ${
-                    originalAnswers?.exercise_6_dialogue?.['9'] !== undefined &&
-                    originalAnswers?.exercise_6_dialogue?.['9'] !== (ex6Answers['9'] || '')
-                      ? styles.diffHighlight
-                      : ''
-                  }`}
-                >
-                  <option value="">- select -</option>
-                  <option value="He's">He&apos;s</option>
-                  <option value="is from">is from</option>
-                </select>{' '}
+                {(() => {
+                  const val = ex6Answers['9'] || '';
+                  const v = isReview ? verifyAnswer(val, ex6DialogueKeys?.['9']) : null;
+                  return (
+                    <>
+                      <select
+                        value={val}
+                        onChange={(e) => onEx6Change('9', e.target.value)}
+                        disabled={readOnly}
+                        className={`${styles.inlineSelect} ${
+                          originalAnswers?.exercise_6_dialogue?.['9'] !== undefined &&
+                          originalAnswers?.exercise_6_dialogue?.['9'] !== val
+                            ? styles.diffHighlight
+                            : ''
+                        } ${
+                          v?.status === 'correct'
+                            ? styles.inputValid
+                            : v?.status === 'incorrect'
+                            ? styles.inputInvalid
+                            : ''
+                        }`}
+                      >
+                        <option value="">- select -</option>
+                        <option value="He's">He&apos;s</option>
+                        <option value="is from">is from</option>
+                      </select>
+                      {v && <TeacherAnswerBadge result={v} />}
+                    </>
+                  );
+                })()}{' '}
                 Argentina.
               </p>
             </div>
@@ -964,6 +1234,7 @@ export default function Lesson1BContent({
                 const currentVal = ex7aAnswers[item.id] || '';
                 const origVal = originalAnswers?.exercise_7a_qa?.[item.id];
                 const isChanged = origVal !== undefined && origVal !== currentVal;
+                const v = isReview ? verifyAnswer(currentVal, ex7aQaKeys?.[item.id]) : null;
 
                 return (
                   <li key={item.id}>
@@ -974,12 +1245,20 @@ export default function Lesson1BContent({
                       onChange={(e) => onEx7aChange(item.id, e.target.value)}
                       placeholder="Type answer..."
                       disabled={readOnly}
-                      className={`${styles.qaInput} ${isChanged ? styles.diffHighlight : ''}`}
+                      className={`${styles.qaInput} ${isChanged ? styles.diffHighlight : ''} ${
+                        v?.status === 'correct'
+                          ? styles.inputValid
+                          : v?.status === 'incorrect'
+                          ? styles.inputInvalid
+                          : ''
+                      }`}
                     />
+                    {v && <TeacherAnswerBadge result={v} />}
                   </li>
                 );
               })}
             </ol>
+
 
             <div style={{ marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid #f1f5f9' }}>
               <h2 className={styles.sectionTitle}>

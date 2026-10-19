@@ -3,6 +3,12 @@
 import React from 'react';
 import Image from 'next/image';
 import styles from '@/app/lessons/[id]/lesson.module.scss';
+import {
+    LessonAnswerKey,
+    verifyAnswer,
+    getExerciseKey,
+} from '@/lib/answerVerification';
+import TeacherAnswerBadge from './TeacherAnswerBadge';
 
 const countriesList = [
     "Argentina", "Brazil", "Canada", "Italy", "Japan",
@@ -29,6 +35,7 @@ interface LessonContentProps {
         id?: string;
         title?: string;
         order?: number;
+        answerKey?: LessonAnswerKey | null;
         [key: string]: unknown;
     } | null;
     user?: {
@@ -37,6 +44,8 @@ interface LessonContentProps {
         email?: string;
         [key: string]: unknown;
     } | null;
+    isTeacherReview?: boolean;
+    answerKey?: LessonAnswerKey | null;
     flagAnswers: Record<number, string>;
     dialogInputs: Record<string, string>;
     stressTableInputs: Record<string, string>;
@@ -76,6 +85,8 @@ interface LessonContentProps {
 const LessonContent: React.FC<LessonContentProps> = ({
                                                          lesson,
                                                          user,
+                                                         isTeacherReview,
+                                                         answerKey,
                                                          flagAnswers,
                                                          dialogInputs,
                                                          stressTableInputs,
@@ -94,6 +105,14 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                                          playAudio,
                                                          playingAudio
                                                      }) => {
+    const activeAnswerKey: LessonAnswerKey | null =
+        answerKey || (lesson?.answerKey as LessonAnswerKey | undefined) || null;
+    const isReview = Boolean(isTeacherReview || (activeAnswerKey && readOnly));
+
+    const ex1aFlagsKeys = getExerciseKey(activeAnswerKey, 'exercise_1a_flags');
+    const ex4aDialoguesKeys = getExerciseKey(activeAnswerKey, 'exercise_4a_dialogues');
+    const ex5GrammarKeys = getExerciseKey(activeAnswerKey, 'exercise_5_grammar');
+    const ex7aDialogueKeys = getExerciseKey(activeAnswerKey, 'exercise_7a_dialogue');
     const isDiff = (
         type: 'flags' | 'dialogs' | 'stress' | 'grammar' | 'dialogue7a' | 'confField' | 'roles',
         id: string | number,
@@ -234,30 +253,41 @@ const LessonContent: React.FC<LessonContentProps> = ({
                         <p className={styles.exampleText}>1 Canada</p>
 
                         <div className={styles.flagsGrid}>
-                            {flagsData.map((f) => (
-                                <div key={f.id} className={styles.flagCard}>
-                                    <div className={styles.flagImageWrap}>
-                                        <span className={styles.flagId}>{f.id}</span>
-                                        <Image
-                                            src={f.flagUrl}
-                                            alt={f.country}
-                                            width={160}
-                                            height={100}
-                                            className={styles.flagImg}
-                                            unoptimized
-                                        />
+                            {flagsData.map((f) => {
+                                const val = flagAnswers[f.id] || "";
+                                const verification = isReview ? verifyAnswer(val, ex1aFlagsKeys?.[String(f.id)]) : null;
+                                return (
+                                    <div key={f.id} className={styles.flagCard}>
+                                        <div className={styles.flagImageWrap}>
+                                            <span className={styles.flagId}>{f.id}</span>
+                                            <Image
+                                                src={f.flagUrl}
+                                                alt={f.country}
+                                                width={160}
+                                                height={100}
+                                                className={styles.flagImg}
+                                                unoptimized
+                                            />
+                                        </div>
+                                        <select
+                                            value={val}
+                                            onChange={(e) => onFlagChange(f.id, e.target.value)}
+                                            disabled={readOnly}
+                                            className={`${styles.flagSelect} ${isDiff('flags', f.id, val) ? styles.diffHighlight : ''} ${
+                                                verification?.status === 'correct'
+                                                    ? styles.inputValid
+                                                    : verification?.status === 'incorrect'
+                                                    ? styles.inputInvalid
+                                                    : ''
+                                            }`}
+                                        >
+                                            <option value="">- select -</option>
+                                            {countriesList.map(c => <option key={c} value={c}>{c}</option>)}
+                                        </select>
+                                        {verification && <TeacherAnswerBadge result={verification} />}
                                     </div>
-                                    <select
-                                        value={flagAnswers[f.id] || ""}
-                                        onChange={(e) => onFlagChange(f.id, e.target.value)}
-                                        disabled={readOnly}
-                                        className={`${styles.flagSelect} ${isDiff('flags', f.id, flagAnswers[f.id] || '') ? styles.diffHighlight : ''}`}
-                                    >
-                                        <option value="">- select -</option>
-                                        {countriesList.map(c => <option key={c} value={c}>{c}</option>)}
-                                    </select>
-                                </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </div>
 
@@ -461,23 +491,45 @@ const LessonContent: React.FC<LessonContentProps> = ({
                         <p><b>B:</b> Where are you from?</p>
                         <p className={styles.lineWithInput}>
                             <b>A:</b> I&apos;m from <span className={styles.supNum}>1</span>
-                            <input
-                                type="text"
-                                value={dialogInputs['c1_1'] || ''}
-                                onChange={(e) => onDialogChange('c1_1', e.target.value)}
-                                disabled={readOnly}
-                                className={`${styles.lineInput} ${isDiff('dialogs', 'c1_1', dialogInputs['c1_1'] || '') ? styles.diffHighlight : ''}`}
-                            />. How about you?
+                            {(() => {
+                                const val = dialogInputs['c1_1'] || '';
+                                const v = isReview ? verifyAnswer(val, ex4aDialoguesKeys?.['gap_1']) : null;
+                                return (
+                                    <>
+                                        <input
+                                            type="text"
+                                            value={val}
+                                            onChange={(e) => onDialogChange('c1_1', e.target.value)}
+                                            disabled={readOnly}
+                                            className={`${styles.lineInput} ${isDiff('dialogs', 'c1_1', val) ? styles.diffHighlight : ''} ${
+                                                v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                            }`}
+                                        />
+                                        {v && <TeacherAnswerBadge result={v} />}
+                                    </>
+                                );
+                            })()}. How about you?
                         </p>
                         <p className={styles.lineWithInput}>
                             <b>B:</b> I&apos;m from <span className={styles.supNum}>2</span>
-                            <input
-                                type="text"
-                                value={dialogInputs['c1_2'] || ''}
-                                onChange={(e) => onDialogChange('c1_2', e.target.value)}
-                                disabled={readOnly}
-                                className={`${styles.lineInput} ${isDiff('dialogs', 'c1_2', dialogInputs['c1_2'] || '') ? styles.diffHighlight : ''}`}
-                            />. I&apos;m a university teacher.
+                            {(() => {
+                                const val = dialogInputs['c1_2'] || '';
+                                const v = isReview ? verifyAnswer(val, ex4aDialoguesKeys?.['gap_2']) : null;
+                                return (
+                                    <>
+                                        <input
+                                            type="text"
+                                            value={val}
+                                            onChange={(e) => onDialogChange('c1_2', e.target.value)}
+                                            disabled={readOnly}
+                                            className={`${styles.lineInput} ${isDiff('dialogs', 'c1_2', val) ? styles.diffHighlight : ''} ${
+                                                v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                            }`}
+                                        />
+                                        {v && <TeacherAnswerBadge result={v} />}
+                                    </>
+                                );
+                            })()}. I&apos;m a university teacher.
                         </p>
                     </div>
 
@@ -491,25 +543,48 @@ const LessonContent: React.FC<LessonContentProps> = ({
                         <p><b>A:</b> Great. So where are you from, Lucy?</p>
                         <p className={styles.lineWithInput}>
                             <b>B:</b> I&apos;m from <span className={styles.supNum}>3</span>
-                            <input
-                                type="text"
-                                value={dialogInputs['c2_1'] || ''}
-                                onChange={(e) => onDialogChange('c2_1', e.target.value)}
-                                disabled={readOnly}
-                                className={`${styles.lineInput} ${isDiff('dialogs', 'c2_1', dialogInputs['c2_1'] || '') ? styles.diffHighlight : ''}`}
-                            />. Are you from Spain?
+                            {(() => {
+                                const val = dialogInputs['c2_1'] || '';
+                                const v = isReview ? verifyAnswer(val, ex4aDialoguesKeys?.['gap_3']) : null;
+                                return (
+                                    <>
+                                        <input
+                                            type="text"
+                                            value={val}
+                                            onChange={(e) => onDialogChange('c2_1', e.target.value)}
+                                            disabled={readOnly}
+                                            className={`${styles.lineInput} ${isDiff('dialogs', 'c2_1', val) ? styles.diffHighlight : ''} ${
+                                                v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                            }`}
+                                        />
+                                        {v && <TeacherAnswerBadge result={v} />}
+                                    </>
+                                );
+                            })()}. Are you from Spain?
                         </p>
                         <p className={styles.lineWithInput}>
                             <b>A:</b> No, I&apos;m not. I&apos;m from <span className={styles.supNum}>4</span>
-                            <input
-                                type="text"
-                                value={dialogInputs['c2_2'] || ''}
-                                onChange={(e) => onDialogChange('c2_2', e.target.value)}
-                                disabled={readOnly}
-                                className={`${styles.lineInput} ${isDiff('dialogs', 'c2_2', dialogInputs['c2_2'] || '') ? styles.diffHighlight : ''}`}
-                            />.
+                            {(() => {
+                                const val = dialogInputs['c2_2'] || '';
+                                const v = isReview ? verifyAnswer(val, ex4aDialoguesKeys?.['gap_4']) : null;
+                                return (
+                                    <>
+                                        <input
+                                            type="text"
+                                            value={val}
+                                            onChange={(e) => onDialogChange('c2_2', e.target.value)}
+                                            disabled={readOnly}
+                                            className={`${styles.lineInput} ${isDiff('dialogs', 'c2_2', val) ? styles.diffHighlight : ''} ${
+                                                v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                            }`}
+                                        />
+                                        {v && <TeacherAnswerBadge result={v} />}
+                                    </>
+                                );
+                            })()}.
                         </p>
                     </div>
+
 
                     {/* Exercise 4b & 4c */}
                     <div className={styles.exerciseBlock} style={{marginTop: '2rem'}}>
@@ -612,36 +687,69 @@ const LessonContent: React.FC<LessonContentProps> = ({
                                 <div className={styles.shortFormsList}>
                                     <div className={styles.shortFormItem}>
                                         <span className={styles.supNum}>1</span>
-                                        <input
-                                            type="text"
-                                            value={grammarInputs['1'] || ''}
-                                            onChange={(e) => onGrammarChange?.('1', e.target.value)}
-                                            disabled={readOnly}
-                                            className={`${styles.lineInput} ${isDiff('grammar', '1', grammarInputs['1'] || '') ? styles.diffHighlight : ''}`}
-                                            aria-label="Short form for I am"
-                                        /> = I am
+                                        {(() => {
+                                            const val = grammarInputs['1'] || '';
+                                            const v = isReview ? verifyAnswer(val, ex5GrammarKeys?.['1']) : null;
+                                            return (
+                                                <>
+                                                    <input
+                                                        type="text"
+                                                        value={val}
+                                                        onChange={(e) => onGrammarChange?.('1', e.target.value)}
+                                                        disabled={readOnly}
+                                                        className={`${styles.lineInput} ${isDiff('grammar', '1', val) ? styles.diffHighlight : ''} ${
+                                                            v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                                        }`}
+                                                        aria-label="Short form for I am"
+                                                    />
+                                                    {v && <TeacherAnswerBadge result={v} />}
+                                                </>
+                                            );
+                                        })()} = I am
                                     </div>
                                     <div className={styles.shortFormItem}>
                                         <span className={styles.supNum}>2</span>
-                                        <input
-                                            type="text"
-                                            value={grammarInputs['2'] || ''}
-                                            onChange={(e) => onGrammarChange?.('2', e.target.value)}
-                                            disabled={readOnly}
-                                            className={`${styles.lineInput} ${isDiff('grammar', '2', grammarInputs['2'] || '') ? styles.diffHighlight : ''}`}
-                                            aria-label="Short form for you are"
-                                        /> = you are
+                                        {(() => {
+                                            const val = grammarInputs['2'] || '';
+                                            const v = isReview ? verifyAnswer(val, ex5GrammarKeys?.['2']) : null;
+                                            return (
+                                                <>
+                                                    <input
+                                                        type="text"
+                                                        value={val}
+                                                        onChange={(e) => onGrammarChange?.('2', e.target.value)}
+                                                        disabled={readOnly}
+                                                        className={`${styles.lineInput} ${isDiff('grammar', '2', val) ? styles.diffHighlight : ''} ${
+                                                            v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                                        }`}
+                                                        aria-label="Short form for you are"
+                                                    />
+                                                    {v && <TeacherAnswerBadge result={v} />}
+                                                </>
+                                            );
+                                        })()} = you are
                                     </div>
                                     <div className={styles.shortFormItem}>
                                         <span className={styles.supNum}>3</span>
-                                        <input
-                                            type="text"
-                                            value={grammarInputs['3'] || ''}
-                                            onChange={(e) => onGrammarChange?.('3', e.target.value)}
-                                            disabled={readOnly}
-                                            className={`${styles.lineInput} ${isDiff('grammar', '3', grammarInputs['3'] || '') ? styles.diffHighlight : ''}`}
-                                            aria-label="Short form for are not"
-                                        /> = are not
+                                        {(() => {
+                                            const val = grammarInputs['3'] || '';
+                                            const v = isReview ? verifyAnswer(val, ex5GrammarKeys?.['3']) : null;
+                                            return (
+                                                <>
+                                                    <input
+                                                        type="text"
+                                                        value={val}
+                                                        onChange={(e) => onGrammarChange?.('3', e.target.value)}
+                                                        disabled={readOnly}
+                                                        className={`${styles.lineInput} ${isDiff('grammar', '3', val) ? styles.diffHighlight : ''} ${
+                                                            v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                                        }`}
+                                                        aria-label="Short form for are not"
+                                                    />
+                                                    {v && <TeacherAnswerBadge result={v} />}
+                                                </>
+                                            );
+                                        })()} = are not
                                     </div>
                                 </div>
                             </div>
@@ -690,75 +798,164 @@ const LessonContent: React.FC<LessonContentProps> = ({
                         </p>
                         <div className={styles.dialogue7aBlock}>
                             <p><strong>A:</strong> Hello. <span className={styles.supNum}>1</span>
-                                <input
-                                    type="text"
-                                    value={dialogue7aInputs['1'] || ''}
-                                    onChange={(e) => onDialogue7aChange?.('1', e.target.value)}
-                                    disabled={readOnly}
-                                    className={`${styles.lineInput} ${isDiff('dialogue7a', '1', dialogue7aInputs['1'] || '') ? styles.diffHighlight : ''}`}
-                                /> you here for the conference?
+                                {(() => {
+                                    const val = dialogue7aInputs['1'] || '';
+                                    const v = isReview ? verifyAnswer(val, ex7aDialogueKeys?.['1']) : null;
+                                    return (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={val}
+                                                onChange={(e) => onDialogue7aChange?.('1', e.target.value)}
+                                                disabled={readOnly}
+                                                className={`${styles.lineInput} ${isDiff('dialogue7a', '1', val) ? styles.diffHighlight : ''} ${
+                                                    v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                                }`}
+                                            />
+                                            {v && <TeacherAnswerBadge result={v} />}
+                                        </>
+                                    );
+                                })()} you here for the conference?
                             </p>
                             <p><strong>B:</strong> Yes, I <span className={styles.supNum}>2</span>
-                                <input
-                                    type="text"
-                                    value={dialogue7aInputs['2'] || ''}
-                                    onChange={(e) => onDialogue7aChange?.('2', e.target.value)}
-                                    disabled={readOnly}
-                                    className={`${styles.lineInput} ${isDiff('dialogue7a', '2', dialogue7aInputs['2'] || '') ? styles.diffHighlight : ''}`}
-                                />. I <span className={styles.supNum}>3</span>
-                                <input
-                                    type="text"
-                                    value={dialogue7aInputs['3'] || ''}
-                                    onChange={(e) => onDialogue7aChange?.('3', e.target.value)}
-                                    disabled={readOnly}
-                                    className={`${styles.lineInput} ${isDiff('dialogue7a', '3', dialogue7aInputs['3'] || '') ? styles.diffHighlight : ''}`}
-                                /> Laura.
+                                {(() => {
+                                    const val = dialogue7aInputs['2'] || '';
+                                    const v = isReview ? verifyAnswer(val, ex7aDialogueKeys?.['2']) : null;
+                                    return (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={val}
+                                                onChange={(e) => onDialogue7aChange?.('2', e.target.value)}
+                                                disabled={readOnly}
+                                                className={`${styles.lineInput} ${isDiff('dialogue7a', '2', val) ? styles.diffHighlight : ''} ${
+                                                    v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                                }`}
+                                            />
+                                            {v && <TeacherAnswerBadge result={v} />}
+                                        </>
+                                    );
+                                })()}. I <span className={styles.supNum}>3</span>
+                                {(() => {
+                                    const val = dialogue7aInputs['3'] || '';
+                                    const v = isReview ? verifyAnswer(val, ex7aDialogueKeys?.['3']) : null;
+                                    return (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={val}
+                                                onChange={(e) => onDialogue7aChange?.('3', e.target.value)}
+                                                disabled={readOnly}
+                                                className={`${styles.lineInput} ${isDiff('dialogue7a', '3', val) ? styles.diffHighlight : ''} ${
+                                                    v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                                }`}
+                                            />
+                                            {v && <TeacherAnswerBadge result={v} />}
+                                        </>
+                                    );
+                                })()} Laura.
                             </p>
                             <p><strong>A:</strong> I <span className={styles.supNum}>4</span>
-                                <input
-                                    type="text"
-                                    value={dialogue7aInputs['4'] || ''}
-                                    onChange={(e) => onDialogue7aChange?.('4', e.target.value)}
-                                    disabled={readOnly}
-                                    className={`${styles.lineInput} ${isDiff('dialogue7a', '4', dialogue7aInputs['4'] || '') ? styles.diffHighlight : ''}`}
-                                /> Elif.
+                                {(() => {
+                                    const val = dialogue7aInputs['4'] || '';
+                                    const v = isReview ? verifyAnswer(val, ex7aDialogueKeys?.['4']) : null;
+                                    return (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={val}
+                                                onChange={(e) => onDialogue7aChange?.('4', e.target.value)}
+                                                disabled={readOnly}
+                                                className={`${styles.lineInput} ${isDiff('dialogue7a', '4', val) ? styles.diffHighlight : ''} ${
+                                                    v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                                }`}
+                                            />
+                                            {v && <TeacherAnswerBadge result={v} />}
+                                        </>
+                                    );
+                                })()} Elif.
                             </p>
                             <p><strong>B:</strong> Nice to meet you.</p>
                             <p><strong>A:</strong> Nice to meet you, too. <span className={styles.supNum}>5</span>
-                                <input
-                                    type="text"
-                                    value={dialogue7aInputs['5'] || ''}
-                                    onChange={(e) => onDialogue7aChange?.('5', e.target.value)}
-                                    disabled={readOnly}
-                                    className={`${styles.lineInput} ${isDiff('dialogue7a', '5', dialogue7aInputs['5'] || '') ? styles.diffHighlight : ''}`}
-                                /> you from the US?
+                                {(() => {
+                                    const val = dialogue7aInputs['5'] || '';
+                                    const v = isReview ? verifyAnswer(val, ex7aDialogueKeys?.['5']) : null;
+                                    return (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={val}
+                                                onChange={(e) => onDialogue7aChange?.('5', e.target.value)}
+                                                disabled={readOnly}
+                                                className={`${styles.lineInput} ${isDiff('dialogue7a', '5', val) ? styles.diffHighlight : ''} ${
+                                                    v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                                }`}
+                                            />
+                                            {v && <TeacherAnswerBadge result={v} />}
+                                        </>
+                                    );
+                                })()} you from the US?
                             </p>
                             <p><strong>B:</strong> No, I <span className={styles.supNum}>6</span>
-                                <input
-                                    type="text"
-                                    value={dialogue7aInputs['6'] || ''}
-                                    onChange={(e) => onDialogue7aChange?.('6', e.target.value)}
-                                    disabled={readOnly}
-                                    className={`${styles.lineInput} ${isDiff('dialogue7a', '6', dialogue7aInputs['6'] || '') ? styles.diffHighlight : ''}`}
-                                /> not. I&apos;m from Toronto in Canada. Where <span className={styles.supNum}>7</span>
-                                <input
-                                    type="text"
-                                    value={dialogue7aInputs['7'] || ''}
-                                    onChange={(e) => onDialogue7aChange?.('7', e.target.value)}
-                                    disabled={readOnly}
-                                    className={`${styles.lineInput} ${isDiff('dialogue7a', '7', dialogue7aInputs['7'] || '') ? styles.diffHighlight : ''}`}
-                                /> you from?
+                                {(() => {
+                                    const val = dialogue7aInputs['6'] || '';
+                                    const v = isReview ? verifyAnswer(val, ex7aDialogueKeys?.['6']) : null;
+                                    return (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={val}
+                                                onChange={(e) => onDialogue7aChange?.('6', e.target.value)}
+                                                disabled={readOnly}
+                                                className={`${styles.lineInput} ${isDiff('dialogue7a', '6', val) ? styles.diffHighlight : ''} ${
+                                                    v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                                }`}
+                                            />
+                                            {v && <TeacherAnswerBadge result={v} />}
+                                        </>
+                                    );
+                                })()} not. I&apos;m from Toronto in Canada. Where <span className={styles.supNum}>7</span>
+                                {(() => {
+                                    const val = dialogue7aInputs['7'] || '';
+                                    const v = isReview ? verifyAnswer(val, ex7aDialogueKeys?.['7']) : null;
+                                    return (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={val}
+                                                onChange={(e) => onDialogue7aChange?.('7', e.target.value)}
+                                                disabled={readOnly}
+                                                className={`${styles.lineInput} ${isDiff('dialogue7a', '7', val) ? styles.diffHighlight : ''} ${
+                                                    v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                                }`}
+                                            />
+                                            {v && <TeacherAnswerBadge result={v} />}
+                                        </>
+                                    );
+                                })()} you from?
                             </p>
                             <p><strong>A:</strong> I <span className={styles.supNum}>8</span>
-                                <input
-                                    type="text"
-                                    value={dialogue7aInputs['8'] || ''}
-                                    onChange={(e) => onDialogue7aChange?.('8', e.target.value)}
-                                    disabled={readOnly}
-                                    className={`${styles.lineInput} ${isDiff('dialogue7a', '8', dialogue7aInputs['8'] || '') ? styles.diffHighlight : ''}`}
-                                /> from Ankara in Turkey.
+                                {(() => {
+                                    const val = dialogue7aInputs['8'] || '';
+                                    const v = isReview ? verifyAnswer(val, ex7aDialogueKeys?.['8']) : null;
+                                    return (
+                                        <>
+                                            <input
+                                                type="text"
+                                                value={val}
+                                                onChange={(e) => onDialogue7aChange?.('8', e.target.value)}
+                                                disabled={readOnly}
+                                                className={`${styles.lineInput} ${isDiff('dialogue7a', '8', val) ? styles.diffHighlight : ''} ${
+                                                    v?.status === 'correct' ? styles.inputValid : v?.status === 'incorrect' ? styles.inputInvalid : ''
+                                                }`}
+                                            />
+                                            {v && <TeacherAnswerBadge result={v} />}
+                                        </>
+                                    );
+                                })()} from Ankara in Turkey.
                             </p>
                         </div>
+
                         <div className={styles.audioRow} style={{ marginTop: '0.8rem' }}>
                             <span className={styles.taskNum} style={{ color: '#2c3e50', fontWeight: 'bold' }}>b</span>
                             <button

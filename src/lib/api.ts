@@ -1,9 +1,16 @@
-import axios from 'axios';
+import axios, { type InternalAxiosRequestConfig } from 'axios';
 
+// API_URL используется только в next.config.ts (rewrites destination).
+// Axios всегда ходит через Next.js-прокси (/api/*), а не напрямую на бэкенд.
 export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
+interface CustomAxiosRequestConfig extends InternalAxiosRequestConfig {
+    _gen?: number;
+    _retry?: boolean;
+}
+
 const api = axios.create({
-    baseURL: API_URL,
+    baseURL: '/api',
     withCredentials: true,
     headers: {
         'Content-Type': 'application/json',
@@ -32,20 +39,28 @@ const redirectToLogin = () => {
     }
 };
 
-api.interceptors.request.use((config) => {
-    (config as any)._gen = refreshGeneration;
+api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
+    const customConfig = config as CustomAxiosRequestConfig;
+    customConfig._gen = refreshGeneration;
     return config;
 });
 
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
-      const originalRequest = error.config;
+      const originalRequest = error.config as CustomAxiosRequestConfig | undefined;
+      if (!originalRequest) {
+          return Promise.reject(error);
+      }
 
-      const isAuthRequest = AUTH_URLS.some((url) => originalRequest?.url?.includes(url));
+      const isAuthRequest = AUTH_URLS.some((url) => originalRequest.url?.includes(url));
 
       // Провалился сам refresh: сразу на логин (если страница не публичная), без очереди
-      if (error.response?.status === 401 && originalRequest?.url?.includes('/auth/refresh')) {
+      if (error.response?.status === 401 && originalRequest.url?.includes('/auth/refresh')) {
+          if (typeof window !== 'undefined') {
+              localStorage.removeItem('user');
+              localStorage.removeItem('role');
+          }
           redirectToLogin();
           return Promise.reject(error);
       }
@@ -53,7 +68,7 @@ api.interceptors.response.use(
       if (error.response?.status === 401 && !originalRequest._retry && !isAuthRequest) {
           originalRequest._retry = true;
 
-          if (originalRequest?._gen !== undefined && originalRequest._gen < refreshGeneration) {
+          if (originalRequest._gen !== undefined && originalRequest._gen < refreshGeneration) {
               return api(originalRequest);
           }
 
@@ -64,6 +79,10 @@ api.interceptors.response.use(
                       refreshGeneration++;
                   })
                   .catch((refreshError) => {
+                      if (typeof window !== 'undefined') {
+                          localStorage.removeItem('user');
+                          localStorage.removeItem('role');
+                      }
                       redirectToLogin();
                       return Promise.reject(refreshError);
                   })

@@ -20,18 +20,16 @@ export default function LoginPage() {
     try {
       const res = await api.post('/auth/login', { email, password });
       
-      // Сохранение токена и данных пользователя
-      if (res.data?.access_token) {
-        localStorage.setItem('token', res.data.access_token);
-      }
+      // Данные пользователя для UI (токены передаются только через HTTP-only cookies)
       if (res.data?.user) {
         localStorage.setItem('user', JSON.stringify(res.data.user));
         localStorage.setItem('role', res.data.user.role);
       }
       
       router.push('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed. Please check your credentials.');
+    } catch (err: unknown) {
+      const axiosErr = err as { response?: { data?: { message?: string } } };
+      setError(axiosErr.response?.data?.message || 'Login failed. Please check your credentials.');
     } finally {
       setLoading(false);
     }
@@ -82,7 +80,7 @@ export default function LoginPage() {
         </form>
 
         <p className={styles.footer}>
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <a href="/register" className={styles.link}>
             Sign up
           </a>

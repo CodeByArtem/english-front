@@ -797,3 +797,25 @@
     }
   }
 }
+
+.inputValid {
+  border-color: #16a34a !important;
+  background-color: #f0fdf4 !important;
+}
+
+.inputInvalid {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+}
+
+.choiceValid {
+  border-color: #16a34a !important;
+  background-color: #f0fdf4 !important;
+  color: #15803d !important;
+}
+
+.choiceInvalid {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+  color: #b91c1c !important;
+}

@@ -485,3 +485,26 @@
   resize: vertical;
   min-height: 60px;
 }
+
+.inputValid {
+  border-color: #10b981 !important;
+  background-color: #f0fdf4 !important;
+}
+
+.inputInvalid {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+}
+
+.choiceValid {
+  border-color: #10b981 !important;
+  background-color: #dcfce7 !important;
+  color: #15803d !important;
+  font-weight: 600;
+}
+
+.choiceInvalid {
+  border-color: #ef4444 !important;
+  background-color: #fee2e2 !important;
+  color: #b91c1c !important;
+}

@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
+import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
+import { verifyAnswer, getExerciseKey, LessonAnswerKey } from '@/lib/answerVerification';
 import styles from './lesson2b.module.scss';
 import AudioAnswerRecorder from './AudioAnswerRecorder/AudioAnswerRecorder';
 import SubmissionAudioPlayer, {
@@ -12,6 +14,8 @@ export interface Lesson2BContentProps {
   lesson?: Record<string, unknown> | null;
   user?: Record<string, unknown> | null;
   readOnly?: boolean;
+  isTeacherReview?: boolean;
+  answerKey?: LessonAnswerKey | null;
   playAudio: (track: string) => void;
   playingAudio: string | null;
 
@@ -105,6 +109,8 @@ const THUMBNAIL_PHOTOS = [
 export default function Lesson2BContent(props: Lesson2BContentProps) {
   const {
     readOnly = false,
+    isTeacherReview = false,
+    answerKey = null,
     playAudio,
     playingAudio,
 
@@ -131,6 +137,14 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
     submissionId,
     submittedAudios,
   } = props;
+
+  const ex1bKey = getExerciseKey(answerKey, 'exercise_1b_vocab');
+  const ex3Key = getExerciseKey(answerKey, 'exercise_3_photos');
+  const ex5aKey = getExerciseKey(answerKey, 'exercise_5a_picture');
+  const ex5bKey = getExerciseKey(answerKey, 'exercise_5b_dialogue');
+  const ex6Key = getExerciseKey(answerKey, 'exercise_6_grammar');
+  const ex7aKey = getExerciseKey(answerKey, 'exercise_7a_choice');
+  const ex8Key = getExerciseKey(answerKey, 'exercise_8_conversations');
 
   const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
   const [zoomedImage, setZoomedImage] = useState<{ src: string; title: string } | null>(null);
@@ -330,29 +344,41 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
               <div className={styles.matchingWrap}>
                 <div className={styles.matchingTitle}>Select matching letters (a–l) for 1–12:</div>
                 <div className={styles.matchingGrid}>
-                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => (
-                    <div
-                      key={num}
-                      className={styles.matchingItem}
-                      onMouseEnter={() => setHoveredMarker(String(num))}
-                      onMouseLeave={() => setHoveredMarker(null)}
-                    >
-                      <span className={styles.badgeNum}>{num}</span>
-                      <select
-                        value={ex1bVocab[String(num)] || ''}
-                        onChange={(e) => onEx1bVocabChange(String(num), e.target.value)}
-                        disabled={readOnly}
-                        aria-label={`Match item ${num}`}
+                  {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => {
+                    const val = ex1bVocab[String(num)] || '';
+                    const vRes = isTeacherReview ? verifyAnswer(val, ex1bKey?.[String(num)]) : null;
+                    const valClass =
+                      vRes?.status === 'correct'
+                        ? styles.inputValid
+                        : vRes?.status === 'incorrect'
+                        ? styles.inputInvalid
+                        : '';
+                    return (
+                      <div
+                        key={num}
+                        className={styles.matchingItem}
+                        onMouseEnter={() => setHoveredMarker(String(num))}
+                        onMouseLeave={() => setHoveredMarker(null)}
                       >
-                        <option value="">--</option>
-                        {VOCAB_LIST.map((opt) => (
-                          <option key={opt.letter} value={opt.letter}>
-                            {opt.letter}) {opt.word.replace(/\s*\(\d+\)/, '')}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  ))}
+                        <span className={styles.badgeNum}>{num}</span>
+                        <select
+                          value={val}
+                          onChange={(e) => onEx1bVocabChange(String(num), e.target.value)}
+                          disabled={readOnly}
+                          aria-label={`Match item ${num}`}
+                          className={valClass}
+                        >
+                          <option value="">--</option>
+                          {VOCAB_LIST.map((opt) => (
+                            <option key={opt.letter} value={opt.letter}>
+                              {opt.letter}) {opt.word.replace(/\s*\(\d+\)/, '')}
+                            </option>
+                          ))}
+                        </select>
+                        {isTeacherReview && <TeacherAnswerBadge result={vRes} />}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -401,39 +427,51 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
 
               {/* 8 Photo Thumbnails Grid */}
               <div className={styles.thumbnailsGrid}>
-                {THUMBNAIL_PHOTOS.map((photo) => (
-                  <div key={photo.num} className={styles.thumbCard}>
-                    <div className={styles.thumbImgFrame}>
-                      <span className={styles.thumbBadge}>{photo.num}</span>
-                      <Image
-                        src={photo.url}
-                        alt={photo.alt}
-                        fill
-                        sizes="(max-width: 768px) 25vw, 120px"
-                        style={{ objectFit: 'cover' }}
-                        unoptimized
-                      />
+                {THUMBNAIL_PHOTOS.map((photo) => {
+                  const val = ex3Photos[String(photo.num)] || '';
+                  const vRes = isTeacherReview ? verifyAnswer(val, ex3Key?.[String(photo.num)]) : null;
+                  const valClass =
+                    vRes?.status === 'correct'
+                      ? styles.inputValid
+                      : vRes?.status === 'incorrect'
+                      ? styles.inputInvalid
+                      : '';
+                  return (
+                    <div key={photo.num} className={styles.thumbCard}>
+                      <div className={styles.thumbImgFrame}>
+                        <span className={styles.thumbBadge}>{photo.num}</span>
+                        <Image
+                          src={photo.url}
+                          alt={photo.alt}
+                          fill
+                          sizes="(max-width: 768px) 25vw, 120px"
+                          style={{ objectFit: 'cover' }}
+                          unoptimized
+                        />
+                      </div>
+                      <div className={styles.thumbSelectWrap}>
+                        <select
+                          value={val}
+                          onChange={(e) => onEx3PhotosChange(String(photo.num), e.target.value)}
+                          disabled={readOnly}
+                          aria-label={`Identify photo ${photo.num}`}
+                          className={valClass}
+                        >
+                          <option value="">-- choose --</option>
+                          <option value="pen">pen</option>
+                          <option value="clock">clock</option>
+                          <option value="chair">chair</option>
+                          <option value="book">book</option>
+                          <option value="cup">cup</option>
+                          <option value="key">key</option>
+                          <option value="box">box</option>
+                          <option value="phone">phone</option>
+                        </select>
+                        {isTeacherReview && <TeacherAnswerBadge result={vRes} />}
+                      </div>
                     </div>
-                    <div className={styles.thumbSelectWrap}>
-                      <select
-                        value={ex3Photos[String(photo.num)] || ''}
-                        onChange={(e) => onEx3PhotosChange(String(photo.num), e.target.value)}
-                        disabled={readOnly}
-                        aria-label={`Identify photo ${photo.num}`}
-                      >
-                        <option value="">-- choose --</option>
-                        <option value="pen">pen</option>
-                        <option value="clock">clock</option>
-                        <option value="chair">chair</option>
-                        <option value="book">book</option>
-                        <option value="cup">cup</option>
-                        <option value="key">key</option>
-                        <option value="box">box</option>
-                        <option value="phone">phone</option>
-                      </select>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -698,28 +736,44 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
 
             {/* Radio choices for 5a */}
             <div className={styles.ex5aChoices}>
-              <label>
-                <input
-                  type="radio"
-                  name="ex5a_picture_choice"
-                  value="A"
-                  checked={ex5aPicture.choice === 'A'}
-                  onChange={(e) => onEx5aPictureChange('choice', e.target.value)}
-                  disabled={readOnly}
-                />
-                <span>Picture A</span>
-              </label>
-              <label>
-                <input
-                  type="radio"
-                  name="ex5a_picture_choice"
-                  value="B"
-                  checked={ex5aPicture.choice === 'B'}
-                  onChange={(e) => onEx5aPictureChange('choice', e.target.value)}
-                  disabled={readOnly}
-                />
-                <span>Picture B</span>
-              </label>
+              {(() => {
+                const val = ex5aPicture.choice || '';
+                const vRes = isTeacherReview ? verifyAnswer(val, ex5aKey?.choice) : null;
+                const getClass = (choiceOpt: string) => {
+                  if (!isTeacherReview) return '';
+                  if (val === choiceOpt) {
+                    return vRes?.status === 'correct' ? styles.choiceValid : styles.choiceInvalid;
+                  }
+                  return '';
+                };
+                return (
+                  <>
+                    <label className={getClass('A')}>
+                      <input
+                        type="radio"
+                        name="ex5a_picture_choice"
+                        value="A"
+                        checked={val === 'A'}
+                        onChange={(e) => onEx5aPictureChange('choice', e.target.value)}
+                        disabled={readOnly}
+                      />
+                      <span>Picture A</span>
+                    </label>
+                    <label className={getClass('B')}>
+                      <input
+                        type="radio"
+                        name="ex5a_picture_choice"
+                        value="B"
+                        checked={val === 'B'}
+                        onChange={(e) => onEx5aPictureChange('choice', e.target.value)}
+                        disabled={readOnly}
+                      />
+                      <span>Picture B</span>
+                    </label>
+                    {isTeacherReview && <TeacherAnswerBadge result={vRes} />}
+                  </>
+                );
+              })()}
             </div>
 
             {/* Exercise 5b instruction */}
@@ -768,9 +822,20 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     onChange={(e) => onEx5bDialogueChange('1', e.target.value)}
                     disabled={readOnly}
                     placeholder="________"
-                    className={styles.gapInput}
+                    className={`${styles.gapInput} ${
+                      isTeacherReview
+                        ? verifyAnswer(ex5bDialogue['1'], ex5bKey?.['1']).status === 'correct'
+                          ? styles.inputValid
+                          : verifyAnswer(ex5bDialogue['1'], ex5bKey?.['1']).status === 'incorrect'
+                          ? styles.inputInvalid
+                          : ''
+                        : ''
+                    }`}
                     aria-label="Gap 1"
                   />
+                  {isTeacherReview && (
+                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['1'], ex5bKey?.['1'])} />
+                  )}
                 </span>
                 <span>.</span>
               </div>
@@ -795,9 +860,20 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     onChange={(e) => onEx5bDialogueChange('2', e.target.value)}
                     disabled={readOnly}
                     placeholder="________"
-                    className={styles.gapInput}
+                    className={`${styles.gapInput} ${
+                      isTeacherReview
+                        ? verifyAnswer(ex5bDialogue['2'], ex5bKey?.['2']).status === 'correct'
+                          ? styles.inputValid
+                          : verifyAnswer(ex5bDialogue['2'], ex5bKey?.['2']).status === 'incorrect'
+                          ? styles.inputInvalid
+                          : ''
+                        : ''
+                    }`}
                     aria-label="Gap 2"
                   />
+                  {isTeacherReview && (
+                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['2'], ex5bKey?.['2'])} />
+                  )}
                 </span>
                 <span>for the office.</span>
               </div>
@@ -822,9 +898,20 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     onChange={(e) => onEx5bDialogueChange('3', e.target.value)}
                     disabled={readOnly}
                     placeholder="________"
-                    className={styles.gapInput}
+                    className={`${styles.gapInput} ${
+                      isTeacherReview
+                        ? verifyAnswer(ex5bDialogue['3'], ex5bKey?.['3']).status === 'correct'
+                          ? styles.inputValid
+                          : verifyAnswer(ex5bDialogue['3'], ex5bKey?.['3']).status === 'incorrect'
+                          ? styles.inputInvalid
+                          : ''
+                        : ''
+                    }`}
                     aria-label="Gap 3"
                   />
+                  {isTeacherReview && (
+                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['3'], ex5bKey?.['3'])} />
+                  )}
                 </span>
                 <span>and this is the password.</span>
               </div>
@@ -849,9 +936,20 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     onChange={(e) => onEx5bDialogueChange('4', e.target.value)}
                     disabled={readOnly}
                     placeholder="________"
-                    className={styles.gapInput}
+                    className={`${styles.gapInput} ${
+                      isTeacherReview
+                        ? verifyAnswer(ex5bDialogue['4'], ex5bKey?.['4']).status === 'correct'
+                          ? styles.inputValid
+                          : verifyAnswer(ex5bDialogue['4'], ex5bKey?.['4']).status === 'incorrect'
+                          ? styles.inputInvalid
+                          : ''
+                        : ''
+                    }`}
                     aria-label="Gap 4"
                   />
+                  {isTeacherReview && (
+                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['4'], ex5bKey?.['4'])} />
+                  )}
                 </span>
                 <span>. Please ask me for help.</span>
               </div>
@@ -870,9 +968,20 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     onChange={(e) => onEx5bDialogueChange('5', e.target.value)}
                     disabled={readOnly}
                     placeholder="________"
-                    className={styles.gapInput}
+                    className={`${styles.gapInput} ${
+                      isTeacherReview
+                        ? verifyAnswer(ex5bDialogue['5'], ex5bKey?.['5']).status === 'correct'
+                          ? styles.inputValid
+                          : verifyAnswer(ex5bDialogue['5'], ex5bKey?.['5']).status === 'incorrect'
+                          ? styles.inputInvalid
+                          : ''
+                        : ''
+                    }`}
                     aria-label="Gap 5"
                   />
+                  {isTeacherReview && (
+                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['5'], ex5bKey?.['5'])} />
+                  )}
                 </span>
                 <span>of your family?</span>
               </div>
@@ -909,9 +1018,20 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     onChange={(e) => onEx5bDialogueChange('6', e.target.value)}
                     disabled={readOnly}
                     placeholder="________"
-                    className={styles.gapInput}
+                    className={`${styles.gapInput} ${
+                      isTeacherReview
+                        ? verifyAnswer(ex5bDialogue['6'], ex5bKey?.['6']).status === 'correct'
+                          ? styles.inputValid
+                          : verifyAnswer(ex5bDialogue['6'], ex5bKey?.['6']).status === 'incorrect'
+                          ? styles.inputInvalid
+                          : ''
+                        : ''
+                    }`}
                     aria-label="Gap 6"
                   />
+                  {isTeacherReview && (
+                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['6'], ex5bKey?.['6'])} />
+                  )}
                 </span>
                 <span>?</span>
               </div>
@@ -1215,11 +1335,22 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                         value={ex6Grammar['1'] || ''}
                         onChange={(e) => onEx6GrammarChange('1', e.target.value)}
                         disabled={readOnly}
-                        className={styles.inputBlank}
+                        className={`${styles.inputBlank} ${
+                          isTeacherReview
+                            ? verifyAnswer(ex6Grammar['1'], ex6Key?.['1']).status === 'correct'
+                              ? styles.inputValid
+                              : verifyAnswer(ex6Grammar['1'], ex6Key?.['1']).status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                            : ''
+                        }`}
                         placeholder="..."
                         aria-label="Grammar phrase 1"
                       />
                       <span>key</span>
+                      {isTeacherReview && (
+                        <TeacherAnswerBadge result={verifyAnswer(ex6Grammar['1'], ex6Key?.['1'])} />
+                      )}
                     </div>
                   </div>
 
@@ -1243,11 +1374,22 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                         value={ex6Grammar['2'] || ''}
                         onChange={(e) => onEx6GrammarChange('2', e.target.value)}
                         disabled={readOnly}
-                        className={styles.inputBlank}
+                        className={`${styles.inputBlank} ${
+                          isTeacherReview
+                            ? verifyAnswer(ex6Grammar['2'], ex6Key?.['2']).status === 'correct'
+                              ? styles.inputValid
+                              : verifyAnswer(ex6Grammar['2'], ex6Key?.['2']).status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                            : ''
+                        }`}
                         placeholder="..."
                         aria-label="Grammar phrase 2"
                       />
                       <span>key</span>
+                      {isTeacherReview && (
+                        <TeacherAnswerBadge result={verifyAnswer(ex6Grammar['2'], ex6Key?.['2'])} />
+                      )}
                     </div>
                   </div>
 
@@ -1271,11 +1413,22 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                         value={ex6Grammar['3'] || ''}
                         onChange={(e) => onEx6GrammarChange('3', e.target.value)}
                         disabled={readOnly}
-                        className={styles.inputBlank}
+                        className={`${styles.inputBlank} ${
+                          isTeacherReview
+                            ? verifyAnswer(ex6Grammar['3'], ex6Key?.['3']).status === 'correct'
+                              ? styles.inputValid
+                              : verifyAnswer(ex6Grammar['3'], ex6Key?.['3']).status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                            : ''
+                        }`}
                         placeholder="..."
                         aria-label="Grammar phrase 3"
                       />
                       <span>keys</span>
+                      {isTeacherReview && (
+                        <TeacherAnswerBadge result={verifyAnswer(ex6Grammar['3'], ex6Key?.['3'])} />
+                      )}
                     </div>
                   </div>
 
@@ -1299,11 +1452,22 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                         value={ex6Grammar['4'] || ''}
                         onChange={(e) => onEx6GrammarChange('4', e.target.value)}
                         disabled={readOnly}
-                        className={styles.inputBlank}
+                        className={`${styles.inputBlank} ${
+                          isTeacherReview
+                            ? verifyAnswer(ex6Grammar['4'], ex6Key?.['4']).status === 'correct'
+                              ? styles.inputValid
+                              : verifyAnswer(ex6Grammar['4'], ex6Key?.['4']).status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                            : ''
+                        }`}
                         placeholder="..."
                         aria-label="Grammar phrase 4"
                       />
                       <span>keys</span>
+                      {isTeacherReview && (
+                        <TeacherAnswerBadge result={verifyAnswer(ex6Grammar['4'], ex6Key?.['4'])} />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1351,33 +1515,45 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     optA: "a What's in this box?",
                     optB: "b What's in these boxes?",
                   },
-                ].map(({ id, optA, optB }) => (
-                  <div key={id} className={styles.ex7SentenceRow}>
-                    <span className={styles.sentenceNum}>{id}</span>
-                    <label>
-                      <input
-                        type="radio"
-                        name={`ex7a_${id}`}
-                        value="a"
-                        checked={ex7aChoice[id] === 'a'}
-                        onChange={(e) => onEx7aChoiceChange(id, e.target.value)}
-                        disabled={readOnly}
-                      />
-                      <span>{optA}</span>
-                    </label>
-                    <label>
-                      <input
-                        type="radio"
-                        name={`ex7a_${id}`}
-                        value="b"
-                        checked={ex7aChoice[id] === 'b'}
-                        onChange={(e) => onEx7aChoiceChange(id, e.target.value)}
-                        disabled={readOnly}
-                      />
-                      <span>{optB}</span>
-                    </label>
-                  </div>
-                ))}
+                ].map(({ id, optA, optB }) => {
+                  const val = ex7aChoice[id] || '';
+                  const vRes = isTeacherReview ? verifyAnswer(val, ex7aKey?.[id]) : null;
+                  const getClass = (choiceOpt: string) => {
+                    if (!isTeacherReview) return '';
+                    if (val === choiceOpt) {
+                      return vRes?.status === 'correct' ? styles.choiceValid : styles.choiceInvalid;
+                    }
+                    return '';
+                  };
+                  return (
+                    <div key={id} className={styles.ex7SentenceRow}>
+                      <span className={styles.sentenceNum}>{id}</span>
+                      <label className={getClass('a')}>
+                        <input
+                          type="radio"
+                          name={`ex7a_${id}`}
+                          value="a"
+                          checked={val === 'a'}
+                          onChange={(e) => onEx7aChoiceChange(id, e.target.value)}
+                          disabled={readOnly}
+                        />
+                        <span>{optA}</span>
+                      </label>
+                      <label className={getClass('b')}>
+                        <input
+                          type="radio"
+                          name={`ex7a_${id}`}
+                          value="b"
+                          checked={val === 'b'}
+                          onChange={(e) => onEx7aChoiceChange(id, e.target.value)}
+                          disabled={readOnly}
+                        />
+                        <span>{optB}</span>
+                      </label>
+                      {isTeacherReview && <TeacherAnswerBadge result={vRes} />}
+                    </div>
+                  );
+                })}
               </div>
 
               <div className={styles.ex7RepeatText}>
@@ -1475,11 +1651,22 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                         value={ex8Conversations['1'] || ''}
                         onChange={(e) => onEx8ConversationsChange('1', e.target.value)}
                         disabled={readOnly}
-                        className={styles.inputBlank}
+                        className={`${styles.inputBlank} ${
+                          isTeacherReview
+                            ? verifyAnswer(ex8Conversations['1'], ex8Key?.['1']).status === 'correct'
+                              ? styles.inputValid
+                              : verifyAnswer(ex8Conversations['1'], ex8Key?.['1']).status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                            : ''
+                        }`}
                         placeholder="..."
                         aria-label="Dialog 1 gap"
                       />{' '}
                       your cup?
+                      {isTeacherReview && (
+                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['1'], ex8Key?.['1'])} />
+                      )}
                     </span>
                   </div>
                   <div className={styles.dialogLine} style={{ paddingLeft: '22px' }}>
@@ -1500,11 +1687,22 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                         value={ex8Conversations['2'] || ''}
                         onChange={(e) => onEx8ConversationsChange('2', e.target.value)}
                         disabled={readOnly}
-                        className={styles.inputBlank}
+                        className={`${styles.inputBlank} ${
+                          isTeacherReview
+                            ? verifyAnswer(ex8Conversations['2'], ex8Key?.['2']).status === 'correct'
+                              ? styles.inputValid
+                              : verifyAnswer(ex8Conversations['2'], ex8Key?.['2']).status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                            : ''
+                        }`}
                         placeholder="..."
                         aria-label="Dialog 2 gap"
                       />{' '}
                       your books?
+                      {isTeacherReview && (
+                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['2'], ex8Key?.['2'])} />
+                      )}
                     </span>
                   </div>
                   <div className={styles.dialogLine} style={{ paddingLeft: '22px' }}>
@@ -1525,11 +1723,22 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                         value={ex8Conversations['3_1'] || ''}
                         onChange={(e) => onEx8ConversationsChange('3_1', e.target.value)}
                         disabled={readOnly}
-                        className={styles.inputBlank}
+                        className={`${styles.inputBlank} ${
+                          isTeacherReview
+                            ? verifyAnswer(ex8Conversations['3_1'], ex8Key?.['3_1']).status === 'correct'
+                              ? styles.inputValid
+                              : verifyAnswer(ex8Conversations['3_1'], ex8Key?.['3_1']).status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                            : ''
+                        }`}
                         placeholder="..."
                         aria-label="Dialog 3 gap 1"
                       />{' '}
                       box?
+                      {isTeacherReview && (
+                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['3_1'], ex8Key?.['3_1'])} />
+                      )}
                     </span>
                   </div>
                   <div className={styles.dialogLine} style={{ paddingLeft: '22px' }}>
@@ -1540,11 +1749,22 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                         value={ex8Conversations['3_2'] || ''}
                         onChange={(e) => onEx8ConversationsChange('3_2', e.target.value)}
                         disabled={readOnly}
-                        className={styles.inputBlank}
+                        className={`${styles.inputBlank} ${
+                          isTeacherReview
+                            ? verifyAnswer(ex8Conversations['3_2'], ex8Key?.['3_2']).status === 'correct'
+                              ? styles.inputValid
+                              : verifyAnswer(ex8Conversations['3_2'], ex8Key?.['3_2']).status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                            : ''
+                        }`}
                         placeholder="..."
                         aria-label="Dialog 3 gap 2"
                       />
                       &apos;s my new clock.
+                      {isTeacherReview && (
+                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['3_2'], ex8Key?.['3_2'])} />
+                      )}
                     </span>
                   </div>
                 </div>
@@ -1561,11 +1781,22 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                         value={ex8Conversations['4_1'] || ''}
                         onChange={(e) => onEx8ConversationsChange('4_1', e.target.value)}
                         disabled={readOnly}
-                        className={styles.inputBlank}
+                        className={`${styles.inputBlank} ${
+                          isTeacherReview
+                            ? verifyAnswer(ex8Conversations['4_1'], ex8Key?.['4_1']).status === 'correct'
+                              ? styles.inputValid
+                              : verifyAnswer(ex8Conversations['4_1'], ex8Key?.['4_1']).status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                            : ''
+                        }`}
                         placeholder="..."
                         aria-label="Dialog 4 gap 1"
                       />{' '}
                       my pens?
+                      {isTeacherReview && (
+                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['4_1'], ex8Key?.['4_1'])} />
+                      )}
                     </span>
                   </div>
                   <div className={styles.dialogLine} style={{ paddingLeft: '22px' }}>
@@ -1577,11 +1808,22 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                         value={ex8Conversations['4_2'] || ''}
                         onChange={(e) => onEx8ConversationsChange('4_2', e.target.value)}
                         disabled={readOnly}
-                        className={styles.inputBlank}
+                        className={`${styles.inputBlank} ${
+                          isTeacherReview
+                            ? verifyAnswer(ex8Conversations['4_2'], ex8Key?.['4_2']).status === 'correct'
+                              ? styles.inputValid
+                              : verifyAnswer(ex8Conversations['4_2'], ex8Key?.['4_2']).status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                            : ''
+                        }`}
                         placeholder="..."
                         aria-label="Dialog 4 gap 2"
                       />{' '}
                       are Jack&apos;s pens.
+                      {isTeacherReview && (
+                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['4_2'], ex8Key?.['4_2'])} />
+                      )}
                     </span>
                   </div>
                 </div>

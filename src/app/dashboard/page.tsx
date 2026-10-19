@@ -64,6 +64,10 @@ export default function DashboardPage() {
   const [expandedUnit, setExpandedUnit] = useState<string | null>(null);
 
   useEffect(() => {
+    // Зачистка устаревших токенов из localStorage, если они попали туда от старых версий кода
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+
     const fetchData = async () => {
       try {
         const [userResponse, textbooksResponse] = await Promise.all([
@@ -85,7 +89,7 @@ export default function DashboardPage() {
             // Ignore if student has no submissions yet
           }
         }
-      } catch (err) {
+      } catch {
         // Не залогинен: на логин
         router.push('/login');
       } finally {
@@ -107,11 +111,14 @@ export default function DashboardPage() {
   const handleLogout = async () => {
     setLoggingOut(true); // подавляет редиректы на /login во время выхода
     try {
+      // Браузер сам отправит cookie через withCredentials — тело запроса не нужно
       await api.post('/auth/logout');
     } catch (err) {
       console.error('Logout request failed:', err);
     } finally {
+      // Удаляем все возможные данные из localStorage (токены + UI-данные)
       localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
       localStorage.removeItem('user');
       localStorage.removeItem('role');
       // Полная перезагрузка: сбрасывает стейт и флаг, открывает главную

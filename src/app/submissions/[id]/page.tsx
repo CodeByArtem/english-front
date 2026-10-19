@@ -10,7 +10,11 @@ import Lesson1CContent from '@/components/Lesson1CContent';
 import Lesson1DContent from '@/components/Lesson1DContent';
 import Lesson2AContent from '@/components/Lesson2AContent';
 import Lesson2BContent from '@/components/Lesson2BContent';
+import Lesson2CContent from '@/components/Lesson2CContent';
+import Lesson2DContent from '@/components/Lesson2DContent';
+import Lesson3AContent from '@/components/Lesson3AContent';
 import { SubmissionAudioMeta } from '@/components/AudioAnswerRecorder/SubmissionAudioPlayer';
+import { LessonAnswerKey } from '@/lib/answerVerification';
 
 interface ProfilePairs {
   woman?: { name?: string; job?: string; city?: string; country?: string };
@@ -80,6 +84,15 @@ interface SubmissionAnswers {
   exercise_6_grammar?: Record<string, string>;
   exercise_7a_choice?: Record<string, string>;
   exercise_8_conversations?: Record<string, string>;
+  // Lesson 2C
+  exercise_1a_match?: Record<string, string>;
+  exercise_2_choice?: Record<string, string>;
+  exercise_3a_sequence?: string;
+  exercise_4_profiles?: Record<string, { age?: string; from?: string; job?: string }>;
+  exercise_5_grammar_rules?: Record<string, string>;
+  exercise_7_questions?: Record<string, string>;
+  exercise_8a_family?: Record<string, string>;
+  exercise_10_speaking_notes?: string;
 }
 
 interface SubmissionModel {
@@ -90,12 +103,12 @@ interface SubmissionModel {
   tutorComment?: string;
   createdAt: string;
   student?: { id?: string; email?: string; name?: string; role?: string };
-  lesson?: { id?: string; title?: string; order?: number };
+  lesson?: { id?: string; title?: string; order?: number; answerKey?: LessonAnswerKey | null };
   assignment?: {
     id?: string;
     title?: string;
     attachmentUrl?: string;
-    lesson?: { id?: string; title?: string; order?: number };
+    lesson?: { id?: string; title?: string; order?: number; answerKey?: LessonAnswerKey | null };
   };
   answers?: SubmissionAnswers;
   reviewedAnswers?: SubmissionAnswers;
@@ -225,6 +238,50 @@ export default function SubmissionPage() {
   const [ex8Conversations, setEx8Conversations] = useState<Record<string, string>>({});
   const [exRoomObjects, setExRoomObjects] = useState<string>('');
 
+  // 2C states
+  const [ex1aMatch, setEx1aMatch] = useState<Record<string, string>>({});
+  const [ex2Choice, setEx2Choice] = useState<Record<string, string>>({});
+  const [ex3aSequence, setEx3aSequence] = useState<string>('');
+  const [ex4Profiles, setEx4Profiles] = useState<
+    Record<string, { age?: string; from?: string; job?: string }>
+  >({});
+  const [ex5GrammarRules, setEx5GrammarRules] = useState<Record<string, string>>({});
+  const [ex7Questions, setEx7Questions] = useState<Record<string, string>>({});
+  const [ex8aFamily, setEx8aFamily] = useState<Record<string, string>>({});
+  const [ex8bNotes, setEx8bNotes] = useState<string>('');
+  const [ex10SpeakingNotes, setEx10SpeakingNotes] = useState<string>('');
+
+  // 2D states
+  const [ex1Objects2D, setEx1Objects2D] = useState<string>('');
+  const [ex2aBought2D, setEx2aBought2D] = useState<string>('');
+  const [ex2bPhrases2D, setEx2bPhrases2D] = useState<Record<string, boolean>>({});
+  const [ex3aDialogue2D, setEx3aDialogue2D] = useState<Record<string, string>>({});
+  const [ex4Notes2D, setEx4Notes2D] = useState<string>('');
+
+  const [ex1Family2D, setEx1Family2D] = useState<Record<string, string>>({});
+  const [ex2Possessive2D, setEx2Possessive2D] = useState<Record<string, string>>({});
+  const [ex3Alternatives2D, setEx3Alternatives2D] = useState<Record<string, string>>({});
+  const [ex4Mistakes2D, setEx4Mistakes2D] = useState<Record<string, string>>({});
+  const [ex5Anagrams2D, setEx5Anagrams2D] = useState<Record<string, string>>({});
+  const [ex6Demonstratives2D, setEx6Demonstratives2D] = useState<Record<string, string>>({});
+  const [ex7aMath2D, setEx7aMath2D] = useState<Record<string, string>>({});
+  const [ex7bAges2D, setEx7bAges2D] = useState<Record<string, string>>({});
+  const [ex8aQuestions2D, setEx8aQuestions2D] = useState<Record<string, string>>({});
+  const [ex8bPairNotes2D, setEx8bPairNotes2D] = useState<string>('');
+  const [reflectScores2D, setReflectScores2D] = useState<Record<string, string | number>>({});
+
+  // 3A states
+  const [ex1aPlaces3A, setEx1aPlaces3A] = useState<Record<string, string>>({});
+  const [ex2PairNotes3A, setEx2PairNotes3A] = useState<string>('');
+  const [ex3Speakers3A, setEx3Speakers3A] = useState<Record<string, string>>({});
+  const [ex4ListeningChoices3A, setEx4ListeningChoices3A] = useState<Record<string, string>>({});
+  const [ex5GrammarGaps3A, setEx5GrammarGaps3A] = useState<Record<string, string>>({});
+  const [ex7aAlternatives3A, setEx7aAlternatives3A] = useState<Record<string, string>>({});
+  const [ex7bLists3A, setEx7bLists3A] = useState<Record<string, string>>({});
+  const [ex8TextGaps3A, setEx8TextGaps3A] = useState<Record<string, string>>({});
+  const [ex9Sentences3A, setEx9Sentences3A] = useState<Record<string, string>>({});
+  const [ex11SpeakingNotes3A, setEx11SpeakingNotes3A] = useState<string>('');
+
   const [playingAudio, setPlayingAudio] = useState<string | null>(null);
   const [currentAudio, setCurrentAudio] = useState<HTMLAudioElement | null>(null);
 
@@ -253,7 +310,15 @@ export default function SubmissionPage() {
         const data = res.data;
         setSubmission(data);
         
-        const answers: SubmissionAnswers = data.reviewedAnswers || data.answers || {};
+        let rawAnswers = data.reviewedAnswers || data.answers || {};
+        if (typeof rawAnswers === 'string') {
+          try {
+            rawAnswers = JSON.parse(rawAnswers);
+          } catch {
+            rawAnswers = {};
+          }
+        }
+        const answers: SubmissionAnswers = rawAnswers;
         setFlagAnswers(getNumMap(answers.flagAnswers));
         setDialogInputs(getMap(answers.dialogInputs));
         setStressTableInputs(getMap(answers.stressTableInputs));
@@ -324,6 +389,49 @@ export default function SubmissionPage() {
         if (answers.exercise_7a_choice) setEx7aChoice(getMap(answers.exercise_7a_choice));
         if (answers.exercise_8_conversations) setEx8Conversations(getMap(answers.exercise_8_conversations));
         if (answers.exercise_room_objects) setExRoomObjects(getStr(answers.exercise_room_objects));
+
+        // 2C answers restore
+        if (answers.exercise_1a_match) setEx1aMatch(getMap(answers.exercise_1a_match));
+        if (answers.exercise_2_choice) setEx2Choice(getMap(answers.exercise_2_choice));
+        if (answers.exercise_3a_sequence) setEx3aSequence(getStr(answers.exercise_3a_sequence));
+        if (answers.exercise_4_profiles) setEx4Profiles(answers.exercise_4_profiles as Record<string, { age?: string; from?: string; job?: string }>);
+        if (answers.exercise_5_grammar_rules) setEx5GrammarRules(getMap(answers.exercise_5_grammar_rules));
+        if (answers.exercise_7_questions) setEx7Questions(getMap(answers.exercise_7_questions));
+        if (answers.exercise_8a_family) setEx8aFamily(getMap(answers.exercise_8a_family));
+        if (answers.exercise_8b_notes) setEx8bNotes(getStr(answers.exercise_8b_notes));
+        if (answers.exercise_10_speaking_notes) setEx10SpeakingNotes(getStr(answers.exercise_10_speaking_notes));
+
+        // 2D answers restore
+        if (answers.exercise_1_objects) setEx1Objects2D(getStr(answers.exercise_1_objects));
+        if (answers.exercise_2a_bought) setEx2aBought2D(getStr(answers.exercise_2a_bought));
+        if (answers.exercise_2b_phrases && typeof answers.exercise_2b_phrases === 'object') {
+          setEx2bPhrases2D(answers.exercise_2b_phrases as Record<string, boolean>);
+        }
+        if (answers.exercise_3a_dialogue) setEx3aDialogue2D(getMap(answers.exercise_3a_dialogue));
+        if (answers.exercise_4_notes) setEx4Notes2D(getStr(answers.exercise_4_notes));
+        if (answers.exercise_1_family) setEx1Family2D(getMap(answers.exercise_1_family));
+        if (answers.exercise_2_possessive) setEx2Possessive2D(getMap(answers.exercise_2_possessive));
+        if (answers.exercise_3_alternatives) setEx3Alternatives2D(getMap(answers.exercise_3_alternatives));
+        if (answers.exercise_4_mistakes) setEx4Mistakes2D(getMap(answers.exercise_4_mistakes));
+        if (answers.exercise_5_anagrams) setEx5Anagrams2D(getMap(answers.exercise_5_anagrams));
+        if (answers.exercise_6_demonstratives) setEx6Demonstratives2D(getMap(answers.exercise_6_demonstratives));
+        if (answers.exercise_7a_math) setEx7aMath2D(getMap(answers.exercise_7a_math));
+        if (answers.exercise_7b_ages) setEx7bAges2D(getMap(answers.exercise_7b_ages));
+        if (answers.exercise_8a_questions) setEx8aQuestions2D(getMap(answers.exercise_8a_questions));
+        if (answers.exercise_8b_pair_notes) setEx8bPairNotes2D(getStr(answers.exercise_8b_pair_notes));
+        if (answers.reflect_scores) setReflectScores2D(getScoresMap(answers.reflect_scores));
+
+        // 3A answers restore
+        if (answers.exercise_1a_places) setEx1aPlaces3A(getMap(answers.exercise_1a_places));
+        if (answers.exercise_2_pair_notes) setEx2PairNotes3A(getStr(answers.exercise_2_pair_notes));
+        if (answers.exercise_3_speakers) setEx3Speakers3A(getMap(answers.exercise_3_speakers));
+        if (answers.exercise_4_choices) setEx4ListeningChoices3A(getMap(answers.exercise_4_choices));
+        if (answers.exercise_5_grammar) setEx5GrammarGaps3A(getMap(answers.exercise_5_grammar));
+        if (answers.exercise_7a_alternatives) setEx7aAlternatives3A(getMap(answers.exercise_7a_alternatives));
+        if (answers.exercise_7b_lists) setEx7bLists3A(getMap(answers.exercise_7b_lists));
+        if (answers.exercise_8_text) setEx8TextGaps3A(getMap(answers.exercise_8_text));
+        if (answers.exercise_9_sentences) setEx9Sentences3A(getMap(answers.exercise_9_sentences));
+        if (answers.exercise_11_speaking_notes) setEx11SpeakingNotes3A(getStr(answers.exercise_11_speaking_notes));
         
         if (data.grade !== null) setGrade(data.grade);
         if (data.tutorComment) setTutorComment(data.tutorComment);
@@ -437,7 +545,66 @@ export default function SubmissionPage() {
         lesson?.title?.includes('2B') ||
         lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a77';
 
-      const payloadAnswers = isLesson2B
+      const isLesson2C =
+        lesson?.order === 7 ||
+        lesson?.title?.includes('2C') ||
+        lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a88';
+
+      const isLesson2D =
+        lesson?.order === 8 ||
+        lesson?.title?.includes('2D') ||
+        lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a99';
+
+      const isLesson3A =
+        lesson?.order === 9 ||
+        lesson?.title?.includes('3A') ||
+        lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380b01';
+
+      const payloadAnswers = isLesson3A
+        ? {
+            exercise_1a_places: ex1aPlaces3A,
+            exercise_2_pair_notes: ex2PairNotes3A,
+            exercise_3_speakers: ex3Speakers3A,
+            exercise_4_choices: ex4ListeningChoices3A,
+            exercise_5_grammar: ex5GrammarGaps3A,
+            exercise_7a_alternatives: ex7aAlternatives3A,
+            exercise_7b_lists: ex7bLists3A,
+            exercise_8_text: ex8TextGaps3A,
+            exercise_9_sentences: ex9Sentences3A,
+            exercise_11_speaking_notes: ex11SpeakingNotes3A,
+          }
+        : isLesson2D
+        ? {
+            exercise_1_objects: ex1Objects2D,
+            exercise_2a_bought: ex2aBought2D,
+            exercise_2b_phrases: ex2bPhrases2D,
+            exercise_3a_dialogue: ex3aDialogue2D,
+            exercise_4_notes: ex4Notes2D,
+            exercise_1_family: ex1Family2D,
+            exercise_2_possessive: ex2Possessive2D,
+            exercise_3_alternatives: ex3Alternatives2D,
+            exercise_4_mistakes: ex4Mistakes2D,
+            exercise_5_anagrams: ex5Anagrams2D,
+            exercise_6_demonstratives: ex6Demonstratives2D,
+            exercise_7a_math: ex7aMath2D,
+            exercise_7b_ages: ex7bAges2D,
+            exercise_8a_questions: ex8aQuestions2D,
+            exercise_8b_pair_notes: ex8bPairNotes2D,
+            reflect_scores: reflectScores2D,
+          }
+        : isLesson2C
+        ? {
+            exercise_1a_match: ex1aMatch,
+            exercise_2_choice: ex2Choice,
+            exercise_3a_sequence: ex3aSequence,
+            exercise_4_profiles: ex4Profiles,
+            exercise_5_grammar_rules: ex5GrammarRules,
+            exercise_7_questions: ex7Questions,
+            exercise_8a_family: ex8aFamily,
+            exercise_8b_notes: ex8bNotes,
+            exercise_10_speaking_notes: ex10SpeakingNotes,
+          }
+        : isLesson2B
         ? {
             exercise_1b_vocab: ex1bVocab,
             exercise_3_photos: ex3Photos,
@@ -610,6 +777,51 @@ export default function SubmissionPage() {
     setEx8Conversations(getMap(original.exercise_8_conversations));
     setExRoomObjects(getStr(original.exercise_room_objects));
 
+    // 2C reset
+    setEx1aMatch(getMap(original.exercise_1a_match));
+    setEx2Choice(getMap(original.exercise_2_choice));
+    setEx3aSequence(getStr(original.exercise_3a_sequence));
+    setEx4Profiles((original.exercise_4_profiles as Record<string, { age?: string; from?: string; job?: string }>) || {});
+    setEx5GrammarRules(getMap(original.exercise_5_grammar_rules));
+    setEx7Questions(getMap(original.exercise_7_questions));
+    setEx8aFamily(getMap(original.exercise_8a_family));
+    setEx8bNotes(getStr(original.exercise_8b_notes));
+    setEx10SpeakingNotes(getStr(original.exercise_10_speaking_notes));
+
+    // 2D reset
+    setEx1Objects2D(getStr(original.exercise_1_objects));
+    setEx2aBought2D(getStr(original.exercise_2a_bought));
+    if (original.exercise_2b_phrases && typeof original.exercise_2b_phrases === 'object') {
+      setEx2bPhrases2D(original.exercise_2b_phrases as Record<string, boolean>);
+    } else {
+      setEx2bPhrases2D({});
+    }
+    setEx3aDialogue2D(getMap(original.exercise_3a_dialogue));
+    setEx4Notes2D(getStr(original.exercise_4_notes));
+    setEx1Family2D(getMap(original.exercise_1_family));
+    setEx2Possessive2D(getMap(original.exercise_2_possessive));
+    setEx3Alternatives2D(getMap(original.exercise_3_alternatives));
+    setEx4Mistakes2D(getMap(original.exercise_4_mistakes));
+    setEx5Anagrams2D(getMap(original.exercise_5_anagrams));
+    setEx6Demonstratives2D(getMap(original.exercise_6_demonstratives));
+    setEx7aMath2D(getMap(original.exercise_7a_math));
+    setEx7bAges2D(getMap(original.exercise_7b_ages));
+    setEx8aQuestions2D(getMap(original.exercise_8a_questions));
+    setEx8bPairNotes2D(getStr(original.exercise_8b_pair_notes));
+    setReflectScores2D(getScoresMap(original.reflect_scores));
+
+    // 3A reset
+    setEx1aPlaces3A(getMap(original.exercise_1a_places));
+    setEx2PairNotes3A(getStr(original.exercise_2_pair_notes));
+    setEx3Speakers3A(getMap(original.exercise_3_speakers));
+    setEx4ListeningChoices3A(getMap(original.exercise_4_choices));
+    setEx5GrammarGaps3A(getMap(original.exercise_5_grammar));
+    setEx7aAlternatives3A(getMap(original.exercise_7a_alternatives));
+    setEx7bLists3A(getMap(original.exercise_7b_lists));
+    setEx8TextGaps3A(getMap(original.exercise_8_text));
+    setEx9Sentences3A(getMap(original.exercise_9_sentences));
+    setEx11SpeakingNotes3A(getStr(original.exercise_11_speaking_notes));
+
     setSuccess('Reset to student answers');
   };
 
@@ -640,6 +852,18 @@ export default function SubmissionPage() {
     lesson?.order === 6 ||
     lesson?.title?.includes('2B') ||
     lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a77';
+  const isLesson2C =
+    lesson?.order === 7 ||
+    lesson?.title?.includes('2C') ||
+    lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a88';
+  const isLesson2D =
+    lesson?.order === 8 ||
+    lesson?.title?.includes('2D') ||
+    lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a99';
+  const isLesson3A =
+    lesson?.order === 9 ||
+    lesson?.title?.includes('3A') ||
+    lesson?.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380b01';
   const isCustomAssignment = Boolean(
     submission.answers?.text || (!lesson && submission.assignment),
   );
@@ -688,6 +912,8 @@ export default function SubmissionPage() {
           <Lesson1BContent
             lesson={lesson}
             user={submission.student}
+            isTeacherReview={isTutor}
+            answerKey={lesson?.answerKey}
             jobsInputs={jobsInputs}
             readingInputs={readingInputs}
             onJobChange={(jid, val) => setJobsInputs((prev) => ({ ...prev, [jid]: val }))}
@@ -718,6 +944,8 @@ export default function SubmissionPage() {
           <Lesson1CContent
             lesson={lesson}
             user={submission.student}
+            isTeacherReview={isTutor}
+            answerKey={lesson?.answerKey}
             nationalitiesInputs={nationalitiesInputs}
             stressInputs={stressInputs}
             famousInputs={famousInputs}
@@ -745,6 +973,8 @@ export default function SubmissionPage() {
           <Lesson1DContent
             lesson={lesson}
             user={submission.student}
+            isTeacherReview={isTutor}
+            answerKey={lesson?.answerKey}
             readOnly={!isTutor}
             playAudio={playAudio}
             playingAudio={playingAudio}
@@ -788,10 +1018,176 @@ export default function SubmissionPage() {
             onReflectChange={(id, val) => setReflectScores((prev) => ({ ...prev, [id]: val }))}
             originalAnswers={submission.answers}
           />
+        ) : isLesson3A ? (
+          <Lesson3AContent
+            lesson={lesson}
+            user={submission.student}
+            isTeacherReview={isTutor}
+            answerKey={lesson?.answerKey}
+            readOnly={!isTutor}
+            playAudio={playAudio}
+            playingAudio={playingAudio}
+            ex1aPlaces={ex1aPlaces3A}
+            ex2PairNotes={ex2PairNotes3A}
+            ex3Speakers={ex3Speakers3A}
+            ex4ListeningChoices={ex4ListeningChoices3A}
+            ex5GrammarGaps={ex5GrammarGaps3A}
+            ex7aAlternatives={ex7aAlternatives3A}
+            ex7bLists={ex7bLists3A}
+            ex8TextGaps={ex8TextGaps3A}
+            ex9Sentences={ex9Sentences3A}
+            ex11SpeakingNotes={ex11SpeakingNotes3A}
+            onEx1aPlacesChange={(id, val) =>
+              setEx1aPlaces3A((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx2PairNotesChange={(val) => setEx2PairNotes3A(val)}
+            onEx3SpeakersChange={(sid, val) =>
+              setEx3Speakers3A((prev) => ({ ...prev, [sid]: val }))
+            }
+            onEx4ListeningChoicesChange={(qid, val) =>
+              setEx4ListeningChoices3A((prev) => ({ ...prev, [qid]: val }))
+            }
+            onEx5GrammarGapsChange={(gid, val) =>
+              setEx5GrammarGaps3A((prev) => ({ ...prev, [gid]: val }))
+            }
+            onEx7aAlternativesChange={(id, val) =>
+              setEx7aAlternatives3A((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx7bListsChange={(id, val) =>
+              setEx7bLists3A((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx8TextGapsChange={(gid, val) =>
+              setEx8TextGaps3A((prev) => ({ ...prev, [gid]: val }))
+            }
+            onEx9SentencesChange={(num, val) =>
+              setEx9Sentences3A((prev) => ({ ...prev, [num]: val }))
+            }
+            onEx11SpeakingNotesChange={(val) => setEx11SpeakingNotes3A(val)}
+            originalAnswers={submission.answers}
+            submissionId={submission.id}
+          />
+        ) : isLesson2D ? (
+          <Lesson2DContent
+            lesson={lesson}
+            user={submission.student}
+            isTeacherReview={isTutor}
+            answerKey={lesson?.answerKey}
+            readOnly={!isTutor}
+            playAudio={playAudio}
+            playingAudio={playingAudio}
+            ex1Objects={ex1Objects2D}
+            ex2aBought={ex2aBought2D}
+            ex2bPhrases={ex2bPhrases2D}
+            ex3aDialogue={ex3aDialogue2D}
+            ex4Notes={ex4Notes2D}
+            ex1Family={ex1Family2D}
+            ex2Possessive={ex2Possessive2D}
+            ex3Alternatives={ex3Alternatives2D}
+            ex4Mistakes={ex4Mistakes2D}
+            ex5Anagrams={ex5Anagrams2D}
+            ex6Demonstratives={ex6Demonstratives2D}
+            ex7aMath={ex7aMath2D}
+            ex7bAges={ex7bAges2D}
+            ex8aQuestions={ex8aQuestions2D}
+            ex8bPairNotes={ex8bPairNotes2D}
+            reflectScores={reflectScores2D}
+            onEx1ObjectsChange={(val) => setEx1Objects2D(val)}
+            onEx2aBoughtChange={(val) => setEx2aBought2D(val)}
+            onEx2bPhrasesChange={(phrase, checked) =>
+              setEx2bPhrases2D((prev) => ({ ...prev, [phrase]: checked }))
+            }
+            onEx3aDialogueChange={(gapId, val) =>
+              setEx3aDialogue2D((prev) => ({ ...prev, [gapId]: val }))
+            }
+            onEx4NotesChange={(val) => setEx4Notes2D(val)}
+            onEx1FamilyChange={(id, val) =>
+              setEx1Family2D((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx2PossessiveChange={(id, val) =>
+              setEx2Possessive2D((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx3AlternativesChange={(id, val) =>
+              setEx3Alternatives2D((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx4MistakesChange={(id, val) =>
+              setEx4Mistakes2D((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx5AnagramsChange={(id, val) =>
+              setEx5Anagrams2D((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx6DemonstrativesChange={(id, val) =>
+              setEx6Demonstratives2D((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx7aMathChange={(id, val) =>
+              setEx7aMath2D((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx7bAgesChange={(id, val) =>
+              setEx7bAges2D((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx8aQuestionsChange={(id, val) =>
+              setEx8aQuestions2D((prev) => ({ ...prev, [id]: val }))
+            }
+            onEx8bPairNotesChange={(val) => setEx8bPairNotes2D(val)}
+            onReflectScoresChange={(id, val) =>
+              setReflectScores2D((prev) => ({ ...prev, [id]: val }))
+            }
+            originalAnswers={submission.answers}
+            submissionId={submission.id}
+          />
+        ) : isLesson2C ? (
+          <Lesson2CContent
+            lesson={lesson}
+            user={submission.student}
+            isTeacherReview={isTutor}
+            answerKey={lesson?.answerKey}
+            readOnly={!isTutor}
+            playAudio={playAudio}
+            playingAudio={playingAudio}
+            ex1aMatch={ex1aMatch}
+            ex2Choice={ex2Choice}
+            ex3aSequence={ex3aSequence}
+            ex4Profiles={ex4Profiles}
+            ex5GrammarRules={ex5GrammarRules}
+            ex7Questions={ex7Questions}
+            ex8aFamily={ex8aFamily}
+            ex8bNotes={ex8bNotes}
+            ex10SpeakingNotes={ex10SpeakingNotes}
+            onEx1aMatchChange={(num, val) =>
+              setEx1aMatch((prev) => ({ ...prev, [num]: val }))
+            }
+            onEx2ChoiceChange={(item, val) =>
+              setEx2Choice((prev) => ({ ...prev, [item]: val }))
+            }
+            onEx3aSequenceChange={(val) => setEx3aSequence(val)}
+            onEx4ProfilesChange={(pkey, fld, val) =>
+              setEx4Profiles((prev) => ({
+                ...prev,
+                [pkey]: {
+                  ...prev[pkey],
+                  [fld]: val,
+                },
+              }))
+            }
+            onEx5GrammarRulesChange={(ruleId, val) =>
+              setEx5GrammarRules((prev) => ({ ...prev, [ruleId]: val }))
+            }
+            onEx7QuestionsChange={(qId, val) =>
+              setEx7Questions((prev) => ({ ...prev, [qId]: val }))
+            }
+            onEx8aFamilyChange={(idx, val) =>
+              setEx8aFamily((prev) => ({ ...prev, [idx]: val }))
+            }
+            onEx8bNotesChange={(val) => setEx8bNotes(val)}
+            onEx10SpeakingNotesChange={(val) => setEx10SpeakingNotes(val)}
+            originalAnswers={submission.answers}
+            submissionId={submission.id}
+          />
         ) : isLesson2B ? (
           <Lesson2BContent
             lesson={lesson}
             user={submission.student}
+            isTeacherReview={isTutor}
+            answerKey={lesson?.answerKey}
             readOnly={!isTutor}
             playAudio={playAudio}
             playingAudio={playingAudio}
@@ -833,6 +1229,8 @@ export default function SubmissionPage() {
           <Lesson2AContent
             lesson={lesson}
             user={submission.student}
+            isTeacherReview={isTutor}
+            answerKey={lesson?.answerKey}
             readOnly={!isTutor}
             playAudio={playAudio}
             playingAudio={playingAudio}
@@ -876,6 +1274,8 @@ export default function SubmissionPage() {
           <LessonContent
             lesson={lesson}
             user={submission.student}
+            isTeacherReview={isTutor}
+            answerKey={lesson?.answerKey}
             flagAnswers={flagAnswers}
             dialogInputs={dialogInputs}
             stressTableInputs={stressTableInputs}
