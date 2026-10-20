@@ -159,9 +159,17 @@
 
 .profileImageWrap {
   position: relative;
-  height: 170px;
+  height: 180px;
   background: #cbd5e1;
   overflow: hidden;
+
+  @media (min-width: 640px) {
+    height: 195px;
+  }
+
+  @media (min-width: 1024px) {
+    height: 215px;
+  }
 
   img {
     width: 100%;

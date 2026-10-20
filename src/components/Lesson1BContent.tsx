@@ -10,48 +10,59 @@ import {
 } from '@/lib/answerVerification';
 import TeacherAnswerBadge from './TeacherAnswerBadge';
 
-export const profilesData = [
+export interface ProfileItem {
+  id: number;
+  name: string;
+  city: string;
+  country: string;
+  imageUrl: string;
+  objectPosition?: string;
+}
+
+export const profilesData: ProfileItem[] = [
   {
     id: 1,
     name: 'Josh King',
     city: 'Chicago',
     country: 'the US',
-    imageUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1600320254374-ce2d293c324e?auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 2,
     name: 'Amy Gardner',
     city: 'Norwich',
     country: 'the UK',
-    imageUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1500937386664-56d1dfef3854?auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 3,
     name: 'Yolanda Alvarez',
     city: 'Guadalajara',
     country: 'Mexico',
-    imageUrl: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80',
+    objectPosition: 'center 20%',
   },
   {
     id: 4,
     name: 'Santiago Castillo',
     city: 'Mendoza',
     country: 'Argentina',
-    imageUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1579952363873-27f3bade9f55?auto=format&fit=crop&w=600&q=80',
   },
   {
     id: 5,
     name: 'Emilio Garcia',
     city: 'Valencia',
     country: 'Spain',
-    imageUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80',
+    objectPosition: 'center top',
   },
   {
     id: 6,
     name: 'Mali Arak',
     city: 'Chiang Mai',
     country: 'Thailand',
-    imageUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=500&q=80',
+    imageUrl: 'https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=600&q=80',
   },
 ];
 
@@ -195,7 +206,10 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
                     fill
                     priority={profile.id <= 3}
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    style={{ objectFit: 'cover' }}
+                    style={{
+                      objectFit: 'cover',
+                      objectPosition: profile.objectPosition || 'center',
+                    }}
                     unoptimized
                   />
                   <span className={styles.profileNumber}>{profile.id}</span>
@@ -209,9 +223,10 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
                     <span className={styles.jobBadgeNum}>{profile.id}</span>
                     <input
                       type="text"
+                      list="vocabulary-jobs-list"
                       value={currentVal}
                       onChange={(e) => onJobChange(String(profile.id), e.target.value)}
-                      placeholder="enter job..."
+                      placeholder="select or enter job..."
                       disabled={readOnly}
                       className={`${styles.jobInput} ${isChanged ? styles.diffHighlight : ''} ${
                         verification?.status === 'correct'
@@ -228,6 +243,11 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
             );
           })}
         </div>
+        <datalist id="vocabulary-jobs-list">
+          {vocabularyJobs.map((item) => (
+            <option key={item.key} value={item.label} />
+          ))}
+        </datalist>
       </section>
 
       {/* Two Columns: Vocabulary/Audio & Reading/Hospital */}
@@ -431,7 +451,7 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
                   <div className={styles.miniProfileCard}>
                     <div className={styles.miniPhotoWrap}>
                       <Image
-                        src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=300&q=80"
+                        src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=300&q=80"
                         alt="Lidia Nowak"
                         fill
                         sizes="(max-width: 768px) 50vw, 200px"
@@ -477,7 +497,7 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
                   <div className={styles.miniProfileCard}>
                     <div className={styles.miniPhotoWrap}>
                       <Image
-                        src="https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=300&q=80"
+                        src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=300&q=80"
                         alt="Sakura Sato"
                         fill
                         sizes="(max-width: 768px) 50vw, 200px"
@@ -1227,8 +1247,8 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
               {[
                 { id: '2', q: '2. Is Santiago a pilot?' },
                 { id: '3', q: '3. Is Sakura a farmer?' },
-                { id: '4', q: '4. Is Emilio a nurse?' },
-                { id: '5', q: '5. Is Jordi a school teacher?' },
+                { id: '4', q: '4. Is Emilio a doctor?' },
+                { id: '5', q: '5. Is Josh a school teacher?' },
                 { id: '6', q: '6. Is Yolanda a doctor?' },
               ].map((item) => {
                 const currentVal = ex7aAnswers[item.id] || '';

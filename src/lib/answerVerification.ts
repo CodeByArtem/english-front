@@ -36,6 +36,8 @@ export function normalizeAnswer(val: unknown): string {
     .trim()
     .toLowerCase()
     .replace(/[’‘`´]/g, "'")
+    .replace(/[,;!]/g, '')
+    .replace(/\s+/g, ' ')
     .replace(/\.+$/, '');
 }
 
