@@ -9,6 +9,7 @@ import {
   getExerciseKey,
 } from '@/lib/answerVerification';
 import TeacherAnswerBadge from './TeacherAnswerBadge';
+import PronounceButton from './PronounceButton';
 
 export interface Lesson2DContentProps {
   lesson?: Record<string, unknown> | null;
@@ -81,6 +82,9 @@ const USEFUL_PHRASES_ASSISTANT = [
   "Here's your change.",
   "Here's your card.",
 ];
+
+const cleanPhraseForSpeech = (text: string) =>
+  text.replace(/[()]/g, '').replace(/£(\d+(?:\.\d+)?)/g, '$1 pounds');
 
 const EX1_FAMILY_ITEMS = [
   { id: '1', text: "Catherine is Michael's wife. Michael is Catherine's", answer: 'husband', isExample: true },
@@ -389,8 +393,8 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                   {USEFUL_PHRASES_CUSTOMER.map((phrase) => {
                     const isChecked = !!ex2bPhrases[phrase];
                     return (
-                      <li key={phrase}>
-                        <label className={`${styles.phraseRow} ${isChecked ? styles.checkedPhrase : ''}`}>
+                      <li key={phrase} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                        <label className={`${styles.phraseRow} ${isChecked ? styles.checkedPhrase : ''}`} style={{ flex: 1 }}>
                           <input
                             type="checkbox"
                             checked={isChecked}
@@ -399,6 +403,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                           />
                           <span>{phrase}</span>
                         </label>
+                        <PronounceButton word={cleanPhraseForSpeech(phrase)} size="small" />
                       </li>
                     );
                   })}
@@ -411,8 +416,8 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                   {USEFUL_PHRASES_ASSISTANT.map((phrase) => {
                     const isChecked = !!ex2bPhrases[phrase];
                     return (
-                      <li key={phrase}>
-                        <label className={`${styles.phraseRow} ${isChecked ? styles.checkedPhrase : ''}`}>
+                      <li key={phrase} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                        <label className={`${styles.phraseRow} ${isChecked ? styles.checkedPhrase : ''}`} style={{ flex: 1 }}>
                           <input
                             type="checkbox"
                             checked={isChecked}
@@ -421,6 +426,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                           />
                           <span>{phrase}</span>
                         </label>
+                        <PronounceButton word={cleanPhraseForSpeech(phrase)} size="small" />
                       </li>
                     );
                   })}

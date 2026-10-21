@@ -21,7 +21,7 @@ export default function TeacherAnswerBadge({
   hideIfCorrect = false,
   isTeacherReview = true,
 }: TeacherAnswerBadgeProps) {
-  if (isTeacherReview === false || !result || !result.hasKey) {
+  if (isTeacherReview === false || !result || !result.hasKey || result.isExample) {
     return null;
   }
 

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
+import PronounceButton from '@/components/PronounceButton';
 import { verifyAnswer, getExerciseKey, LessonAnswerKey } from '@/lib/answerVerification';
 import styles from './lesson2c.module.scss';
 
@@ -486,7 +487,8 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                       item.isExample ? styles.struck : ''
                     }`}
                   >
-                    {item.word}
+                    <span>{item.word}</span>
+                    <PronounceButton word={item.word} size="small" />
                   </span>
                 ))}
               </div>
@@ -570,7 +572,8 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
               <div className={styles.pillsGridTeal}>
                 {TEAL_NUMBERS.map((item) => (
                   <div key={item.num} className={styles.pillBadgeTeal}>
-                    {item.num} {item.word}
+                    <span>{item.num} {item.word}</span>
+                    <PronounceButton word={item.word} size="small" />
                   </div>
                 ))}
               </div>
@@ -613,7 +616,8 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                       item.num === 100 ? styles.fullWidthPill : ''
                     }`}
                   >
-                    {item.num} {item.word}
+                    <span>{item.num} {item.word}</span>
+                    <PronounceButton word={item.word} size="small" />
                   </div>
                 ))}
               </div>

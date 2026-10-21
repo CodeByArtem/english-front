@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
+import PronounceButton from './PronounceButton';
 import { verifyAnswer, getExerciseKey, LessonAnswerKey } from '@/lib/answerVerification';
 import styles from './lesson2b.module.scss';
 import AudioAnswerRecorder from './AudioAnswerRecorder/AudioAnswerRecorder';
@@ -335,6 +336,7 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     >
                       <strong className={styles.vocabLetter}>{item.letter}</strong>
                       <span className={styles.vocabWord}>{item.word}</span>
+                      <PronounceButton word={item.word.replace(/\s*\(\d+\)/, '')} size="small" />
                     </div>
                   );
                 })}

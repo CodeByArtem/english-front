@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
+import PronounceButton from '@/components/PronounceButton';
 import { verifyAnswer, getExerciseKey, LessonAnswerKey } from '@/lib/answerVerification';
 import styles from './lesson1d.module.scss';
 
@@ -404,24 +405,24 @@ export default function Lesson1DContent({
 
               <div className={styles.group}>
                 <strong>Asking for information</strong>
-                <p>What&apos;s your first name?</p>
-                <p>What&apos;s your family name?</p>
-                <p>What&apos;s your phone number?</p>
-                <p>What&apos;s your email address?</p>
+                <p>What&apos;s your first name? <PronounceButton word="What's your first name?" size="small" /></p>
+                <p>What&apos;s your family name? <PronounceButton word="What's your family name?" size="small" /></p>
+                <p>What&apos;s your phone number? <PronounceButton word="What's your phone number?" size="small" /></p>
+                <p>What&apos;s your email address? <PronounceButton word="What's your email address?" size="small" /></p>
               </div>
 
               <div className={styles.group}>
                 <strong>Checking information</strong>
-                <p>Sorry, can you say that again?</p>
-                <p>How do you spell (your first name)?</p>
+                <p>Sorry, can you say that again? <PronounceButton word="Sorry, can you say that again?" size="small" /></p>
+                <p>How do you spell (your first name)? <PronounceButton word="How do you spell your first name?" size="small" /></p>
               </div>
 
               <div className={styles.group}>
                 <strong>Giving information</strong>
-                <p>My first name is (Selin).</p>
-                <p>My family name is (Atakan).</p>
-                <p>My number is (020-555-7645).</p>
-                <p>My email address is (selin2000@dmail.com).</p>
+                <p>My first name is (Selin). <PronounceButton word="My first name is Selin." size="small" /></p>
+                <p>My family name is (Atakan). <PronounceButton word="My family name is Atakan." size="small" /></p>
+                <p>My number is (020-555-7645). <PronounceButton word="My number is 0 2 0, 5 5 5, 7 6 4 5" size="small" /></p>
+                <p>My email address is (selin2000@dmail.com). <PronounceButton word="My email address is selin 2000 at d mail dot com" size="small" /></p>
               </div>
             </div>
 
@@ -805,8 +806,10 @@ export default function Lesson1DContent({
                         <span
                           key={key}
                           className={`${styles.bankWord} ${isFound ? styles.found : ''}`}
+                          style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'space-between', paddingRight: '4px' }}
                         >
-                          {item.name} {isFound ? '✓' : ''}
+                          <span>{item.name} {isFound ? '✓' : ''}</span>
+                          <PronounceButton word={item.name} size="small" />
                         </span>
                       );
                     })}

@@ -4,11 +4,18 @@
  */
 
 export type AnswerPrimitive = string | number | boolean;
-export type ExpectedAnswer = AnswerPrimitive | readonly AnswerPrimitive[];
+export interface ExpectedAnswerObject {
+  value?: AnswerPrimitive | readonly AnswerPrimitive[];
+  expected?: AnswerPrimitive | readonly AnswerPrimitive[];
+  answer?: AnswerPrimitive | readonly AnswerPrimitive[];
+  isExample?: boolean;
+  ignored?: boolean;
+}
+export type ExpectedAnswer = AnswerPrimitive | readonly AnswerPrimitive[] | ExpectedAnswerObject;
 export type ExerciseAnswerKey = Record<string, ExpectedAnswer>;
 export type LessonAnswerKey = Record<string, ExerciseAnswerKey | ExpectedAnswer>;
 
-export type VerificationStatus = 'correct' | 'incorrect' | 'empty' | 'no_key';
+export type VerificationStatus = 'correct' | 'incorrect' | 'empty' | 'no_key' | 'example';
 
 export interface VerificationResult {
   /** Ответ проверен по ключу */
@@ -21,6 +28,8 @@ export interface VerificationResult {
   expectedDisplay: string;
   /** Общий статус проверки для стилизации инпутов */
   status: VerificationStatus;
+  /** Является ли элемент примером или исключённым из проверки */
+  isExample?: boolean;
 }
 
 /**
@@ -42,28 +51,62 @@ export function normalizeAnswer(val: unknown): string {
 }
 
 /**
+ * Извлекает базовый примитив или список вариантов из расширенного объекта метаданных ответа
+ */
+export function extractExpectedPrimitive(
+  expected: ExpectedAnswer | undefined,
+): AnswerPrimitive | readonly AnswerPrimitive[] | null {
+  if (expected === null || expected === undefined) return null;
+  if (typeof expected === 'object' && !Array.isArray(expected)) {
+    const obj = expected as ExpectedAnswerObject;
+    if (obj.value !== undefined) return obj.value;
+    if (obj.expected !== undefined) return obj.expected;
+    if (obj.answer !== undefined) return obj.answer;
+    return null;
+  }
+  return expected;
+}
+
+/**
+ * Проверяет, является ли ожидаемый ключ примером или исключённым из проверки
+ */
+export function isExampleOrIgnored(expected: ExpectedAnswer | undefined): boolean {
+  if (expected && typeof expected === 'object' && !Array.isArray(expected)) {
+    const obj = expected as ExpectedAnswerObject;
+    return obj.isExample === true || obj.ignored === true;
+  }
+  return false;
+}
+
+/**
  * Проверяет, совпадает ли ответ студента с ожидаемым эталоном.
  */
 export function matchesExpected(studentVal: unknown, expected: ExpectedAnswer): boolean {
   const normalizedStudent = normalizeAnswer(studentVal);
   if (!normalizedStudent) return false;
 
-  if (Array.isArray(expected)) {
-    return expected.some((opt) => normalizeAnswer(opt) === normalizedStudent);
+  const actual = extractExpectedPrimitive(expected);
+  if (actual === null) return false;
+
+  if (Array.isArray(actual)) {
+    return actual.some((opt) => normalizeAnswer(opt) === normalizedStudent);
   }
-  return normalizeAnswer(expected) === normalizedStudent;
+  return normalizeAnswer(actual) === normalizedStudent;
 }
 
 /**
  * Возвращает читаемую строку эталонного ответа для учителя.
  */
 export function formatExpectedDisplay(expected: ExpectedAnswer): string {
-  if (Array.isArray(expected)) {
+  const actual = extractExpectedPrimitive(expected);
+  if (actual === null) return '';
+
+  if (Array.isArray(actual)) {
     // Если первый и второй вариант отличаются только регистром, берем красивый вариант
-    const unique = Array.from(new Set(expected.map((e) => String(e))));
+    const unique = Array.from(new Set(actual.map((e) => String(e))));
     return unique.slice(0, 2).join(' / ');
   }
-  return String(expected);
+  return String(actual);
 }
 
 /**
@@ -83,9 +126,22 @@ export function verifyAnswer(
     };
   }
 
-  const hasAnswer = normalizeAnswer(studentVal).length > 0;
-  const isCorrect = matchesExpected(studentVal, expected);
+  const isExample = isExampleOrIgnored(expected);
   const expectedDisplay = formatExpectedDisplay(expected);
+  const hasAnswer = normalizeAnswer(studentVal).length > 0;
+
+  if (isExample) {
+    return {
+      hasKey: true,
+      isCorrect: true,
+      hasAnswer: true,
+      expectedDisplay,
+      status: 'example',
+      isExample: true,
+    };
+  }
+
+  const isCorrect = matchesExpected(studentVal, expected);
   const status: VerificationStatus = isCorrect
     ? 'correct'
     : hasAnswer
@@ -98,6 +154,7 @@ export function verifyAnswer(
     hasAnswer,
     expectedDisplay,
     status,
+    isExample: false,
   };
 }
 

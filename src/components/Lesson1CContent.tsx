@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
+import PronounceButton from '@/components/PronounceButton';
 import { verifyAnswer, getExerciseKey, LessonAnswerKey } from '@/lib/answerVerification';
 import styles from './lesson1c.module.scss';
 
@@ -200,8 +201,9 @@ export default function Lesson1CContent({
 
                   return (
                     <div key={c.id} className={styles.matchRow}>
-                      <span className={styles.countryLabel}>
+                      <span className={styles.countryLabel} style={{ display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                         <strong>{c.id}.</strong> {c.name}
+                        <PronounceButton word={c.name} size="small" />
                       </span>
                       <select
                         value={currentVal}

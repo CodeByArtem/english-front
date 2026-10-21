@@ -24,8 +24,12 @@ export default function AssignmentsPage() {
       try {
         const response = await api.get('/assignments');
         setAssignments(response.data);
-      } catch (err: any) {
-        setError(err.response?.data?.message || 'Failed to load assignments');
+      } catch (err: unknown) {
+        const message =
+          err && typeof err === 'object' && 'response' in err
+            ? (err as { response?: { data?: { message?: string } } }).response?.data?.message
+            : null;
+        setError(message || 'Failed to load assignments');
       } finally {
         setLoading(false);
       }

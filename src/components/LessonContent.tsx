@@ -9,6 +9,7 @@ import {
     getExerciseKey,
 } from '@/lib/answerVerification';
 import TeacherAnswerBadge from './TeacherAnswerBadge';
+import PronounceButton from './PronounceButton';
 
 const countriesList = [
     "Argentina", "Brazil", "Canada", "Italy", "Japan",
@@ -340,7 +341,9 @@ const LessonContent: React.FC<LessonContentProps> = ({
                         {/* Плашка со странами перед таблицей (как в учебнике) */}
                         <div className={styles.countriesBox} style={{ margin: '1rem 0' }}>
                             {countriesList.map((country, i) => (
-                                <span key={`2a-${i}`} className={styles.countryTag}>{country}</span>
+                                <span key={`2a-${i}`} className={styles.countryTag}>
+                                    {country} <PronounceButton word={country} size="small" />
+                                </span>
                             ))}
                         </div>
 

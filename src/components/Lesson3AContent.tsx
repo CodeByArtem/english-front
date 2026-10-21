@@ -9,6 +9,7 @@ import {
   getExerciseKey,
 } from '@/lib/answerVerification';
 import TeacherAnswerBadge from './TeacherAnswerBadge';
+import PronounceButton from './PronounceButton';
 
 export interface Lesson3AContentProps {
   lesson?: Record<string, unknown> | null;
@@ -224,6 +225,7 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                     <div key={place.id} className={styles.placeItem}>
                       <span className={styles.placeNum}>{place.id}</span>
                       <span className={styles.placeName}>{place.name}</span>
+                      <PronounceButton word={place.name} size="small" />
                       <select
                         value={val}
                         onChange={(e) => onEx1aPlacesChange?.(place.id, e.target.value)}

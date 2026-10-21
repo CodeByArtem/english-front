@@ -9,6 +9,7 @@ import {
   getExerciseKey,
 } from '@/lib/answerVerification';
 import TeacherAnswerBadge from './TeacherAnswerBadge';
+import PronounceButton from './PronounceButton';
 
 export interface ProfileItem {
   id: number;
@@ -265,8 +266,9 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
             <p className={styles.vocabTitle}>Match 1–8 in the profiles with jobs a–h:</p>
             <div className={styles.vocabGrid}>
               {vocabularyJobs.map((item) => (
-                <div key={item.key}>
-                  <span>{item.key}</span> {item.label}
+                <div key={item.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
+                  <span><span>{item.key}</span> {item.label}</span>
+                  <PronounceButton word={item.label} size="small" />
                 </div>
               ))}
             </div>

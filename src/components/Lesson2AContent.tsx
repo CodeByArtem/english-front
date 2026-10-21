@@ -3,6 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
+import PronounceButton from '@/components/PronounceButton';
 import { verifyAnswer, getExerciseKey, LessonAnswerKey } from '@/lib/answerVerification';
 import styles from './lesson2a.module.scss';
 
@@ -389,6 +390,21 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
         <div className={styles.bottomGrid14}>
           {/* Ex 2a Vocabulary Table */}
           <div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '0.6rem' }}>
+              <span style={{ fontSize: '11.5px', fontWeight: 700, color: '#64748b', alignSelf: 'center' }}>
+                Listen with Milo:
+              </span>
+              <PronounceButton word="mother" label="mother" size="small" />
+              <PronounceButton word="father" label="father" size="small" />
+              <PronounceButton word="parents" label="parents" size="small" />
+              <PronounceButton word="daughter" label="daughter" size="small" />
+              <PronounceButton word="son" label="son" size="small" />
+              <PronounceButton word="children" label="children" size="small" />
+              <PronounceButton word="sister" label="sister" size="small" />
+              <PronounceButton word="brother" label="brother" size="small" />
+              <PronounceButton word="wife" label="wife" size="small" />
+              <PronounceButton word="husband" label="husband" size="small" />
+            </div>
             <table className={styles.vocabTable}>
               <thead>
                 <tr>
