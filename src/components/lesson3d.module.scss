@@ -10,6 +10,14 @@
   margin: 0 auto;
   min-width: 0;
   box-sizing: border-box;
+
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
 }
 
 // Карточка урока
@@ -22,11 +30,13 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-// Header Banner 3D (Тематический градиент Roadmap Red / Crimson)
+// Header Banner 3D
 .headerBanner {
-  background: linear-gradient(135deg, #be123c 0%, #dc2626 50%, #b91c1c 100%);
+  background: linear-gradient(135deg, #be123c 0%, $color-danger-dark 50%, #b91c1c 100%);
   color: $color-white;
   padding: clamp(1.25rem, 3.5vw, 2.25rem);
   display: flex;
@@ -38,6 +48,7 @@
   display: flex;
   align-items: center;
   gap: clamp(0.75rem, 2vw, 1.25rem);
+  flex-wrap: wrap;
 }
 
 .badge3D {
@@ -45,7 +56,7 @@
   align-items: baseline;
   justify-content: center;
   background: $color-white;
-  color: #dc2626;
+  color: $color-danger-dark;
   font-weight: 900;
   font-size: clamp(1.5rem, 4vw, 2.25rem);
   padding: 0.25rem 0.85rem;
@@ -63,6 +74,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
 }
 
 .unitTag {
@@ -70,7 +83,7 @@
   font-weight: $font-weight-bold;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #fef08a;
+  color: $color-warning-light;
 }
 
 .titleHeading {
@@ -100,35 +113,9 @@
     line-height: 1.35;
 
     strong {
-      color: #fef08a;
+      color: $color-warning-light;
       font-weight: $font-weight-bold;
     }
-  }
-}
-
-// Разделитель между разделами
-.partDivider {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: clamp(0.75rem, 2vw, 1.5rem) 0;
-
-  .partDividerLine {
-    flex: 1;
-    height: 1px;
-    background: #e2e8f0;
-  }
-
-  .partDividerBadge {
-    font-size: clamp(0.75rem, 1.6vw, 0.85rem);
-    font-weight: 700;
-    color: #be123c;
-    background: #ffe4e6;
-    border: 1px solid #fecdd3;
-    padding: 0.35rem 0.9rem;
-    border-radius: $border-radius-full;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
   }
 }
 
@@ -146,7 +133,7 @@
   grid-template-columns: 1fr;
   gap: clamp(1.25rem, 3vw, 2rem);
 
-  @media (min-width: 900px) {
+  @include respond-to(lg) {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -162,7 +149,7 @@
 .sectionTitle {
   font-size: clamp(1.2rem, 2.5vw, 1.45rem);
   font-weight: 800;
-  color: #0f172a;
+  color: $color-gray-900;
   margin: 0 0 $spacing-sm 0;
   display: flex;
   align-items: center;
@@ -171,14 +158,15 @@
 
 // Блок упражнения
 .exerciseBlock {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
   border-radius: $border-radius-lg;
   padding: clamp(0.85rem, 2vw, 1.25rem);
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 .exerciseHeader {
@@ -189,8 +177,8 @@
 }
 
 .exNumber {
-  background: #ffe4e6;
-  color: #be123c;
+  background: #fee2e2;
+  color: $color-danger-dark;
   font-weight: 800;
   font-size: 0.85rem;
   min-width: 1.6rem;
@@ -204,7 +192,7 @@
 
 .exLetter {
   font-weight: 800;
-  color: #be123c;
+  color: $color-danger-dark;
   margin-right: 0.2rem;
 }
 
@@ -214,7 +202,7 @@
   line-height: 1.4;
 }
 
-// Аудио полоса (СТАНДАРТ: Единый красный стиль #d02a27)
+// Аудио полоса
 .audioActionRow {
   display: flex;
   align-items: center;
@@ -227,8 +215,8 @@
 }
 
 .audioBtn {
-  background: #d02a27;
-  color: #ffffff;
+  background: $color-danger-dark;
+  color: $color-white;
   border: none;
   padding: 0.35rem 0.85rem;
   border-radius: 4px;
@@ -265,36 +253,6 @@
   box-shadow: 0 0 0 2px rgba(27, 76, 91, 0.25);
 }
 
-.audioBtnIcon {
-  font-size: 0.85rem;
-  display: inline-flex;
-  align-items: center;
-}
-
-.audioMeta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.775rem;
-  color: #64748b;
-  min-width: 0;
-  flex: 1;
-}
-
-.audioTrackName {
-  font-weight: 600;
-  color: #334155;
-  white-space: nowrap;
-}
-
-.audioStatus {
-  color: #be123c;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.4rem;
-}
-
 .equalizer {
   display: inline-flex;
   align-items: flex-end;
@@ -302,10 +260,9 @@
   height: 12px;
 }
 
-.bar,
-.eqBar {
+.bar {
   width: 2px;
-  background: #ffffff;
+  background: $color-white;
   border-radius: 1px;
   animation: eqAnimation 0.8s ease-in-out infinite alternate;
 
@@ -319,88 +276,80 @@
   100% { height: 12px; }
 }
 
-// Таун-карта (Town Map)
-.mapShowcase {
-  position: relative;
-  border-radius: 10px;
+.audioHint {
+  font-size: 0.8rem;
+  color: #991b1b;
+  font-weight: 500;
+}
+
+// Image wrappers
+.imageWrap {
+  width: 100%;
+  border-radius: $border-radius-lg;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 2px solid #cbd5e1;
-  background: #f1f5f9;
+  border: 1px solid $color-gray-200;
+  background: $color-white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+}
+
+.mapCardWrap {
+  position: relative;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  border: 1.5px solid $color-gray-300;
+  background: $color-white;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
 
   &:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
   }
 
   img {
     width: 100%;
     height: auto;
     display: block;
+    object-fit: contain;
   }
 
   .zoomOverlay {
     position: absolute;
     bottom: 8px;
     right: 8px;
-    background: rgba(15, 23, 42, 0.75);
+    background: rgba(15, 23, 42, 0.8);
     color: white;
-    font-size: 0.75rem;
+    font-size: 0.725rem;
     font-weight: 600;
-    padding: 0.25rem 0.6rem;
+    padding: 0.25rem 0.55rem;
     border-radius: 4px;
     backdrop-filter: blur(4px);
     pointer-events: none;
   }
 }
 
-// Список мест на карте
-.mapPlacesGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-  gap: 0.4rem;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: $border-radius-md;
-  padding: 0.65rem;
-}
-
-.mapPlaceItem {
+.cardTopLabel {
+  background: #be123c;
+  color: $color-white;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.825rem;
-  color: #334155;
-
-  .placeNum {
-    background: #f1f5f9;
-    color: #475569;
-    font-weight: 700;
-    width: 1.35rem;
-    height: 1.35rem;
-    border-radius: 50%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-  }
-}
-
-// Диаграммы направлений
-.diagramsShowcase {
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid #cbd5e1;
-  background: #ffffff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-  img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
+  justify-content: space-between;
 }
 
 // Сетка соответствий направлений
@@ -409,7 +358,7 @@
   grid-template-columns: 1fr;
   gap: 0.5rem;
 
-  @media (min-width: 600px) {
+  @include respond-to(sm) {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -419,22 +368,24 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
   border-radius: 6px;
   padding: 0.4rem 0.65rem;
   font-size: 0.85rem;
+  flex-wrap: wrap;
 
   .dirText {
     flex: 1;
-    color: #1e293b;
+    color: $color-gray-800;
     font-weight: 500;
+    min-width: 120px;
   }
 }
 
 // Полезные фразы таблица
 .usefulPhrasesCard {
-  background: #fff;
+  background: $color-white;
   border: 1px solid #fecdd3;
   border-radius: $border-radius-md;
   padding: 0.85rem;
@@ -454,16 +405,18 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
   border-radius: 6px;
   padding: 0.4rem 0.65rem;
   font-size: 0.85rem;
+  flex-wrap: wrap;
 
   .phraseText {
     flex: 1;
-    color: #1e293b;
+    color: $color-gray-800;
     font-weight: 500;
+    min-width: 140px;
   }
 }
 
@@ -484,7 +437,7 @@
 .choicePills {
   display: inline-flex;
   gap: 0.35rem;
-  background: #f1f5f9;
+  background: $color-gray-100;
   padding: 2px 4px;
   border-radius: 6px;
 }
@@ -497,17 +450,17 @@
   font-size: 0.825rem;
   font-weight: 500;
   cursor: pointer;
-  color: #475569;
+  color: $color-gray-600;
   transition: all 0.15s ease;
 
   &:hover {
-    background: #e2e8f0;
-    color: #1e293b;
+    background: $color-gray-200;
+    color: $color-gray-800;
   }
 
   &.choiceSelected {
     background: #be123c;
-    color: #ffffff;
+    color: $color-white;
     font-weight: 600;
   }
 }
@@ -530,7 +483,7 @@
   grid-template-columns: 1fr;
   gap: 0.75rem;
 
-  @media (min-width: 640px) {
+  @include respond-to(sm) {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -553,7 +506,7 @@
     margin: 0;
     padding-left: 1.2rem;
     font-size: 0.825rem;
-    color: #334155;
+    color: $color-gray-700;
     line-height: 1.5;
 
     li {
@@ -567,8 +520,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
   border-radius: 8px;
   padding: 0.75rem 0.9rem;
 }
@@ -588,26 +541,28 @@
   gap: 0.5rem;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: #1e293b;
+  color: $color-gray-800;
+  flex-wrap: wrap;
 
   .speaker {
     font-weight: 700;
-    color: #475569;
+    color: $color-gray-600;
     min-width: 1.2rem;
   }
 }
 
 // Интерактивные инпуты
 .inputField {
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid $color-gray-300;
   border-radius: 4px;
   padding: 0.25rem 0.5rem;
   font-size: 0.85rem;
-  background: #ffffff;
-  color: #0f172a;
+  background: $color-white;
+  color: $color-gray-900;
   outline: none;
   font-family: inherit;
   transition: all 0.15s ease;
+  max-width: 100%;
 
   &:focus {
     border-color: #be123c;
@@ -615,8 +570,8 @@
   }
 
   &:disabled {
-    background: #f1f5f9;
-    color: #64748b;
+    background: $color-gray-100;
+    color: $color-gray-500;
   }
 }
 
@@ -627,18 +582,6 @@
 
 .inputFieldFull {
   width: 100%;
-}
-
-.inputValid {
-  border-color: #16a34a !important;
-  background-color: #f0fdf4 !important;
-  color: #166534 !important;
-}
-
-.inputInvalid {
-  border-color: #dc2626 !important;
-  background-color: #fef2f2 !important;
-  color: #991b1b !important;
 }
 
 // Список с пробелами (Gapped List)
@@ -654,17 +597,17 @@
   flex-wrap: wrap;
   gap: 0.4rem 0.5rem;
   font-size: 0.875rem;
-  color: #1e293b;
+  color: $color-gray-800;
   line-height: 1.5;
-  background: #ffffff;
-  border: 1px solid #f1f5f9;
+  background: $color-white;
+  border: 1px solid $color-gray-100;
   padding: 0.4rem 0.65rem;
   border-radius: 6px;
 }
 
 .gappedItemNum {
   font-weight: 700;
-  color: #64748b;
+  color: $color-gray-500;
   min-width: 1.25rem;
 }
 
@@ -681,12 +624,13 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem;
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
   border-radius: 8px;
   padding: 0.4rem 0.65rem;
   min-width: 0;
   transition: all 0.15s ease;
+  flex-wrap: wrap;
 
   &:focus-within {
     border-color: #be123c;
@@ -725,7 +669,7 @@
   font-family: inherit;
   font-size: 0.95rem;
   font-weight: 800;
-  color: #1e293b;
+  color: $color-gray-800;
   min-width: 12px;
   height: 28px;
   padding: 0 1px;
@@ -735,10 +679,10 @@
 .gapInput {
   width: 22px;
   height: 28px;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid $color-gray-300;
   border-radius: 4px;
-  background: #f8fafc;
-  color: #0f172a;
+  background: $color-gray-50;
+  color: $color-gray-900;
   font-size: 0.95rem;
   font-weight: 700;
   text-align: center;
@@ -750,25 +694,25 @@
 
   &:focus {
     border-color: #be123c;
-    background: #ffffff;
+    background: $color-white;
     box-shadow: 0 0 0 2px rgba(190, 18, 60, 0.2);
   }
 
   &.gapInputValid {
-    border-color: #16a34a !important;
-    background-color: #f0fdf4 !important;
-    color: #166534 !important;
+    border-color: $color-success-dark !important;
+    background-color: rgba(34, 197, 94, 0.08) !important;
+    color: $color-success-dark !important;
   }
 
   &.gapInputInvalid {
-    border-color: #dc2626 !important;
-    background-color: #fef2f2 !important;
-    color: #991b1b !important;
+    border-color: $color-danger-dark !important;
+    background-color: rgba(239, 68, 68, 0.08) !important;
+    color: $color-danger-dark !important;
   }
 
   &:disabled {
-    background: #f1f5f9;
-    color: #64748b;
+    background: $color-gray-100;
+    color: $color-gray-500;
   }
 }
 
@@ -777,43 +721,36 @@
   width: 10px;
 }
 
-// Кнопка показа правильного ответа (Teacher Badge)
-.answerCheckRow {
-  display: inline-flex;
+// Section Divider
+.partDivider {
+  display: flex;
   align-items: center;
-  gap: 0.35rem;
-}
+  gap: 1rem;
+  margin: clamp(0.75rem, 2vw, 1.5rem) 0;
 
-.teacherBadgeBtn {
-  background: transparent;
-  border: 1px dashed #cbd5e1;
-  color: #64748b;
-  padding: 0.15rem 0.4rem;
-  border-radius: 4px;
-  font-size: 0.725rem;
-  cursor: pointer;
-  transition: all 0.15s ease;
-
-  &:hover {
-    background: #f1f5f9;
-    color: #334155;
-    border-color: #94a3b8;
+  .partDividerLine {
+    flex: 1;
+    height: 1px;
+    background: $color-gray-200;
   }
-}
 
-.teacherAnswerRevealed {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #166534;
-  background: #dcfce7;
-  padding: 0.1rem 0.35rem;
-  border-radius: 4px;
+  .partDividerBadge {
+    font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+    font-weight: 700;
+    color: $color-danger-dark;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    padding: 0.35rem 0.9rem;
+    border-radius: $border-radius-full;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
 }
 
 // Карточка самооценки (Check and Reflect)
 .reflectChecklist {
-  background: #fff;
-  border: 1px solid #e2e8f0;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
   border-radius: $border-radius-lg;
   padding: 1rem;
   display: flex;
@@ -827,7 +764,8 @@
   justify-content: space-between;
   gap: 1rem;
   padding: 0.4rem 0;
-  border-bottom: 1px dashed #f1f5f9;
+  border-bottom: 1px dashed $color-gray-100;
+  flex-wrap: wrap;
 
   &:last-child {
     border-bottom: none;
@@ -835,7 +773,7 @@
 
   .reflectText {
     font-size: 0.875rem;
-    color: #334155;
+    color: $color-gray-700;
     font-weight: 500;
   }
 }
@@ -850,7 +788,7 @@
   border: none;
   cursor: pointer;
   font-size: 1.1rem;
-  color: #cbd5e1;
+  color: $color-gray-300;
   transition: color 0.15s ease;
   padding: 0;
 
@@ -860,7 +798,7 @@
   }
 }
 
-// Полноэкранный просмотр карты (Modal)
+// Modal
 .modalBackdrop {
   position: fixed;
   top: 0;
@@ -912,8 +850,53 @@
   align-items: center;
   justify-content: center;
   transition: background 0.2s ease;
+  z-index: 10;
 
   &:hover {
-    background: #dc2626;
+    background: $color-danger-dark;
   }
+}
+
+// Verification and Review styles
+.feedbackRow {
+  margin-top: $spacing-xs;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-xs;
+  width: 100%;
+}
+
+.correctBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  background: $color-success;
+  color: $color-white;
+  border-radius: $border-radius-full;
+  font-size: 0.75rem;
+  font-weight: $font-weight-bold;
+  margin-left: $spacing-xs;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.diffHighlight {
+  outline: 2px dashed $color-warning !important;
+  outline-offset: 1px;
+  background-color: rgba(251, 191, 36, 0.12) !important;
+}
+
+.inputValid {
+  border-color: $color-success-dark !important;
+  background-color: rgba(34, 197, 94, 0.08) !important;
+  color: $color-success-dark !important;
+}
+
+.inputInvalid {
+  border-color: $color-danger-dark !important;
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  color: $color-danger-dark !important;
 }

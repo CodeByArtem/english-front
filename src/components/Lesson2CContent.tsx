@@ -147,7 +147,10 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
     onEx8aFamilyChange = () => {},
     onEx8bNotesChange = () => {},
     onEx10SpeakingNotesChange = () => {},
+    originalAnswers,
   } = props;
+
+  const isReview = Boolean(isTeacherReview || (answerKey && readOnly));
 
   const ex1aKey = getExerciseKey(answerKey, 'exercise_1a_match');
   const ex2Key = getExerciseKey(answerKey, 'exercise_2_choice');
@@ -155,6 +158,16 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
   const ex4Key = getExerciseKey(answerKey, 'exercise_4_profiles');
   const ex5Key = getExerciseKey(answerKey, 'exercise_5_grammar_rules');
   const ex7Key = getExerciseKey(answerKey, 'exercise_7_questions');
+
+  const origEx1a = originalAnswers?.exercise_1a_match as Record<string, string> | undefined;
+  const origEx2 = originalAnswers?.exercise_2_choice as Record<string, string> | undefined;
+  const origEx3a = typeof originalAnswers?.exercise_3a_sequence === 'string' ? originalAnswers.exercise_3a_sequence : undefined;
+  const origEx4 = originalAnswers?.exercise_4_profiles as Record<string, { age?: string; from?: string; job?: string }> | undefined;
+  const origEx5 = originalAnswers?.exercise_5_grammar_rules as Record<string, string> | undefined;
+  const origEx7 = originalAnswers?.exercise_7_questions as Record<string, string> | undefined;
+  const origEx8a = originalAnswers?.exercise_8a_family as Record<string, string> | undefined;
+  const origEx8b = typeof originalAnswers?.exercise_8b_notes === 'string' ? originalAnswers.exercise_8b_notes : undefined;
+  const origEx10 = typeof originalAnswers?.exercise_10_speaking_notes === 'string' ? originalAnswers.exercise_10_speaking_notes : undefined;
 
   const [zoomedImage, setZoomedImage] = useState<{
     src: string;
@@ -501,8 +514,10 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                   const currentVal =
                     ex1aMatch[numStr] ??
                     (num === 1 ? 'one' : num === 2 ? 'two' : '');
+                  const origVal = origEx1a?.[numStr];
+                  const isChanged = origVal !== undefined && origVal !== currentVal;
                   const vRes =
-                    isTeacherReview && !isDefaultExample
+                    isReview && !isDefaultExample
                       ? verifyAnswer(currentVal, ex1aKey?.[numStr])
                       : null;
                   const valClass =
@@ -511,9 +526,10 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                       : vRes?.status === 'incorrect'
                       ? styles.inputInvalid
                       : '';
+                  const diffClass = isChanged ? styles.diffHighlight : '';
 
                   return (
-                    <div key={num} className={styles.matchItem}>
+                    <div key={num} className={`${styles.matchItem} ${diffClass}`}>
                       <span className={styles.matchNum}>{num}</span>
                       <select
                         className={`${styles.matchSelect} ${valClass}`}
@@ -531,8 +547,17 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                           </option>
                         ))}
                       </select>
-                      {isTeacherReview && !isDefaultExample && (
-                        <TeacherAnswerBadge result={vRes} />
+                      {vRes?.status === 'correct' && !isDefaultExample && (
+                        <span className={styles.correctBadge} title="Correct answer">
+                          <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        </span>
+                      )}
+                      {isReview && !isDefaultExample && vRes?.status === 'incorrect' && (
+                        <div className={styles.feedbackRow}>
+                          <TeacherAnswerBadge result={vRes} />
+                        </div>
                       )}
                     </div>
                   );
@@ -655,15 +680,20 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
               <div className={styles.choicePairsGrid}>
                 {PAIR_CHOICES.map((pair) => {
                   const selectedVal = ex2Choice[pair.id];
-                  const vRes = isTeacherReview
+                  const origVal = origEx2?.[pair.id];
+                  const isChanged = origVal !== undefined && origVal !== selectedVal;
+                  const vRes = isReview
                     ? verifyAnswer(selectedVal, ex2Key?.[pair.id])
                     : null;
                   const getBtnClass = (btnVal: string) => {
                     if (selectedVal !== btnVal) return '';
-                    if (!isTeacherReview) return styles.selected;
-                    return vRes?.status === 'correct'
-                      ? styles.choiceValid
-                      : styles.choiceInvalid;
+                    if (!isReview) return styles.selected;
+                    const statusClass =
+                      vRes?.status === 'correct'
+                        ? styles.choiceValid
+                        : styles.choiceInvalid;
+                    const diff = isChanged ? styles.diffHighlight : '';
+                    return `${statusClass} ${diff}`.trim();
                   };
 
                   return (
@@ -686,7 +716,18 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                         >
                           {pair.opt2}
                         </button>
-                        {isTeacherReview && <TeacherAnswerBadge result={vRes} />}
+                        {vRes?.status === 'correct' && (
+                          <span className={styles.correctBadge} title="Correct answer">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </span>
+                        )}
+                        {isReview && vRes?.status === 'incorrect' && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={vRes} />
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -712,28 +753,42 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                     twenty-three, ...
                   </span>
                 </div>
-                <input
-                  type="text"
-                  className={`${styles.sequenceInput} ${
-                    isTeacherReview
-                      ? verifyAnswer(ex3aSequence, ex3aKey?.text).status === 'correct'
-                        ? styles.inputValid
-                        : verifyAnswer(ex3aSequence, ex3aKey?.text).status === 'incorrect'
-                        ? styles.inputInvalid
-                        : ''
-                      : ''
-                  }`}
-                  placeholder="Continue: twenty-four, twenty-five..."
-                  value={ex3aSequence}
-                  onChange={(e) => onEx3aSequenceChange(e.target.value)}
-                  disabled={readOnly}
-                  aria-label="Continue the number sequence"
-                />
-                {isTeacherReview && (
-                  <TeacherAnswerBadge
-                    result={verifyAnswer(ex3aSequence, ex3aKey?.text)}
-                  />
-                )}
+                {(() => {
+                  const isChanged = origEx3a !== undefined && origEx3a !== ex3aSequence;
+                  const vRes = isReview ? verifyAnswer(ex3aSequence, ex3aKey?.text) : null;
+                  const valClass =
+                    vRes?.status === 'correct'
+                      ? styles.inputValid
+                      : vRes?.status === 'incorrect'
+                      ? styles.inputInvalid
+                      : '';
+                  const diffClass = isChanged ? styles.diffHighlight : '';
+                  return (
+                    <>
+                      <input
+                        type="text"
+                        className={`${styles.sequenceInput} ${valClass} ${diffClass}`}
+                        placeholder="Continue: twenty-four, twenty-five..."
+                        value={ex3aSequence}
+                        onChange={(e) => onEx3aSequenceChange(e.target.value)}
+                        disabled={readOnly}
+                        aria-label="Continue the number sequence"
+                      />
+                      {vRes?.status === 'correct' && (
+                        <span className={styles.correctBadge} title="Correct answer">
+                          <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        </span>
+                      )}
+                      {isReview && vRes?.status === 'incorrect' && (
+                        <div className={styles.feedbackRow}>
+                          <TeacherAnswerBadge result={vRes} />
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -835,92 +890,130 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                     <span className={styles.fieldLabel}>What&apos;s her name?</span>
                     <span className={styles.fieldNameValue}>Anna Chubb</span>
                   </div>
+                  {/* Anna Age */}
                   <div className={styles.profileField}>
                     <label htmlFor="anna-age" className={styles.fieldLabel}>
                       How old is she?
                     </label>
-                    <input
-                      id="anna-age"
-                      type="text"
-                      className={`${styles.fieldInput} ${
-                        isTeacherReview
-                          ? verifyAnswer(ex4Profiles.anna?.age, ex4Key?.anna_age).status === 'correct'
-                            ? styles.inputValid
-                            : verifyAnswer(ex4Profiles.anna?.age, ex4Key?.anna_age).status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                          : ''
-                      }`}
-                      value={ex4Profiles.anna?.age ?? ''}
-                      onChange={(e) =>
-                        onEx4ProfilesChange('anna', 'age', e.target.value)
-                      }
-                      placeholder="e.g. 26"
-                      disabled={readOnly}
-                    />
-                    {isTeacherReview && (
-                      <TeacherAnswerBadge
-                        result={verifyAnswer(ex4Profiles.anna?.age, ex4Key?.anna_age)}
-                      />
-                    )}
+                    {(() => {
+                      const val = ex4Profiles.anna?.age ?? '';
+                      const origVal = origEx4?.anna?.age;
+                      const isChanged = origVal !== undefined && origVal !== val;
+                      const vRes = isReview ? verifyAnswer(val, ex4Key?.anna_age) : null;
+                      const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                      const diffClass = isChanged ? styles.diffHighlight : '';
+                      return (
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <input
+                              id="anna-age"
+                              type="text"
+                              className={`${styles.fieldInput} ${valClass} ${diffClass}`}
+                              value={val}
+                              onChange={(e) => onEx4ProfilesChange('anna', 'age', e.target.value)}
+                              placeholder="e.g. 26"
+                              disabled={readOnly}
+                            />
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
+
+                  {/* Anna From */}
                   <div className={styles.profileField}>
                     <label htmlFor="anna-from" className={styles.fieldLabel}>
                       Where is she from?
                     </label>
-                    <input
-                      id="anna-from"
-                      type="text"
-                      className={`${styles.fieldInput} ${
-                        isTeacherReview
-                          ? verifyAnswer(ex4Profiles.anna?.from, ex4Key?.anna_from).status === 'correct'
-                            ? styles.inputValid
-                            : verifyAnswer(ex4Profiles.anna?.from, ex4Key?.anna_from).status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                          : ''
-                      }`}
-                      value={ex4Profiles.anna?.from ?? ''}
-                      onChange={(e) =>
-                        onEx4ProfilesChange('anna', 'from', e.target.value)
-                      }
-                      placeholder="e.g. the UK"
-                      disabled={readOnly}
-                    />
-                    {isTeacherReview && (
-                      <TeacherAnswerBadge
-                        result={verifyAnswer(ex4Profiles.anna?.from, ex4Key?.anna_from)}
-                      />
-                    )}
+                    {(() => {
+                      const val = ex4Profiles.anna?.from ?? '';
+                      const origVal = origEx4?.anna?.from;
+                      const isChanged = origVal !== undefined && origVal !== val;
+                      const vRes = isReview ? verifyAnswer(val, ex4Key?.anna_from) : null;
+                      const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                      const diffClass = isChanged ? styles.diffHighlight : '';
+                      return (
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <input
+                              id="anna-from"
+                              type="text"
+                              className={`${styles.fieldInput} ${valClass} ${diffClass}`}
+                              value={val}
+                              onChange={(e) => onEx4ProfilesChange('anna', 'from', e.target.value)}
+                              placeholder="e.g. the UK"
+                              disabled={readOnly}
+                            />
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
+
+                  {/* Anna Job */}
                   <div className={styles.profileField}>
                     <label htmlFor="anna-job" className={styles.fieldLabel}>
                       What&apos;s her job?
                     </label>
-                    <input
-                      id="anna-job"
-                      type="text"
-                      className={`${styles.fieldInput} ${
-                        isTeacherReview
-                          ? verifyAnswer(ex4Profiles.anna?.job, ex4Key?.anna_job).status === 'correct'
-                            ? styles.inputValid
-                            : verifyAnswer(ex4Profiles.anna?.job, ex4Key?.anna_job).status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                          : ''
-                      }`}
-                      value={ex4Profiles.anna?.job ?? ''}
-                      onChange={(e) =>
-                        onEx4ProfilesChange('anna', 'job', e.target.value)
-                      }
-                      placeholder="e.g. receptionist"
-                      disabled={readOnly}
-                    />
-                    {isTeacherReview && (
-                      <TeacherAnswerBadge
-                        result={verifyAnswer(ex4Profiles.anna?.job, ex4Key?.anna_job)}
-                      />
-                    )}
+                    {(() => {
+                      const val = ex4Profiles.anna?.job ?? '';
+                      const origVal = origEx4?.anna?.job;
+                      const isChanged = origVal !== undefined && origVal !== val;
+                      const vRes = isReview ? verifyAnswer(val, ex4Key?.anna_job) : null;
+                      const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                      const diffClass = isChanged ? styles.diffHighlight : '';
+                      return (
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <input
+                              id="anna-job"
+                              type="text"
+                              className={`${styles.fieldInput} ${valClass} ${diffClass}`}
+                              value={val}
+                              onChange={(e) => onEx4ProfilesChange('anna', 'job', e.target.value)}
+                              placeholder="e.g. receptionist"
+                              disabled={readOnly}
+                            />
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
 
@@ -930,92 +1023,131 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                     <span className={styles.fieldLabel}>What&apos;s his name?</span>
                     <span className={styles.fieldNameValue}>Bill Gooch</span>
                   </div>
+
+                  {/* Bill Age */}
                   <div className={styles.profileField}>
                     <label htmlFor="bill-age" className={styles.fieldLabel}>
                       How old is he?
                     </label>
-                    <input
-                      id="bill-age"
-                      type="text"
-                      className={`${styles.fieldInput} ${
-                        isTeacherReview
-                          ? verifyAnswer(ex4Profiles.bill?.age, ex4Key?.bill_age).status === 'correct'
-                            ? styles.inputValid
-                            : verifyAnswer(ex4Profiles.bill?.age, ex4Key?.bill_age).status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                          : ''
-                      }`}
-                      value={ex4Profiles.bill?.age ?? ''}
-                      onChange={(e) =>
-                        onEx4ProfilesChange('bill', 'age', e.target.value)
-                      }
-                      placeholder="e.g. 42"
-                      disabled={readOnly}
-                    />
-                    {isTeacherReview && (
-                      <TeacherAnswerBadge
-                        result={verifyAnswer(ex4Profiles.bill?.age, ex4Key?.bill_age)}
-                      />
-                    )}
+                    {(() => {
+                      const val = ex4Profiles.bill?.age ?? '';
+                      const origVal = origEx4?.bill?.age;
+                      const isChanged = origVal !== undefined && origVal !== val;
+                      const vRes = isReview ? verifyAnswer(val, ex4Key?.bill_age) : null;
+                      const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                      const diffClass = isChanged ? styles.diffHighlight : '';
+                      return (
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <input
+                              id="bill-age"
+                              type="text"
+                              className={`${styles.fieldInput} ${valClass} ${diffClass}`}
+                              value={val}
+                              onChange={(e) => onEx4ProfilesChange('bill', 'age', e.target.value)}
+                              placeholder="e.g. 42"
+                              disabled={readOnly}
+                            />
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
+
+                  {/* Bill From */}
                   <div className={styles.profileField}>
                     <label htmlFor="bill-from" className={styles.fieldLabel}>
                       Where is he from?
                     </label>
-                    <input
-                      id="bill-from"
-                      type="text"
-                      className={`${styles.fieldInput} ${
-                        isTeacherReview
-                          ? verifyAnswer(ex4Profiles.bill?.from, ex4Key?.bill_from).status === 'correct'
-                            ? styles.inputValid
-                            : verifyAnswer(ex4Profiles.bill?.from, ex4Key?.bill_from).status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                          : ''
-                      }`}
-                      value={ex4Profiles.bill?.from ?? ''}
-                      onChange={(e) =>
-                        onEx4ProfilesChange('bill', 'from', e.target.value)
-                      }
-                      placeholder="e.g. the USA"
-                      disabled={readOnly}
-                    />
-                    {isTeacherReview && (
-                      <TeacherAnswerBadge
-                        result={verifyAnswer(ex4Profiles.bill?.from, ex4Key?.bill_from)}
-                      />
-                    )}
+                    {(() => {
+                      const val = ex4Profiles.bill?.from ?? '';
+                      const origVal = origEx4?.bill?.from;
+                      const isChanged = origVal !== undefined && origVal !== val;
+                      const vRes = isReview ? verifyAnswer(val, ex4Key?.bill_from) : null;
+                      const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                      const diffClass = isChanged ? styles.diffHighlight : '';
+                      return (
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <input
+                              id="bill-from"
+                              type="text"
+                              className={`${styles.fieldInput} ${valClass} ${diffClass}`}
+                              value={val}
+                              onChange={(e) => onEx4ProfilesChange('bill', 'from', e.target.value)}
+                              placeholder="e.g. the USA"
+                              disabled={readOnly}
+                            />
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
+
+                  {/* Bill Job */}
                   <div className={styles.profileField}>
                     <label htmlFor="bill-job" className={styles.fieldLabel}>
                       What&apos;s his job?
                     </label>
-                    <input
-                      id="bill-job"
-                      type="text"
-                      className={`${styles.fieldInput} ${
-                        isTeacherReview
-                          ? verifyAnswer(ex4Profiles.bill?.job, ex4Key?.bill_job).status === 'correct'
-                            ? styles.inputValid
-                            : verifyAnswer(ex4Profiles.bill?.job, ex4Key?.bill_job).status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                          : ''
-                      }`}
-                      value={ex4Profiles.bill?.job ?? ''}
-                      onChange={(e) =>
-                        onEx4ProfilesChange('bill', 'job', e.target.value)
-                      }
-                      placeholder="e.g. doctor"
-                      disabled={readOnly}
-                    />
-                    {isTeacherReview && (
-                      <TeacherAnswerBadge
-                        result={verifyAnswer(ex4Profiles.bill?.job, ex4Key?.bill_job)}
-                      />
-                    )}
+                    {(() => {
+                      const val = ex4Profiles.bill?.job ?? '';
+                      const origVal = origEx4?.bill?.job;
+                      const isChanged = origVal !== undefined && origVal !== val;
+                      const vRes = isReview ? verifyAnswer(val, ex4Key?.bill_job) : null;
+                      const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                      const diffClass = isChanged ? styles.diffHighlight : '';
+                      return (
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <input
+                              id="bill-job"
+                              type="text"
+                              className={`${styles.fieldInput} ${valClass} ${diffClass}`}
+                              value={val}
+                              onChange={(e) => onEx4ProfilesChange('bill', 'job', e.target.value)}
+                              placeholder="e.g. doctor"
+                              disabled={readOnly}
+                            />
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
 
@@ -1025,92 +1157,131 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                     <span className={styles.fieldLabel}>What&apos;s his name?</span>
                     <span className={styles.fieldNameValue}>Satoru Goto</span>
                   </div>
+
+                  {/* Satoru Age */}
                   <div className={styles.profileField}>
                     <label htmlFor="satoru-age" className={styles.fieldLabel}>
                       How old is he?
                     </label>
-                    <input
-                      id="satoru-age"
-                      type="text"
-                      className={`${styles.fieldInput} ${
-                        isTeacherReview
-                          ? verifyAnswer(ex4Profiles.satoru?.age, ex4Key?.satoru_age).status === 'correct'
-                            ? styles.inputValid
-                            : verifyAnswer(ex4Profiles.satoru?.age, ex4Key?.satoru_age).status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                          : ''
-                      }`}
-                      value={ex4Profiles.satoru?.age ?? ''}
-                      onChange={(e) =>
-                        onEx4ProfilesChange('satoru', 'age', e.target.value)
-                      }
-                      placeholder="e.g. 31"
-                      disabled={readOnly}
-                    />
-                    {isTeacherReview && (
-                      <TeacherAnswerBadge
-                        result={verifyAnswer(ex4Profiles.satoru?.age, ex4Key?.satoru_age)}
-                      />
-                    )}
+                    {(() => {
+                      const val = ex4Profiles.satoru?.age ?? '';
+                      const origVal = origEx4?.satoru?.age;
+                      const isChanged = origVal !== undefined && origVal !== val;
+                      const vRes = isReview ? verifyAnswer(val, ex4Key?.satoru_age) : null;
+                      const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                      const diffClass = isChanged ? styles.diffHighlight : '';
+                      return (
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <input
+                              id="satoru-age"
+                              type="text"
+                              className={`${styles.fieldInput} ${valClass} ${diffClass}`}
+                              value={val}
+                              onChange={(e) => onEx4ProfilesChange('satoru', 'age', e.target.value)}
+                              placeholder="e.g. 31"
+                              disabled={readOnly}
+                            />
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
+
+                  {/* Satoru From */}
                   <div className={styles.profileField}>
                     <label htmlFor="satoru-from" className={styles.fieldLabel}>
                       Where is he from?
                     </label>
-                    <input
-                      id="satoru-from"
-                      type="text"
-                      className={`${styles.fieldInput} ${
-                        isTeacherReview
-                          ? verifyAnswer(ex4Profiles.satoru?.from, ex4Key?.satoru_from).status === 'correct'
-                            ? styles.inputValid
-                            : verifyAnswer(ex4Profiles.satoru?.from, ex4Key?.satoru_from).status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                          : ''
-                      }`}
-                      value={ex4Profiles.satoru?.from ?? ''}
-                      onChange={(e) =>
-                        onEx4ProfilesChange('satoru', 'from', e.target.value)
-                      }
-                      placeholder="e.g. Japan"
-                      disabled={readOnly}
-                    />
-                    {isTeacherReview && (
-                      <TeacherAnswerBadge
-                        result={verifyAnswer(ex4Profiles.satoru?.from, ex4Key?.satoru_from)}
-                      />
-                    )}
+                    {(() => {
+                      const val = ex4Profiles.satoru?.from ?? '';
+                      const origVal = origEx4?.satoru?.from;
+                      const isChanged = origVal !== undefined && origVal !== val;
+                      const vRes = isReview ? verifyAnswer(val, ex4Key?.satoru_from) : null;
+                      const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                      const diffClass = isChanged ? styles.diffHighlight : '';
+                      return (
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <input
+                              id="satoru-from"
+                              type="text"
+                              className={`${styles.fieldInput} ${valClass} ${diffClass}`}
+                              value={val}
+                              onChange={(e) => onEx4ProfilesChange('satoru', 'from', e.target.value)}
+                              placeholder="e.g. Japan"
+                              disabled={readOnly}
+                            />
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
+
+                  {/* Satoru Job */}
                   <div className={styles.profileField}>
                     <label htmlFor="satoru-job" className={styles.fieldLabel}>
                       What&apos;s his job?
                     </label>
-                    <input
-                      id="satoru-job"
-                      type="text"
-                      className={`${styles.fieldInput} ${
-                        isTeacherReview
-                          ? verifyAnswer(ex4Profiles.satoru?.job, ex4Key?.satoru_job).status === 'correct'
-                            ? styles.inputValid
-                            : verifyAnswer(ex4Profiles.satoru?.job, ex4Key?.satoru_job).status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                          : ''
-                      }`}
-                      value={ex4Profiles.satoru?.job ?? ''}
-                      onChange={(e) =>
-                        onEx4ProfilesChange('satoru', 'job', e.target.value)
-                      }
-                      placeholder="e.g. engineer"
-                      disabled={readOnly}
-                    />
-                    {isTeacherReview && (
-                      <TeacherAnswerBadge
-                        result={verifyAnswer(ex4Profiles.satoru?.job, ex4Key?.satoru_job)}
-                      />
-                    )}
+                    {(() => {
+                      const val = ex4Profiles.satoru?.job ?? '';
+                      const origVal = origEx4?.satoru?.job;
+                      const isChanged = origVal !== undefined && origVal !== val;
+                      const vRes = isReview ? verifyAnswer(val, ex4Key?.satoru_job) : null;
+                      const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                      const diffClass = isChanged ? styles.diffHighlight : '';
+                      return (
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                            <input
+                              id="satoru-job"
+                              type="text"
+                              className={`${styles.fieldInput} ${valClass} ${diffClass}`}
+                              value={val}
+                              onChange={(e) => onEx4ProfilesChange('satoru', 'job', e.target.value)}
+                              placeholder="e.g. engineer"
+                              disabled={readOnly}
+                            />
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </div>
                 </div>
               </div>
@@ -1301,15 +1472,20 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                   </span>
                   <div className={styles.choiceToggleGroup}>
                     {(() => {
-                      const vRes1 = isTeacherReview
-                        ? verifyAnswer(ex5GrammarRules['1'], ex5Key?.['1'])
+                      const val1 = ex5GrammarRules['1'] || '';
+                      const origVal1 = origEx5?.['1'];
+                      const isChanged1 = origVal1 !== undefined && origVal1 !== val1;
+                      const vRes1 = isReview
+                        ? verifyAnswer(val1, ex5Key?.['1'])
                         : null;
                       const getBtn1Class = (btnVal: string) => {
-                        if (ex5GrammarRules['1'] !== btnVal) return '';
-                        if (!isTeacherReview) return styles.selected;
-                        return vRes1?.status === 'correct'
+                        if (val1 !== btnVal) return '';
+                        if (!isReview) return styles.selected;
+                        const statusClass = vRes1?.status === 'correct'
                           ? styles.choiceValid
                           : styles.choiceInvalid;
+                        const diff = isChanged1 ? styles.diffHighlight : '';
+                        return `${statusClass} ${diff}`.trim();
                       };
                       return (
                         <>
@@ -1329,7 +1505,18 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                           >
                             after
                           </button>
-                          {isTeacherReview && <TeacherAnswerBadge result={vRes1} />}
+                          {vRes1?.status === 'correct' && (
+                            <span className={styles.correctBadge} title="Correct answer">
+                              <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                            </span>
+                          )}
+                          {isReview && vRes1?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes1} />
+                            </div>
+                          )}
                         </>
                       );
                     })()}
@@ -1346,15 +1533,20 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                   </span>
                   <div className={styles.choiceToggleGroup}>
                     {(() => {
-                      const vRes2 = isTeacherReview
-                        ? verifyAnswer(ex5GrammarRules['2'], ex5Key?.['2'])
+                      const val2 = ex5GrammarRules['2'] || '';
+                      const origVal2 = origEx5?.['2'];
+                      const isChanged2 = origVal2 !== undefined && origVal2 !== val2;
+                      const vRes2 = isReview
+                        ? verifyAnswer(val2, ex5Key?.['2'])
                         : null;
                       const getBtn2Class = (btnVal: string) => {
-                        if (ex5GrammarRules['2'] !== btnVal) return '';
-                        if (!isTeacherReview) return styles.selected;
-                        return vRes2?.status === 'correct'
+                        if (val2 !== btnVal) return '';
+                        if (!isReview) return styles.selected;
+                        const statusClass = vRes2?.status === 'correct'
                           ? styles.choiceValid
                           : styles.choiceInvalid;
+                        const diff = isChanged2 ? styles.diffHighlight : '';
+                        return `${statusClass} ${diff}`.trim();
                       };
                       return (
                         <>
@@ -1374,7 +1566,18 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                           >
                             after
                           </button>
-                          {isTeacherReview && <TeacherAnswerBadge result={vRes2} />}
+                          {vRes2?.status === 'correct' && (
+                            <span className={styles.correctBadge} title="Correct answer">
+                              <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                              </svg>
+                            </span>
+                          )}
+                          {isReview && vRes2?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes2} />
+                            </div>
+                          )}
                         </>
                       );
                     })()}
@@ -1487,7 +1690,9 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
               <div className={styles.questionsList}>
                 {EX7_ITEMS.map((item) => {
                   const val = ex7Questions[item.id] ?? '';
-                  const vRes = isTeacherReview
+                  const origVal = origEx7?.[item.id];
+                  const isChanged = origVal !== undefined && origVal !== val;
+                  const vRes = isReview
                     ? verifyAnswer(val, ex7Key?.[item.id])
                     : null;
                   const valClass =
@@ -1496,13 +1701,14 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                       : vRes?.status === 'incorrect'
                       ? styles.inputInvalid
                       : '';
+                  const diffClass = isChanged ? styles.diffHighlight : '';
                   return (
                     <div key={item.id} className={styles.questionItem}>
                       <div className={styles.questionInputRow}>
                         <span className={styles.qNum}>{item.id}</span>
                         <input
                           type="text"
-                          className={`${styles.qInput} ${valClass}`}
+                          className={`${styles.qInput} ${valClass} ${diffClass}`}
                           placeholder={item.placeholder}
                           value={val}
                           onChange={(e) =>
@@ -1512,8 +1718,19 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
                           aria-label={`Question ${item.id}`}
                         />
                         <span className={styles.qMark}>?</span>
-                        {isTeacherReview && <TeacherAnswerBadge result={vRes} />}
+                        {vRes?.status === 'correct' && (
+                          <span className={styles.correctBadge} title="Correct answer">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </span>
+                        )}
                       </div>
+                      {isReview && vRes?.status === 'incorrect' && (
+                        <div className={styles.feedbackRow}>
+                          <TeacherAnswerBadge result={vRes} />
+                        </div>
+                      )}
                       <div className={styles.answerTarget}>{item.answer}</div>
                     </div>
                   );
@@ -1533,21 +1750,27 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
               </div>
 
               <div className={styles.familyInputsRow}>
-                {(['1', '2', '3'] as const).map((num) => (
-                  <div key={num} className={styles.familyItem}>
-                    <span className={styles.familyNum}>{num}</span>
-                    <input
-                      id={`family-person-${num}`}
-                      type="text"
-                      className={styles.familyInput}
-                      placeholder={`Person ${num}`}
-                      value={ex8aFamily[num] ?? ''}
-                      onChange={(e) => onEx8aFamilyChange(num, e.target.value)}
-                      disabled={readOnly}
-                      aria-label={`Family member ${num}`}
-                    />
-                  </div>
-                ))}
+                {(['1', '2', '3'] as const).map((num) => {
+                  const val = ex8aFamily[num] ?? '';
+                  const origVal = origEx8a?.[num];
+                  const isChanged = origVal !== undefined && origVal !== val;
+                  const diffClass = isChanged ? styles.diffHighlight : '';
+                  return (
+                    <div key={num} className={`${styles.familyItem} ${diffClass}`}>
+                      <span className={styles.familyNum}>{num}</span>
+                      <input
+                        id={`family-person-${num}`}
+                        type="text"
+                        className={styles.familyInput}
+                        placeholder={`Person ${num}`}
+                        value={val}
+                        onChange={(e) => onEx8aFamilyChange(num, e.target.value)}
+                        disabled={readOnly}
+                        aria-label={`Family member ${num}`}
+                      />
+                    </div>
+                  );
+                })}
               </div>
 
               <div className={styles.promptRow} style={{ marginTop: '0.65rem' }}>
@@ -1589,7 +1812,7 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
               <div className={styles.dialogueNotesWrap}>
                 <input
                   type="text"
-                  className={styles.dialogueNotesInput}
+                  className={`${styles.dialogueNotesInput} ${origEx8b !== undefined && origEx8b !== ex8bNotes ? styles.diffHighlight : ''}`}
                   placeholder="Notes: Felipe - 19 - student..."
                   value={ex8bNotes}
                   onChange={(e) => onEx8bNotesChange(e.target.value)}
@@ -1690,7 +1913,7 @@ export default function Lesson2CContent(props: Lesson2CContentProps) {
               <div className={styles.dialogueNotesWrap}>
                 <input
                   type="text"
-                  className={styles.dialogueNotesInput}
+                  className={`${styles.dialogueNotesInput} ${origEx10 !== undefined && origEx10 !== ex10SpeakingNotes ? styles.diffHighlight : ''}`}
                   placeholder="Speaking notes / answers from pages 151-152..."
                   value={ex10SpeakingNotes}
                   onChange={(e) => onEx10SpeakingNotesChange(e.target.value)}

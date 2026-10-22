@@ -3,15 +3,21 @@
 import React from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useLessonContext, useExerciseAnswer } from '@/context/LessonContext';
+import { useLessonContext, useExerciseAnswer, LessonContextModel } from '@/context/LessonContext';
 import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
 import PronounceButton from '@/components/PronounceButton';
 import { LessonAnswerKey, verifyAnswer, getExerciseKey, VerificationResult } from '@/lib/answerVerification';
 import styles from './lesson3b.module.scss';
 
 export interface Lesson3BContentProps {
+  lesson?: LessonContextModel | null;
+  user?: Record<string, unknown> | null;
+  isTeacherReview?: boolean;
+  readOnly?: boolean;
+  answerKey?: LessonAnswerKey | null;
   playAudio?: (track: string) => void;
   playingAudio?: string | null;
+  originalAnswers?: Record<string, unknown>;
 }
 
 // Захардкоженный fallbackAnswerKey для полной автономности и мгновенной проверки
@@ -128,7 +134,7 @@ const FLATS_DATA = [
   },
   {
     id: 'Flat 3',
-    title: 'Flat 3 (Correct)',
+    title: 'Flat 3',
     features: ['rooms: bedroom, bathroom', 'two beds', 'shower', 'TV', 'no wifi'],
   },
 ];
@@ -177,13 +183,24 @@ const WORD_ORDER_ITEMS = [
 ];
 
 export default function Lesson3BContent({
+  isTeacherReview,
+  readOnly: propReadOnly,
+  answerKey: propAnswerKey,
   playAudio: propPlayAudio,
   playingAudio: propPlayingAudio,
+  originalAnswers,
 }: Lesson3BContentProps) {
   const context = useLessonContext();
   const playAudio = propPlayAudio || context.playAudio;
   const playingAudio = propPlayingAudio ?? context.playingAudio;
-  const isReadOnly = context.isReadOnly;
+  const isTeacher = isTeacherReview ?? context.isTeacher;
+  const isReadOnly = propReadOnly ?? context.isReadOnly;
+  const effectiveAnswerKey = propAnswerKey ?? context.answerKey ?? FALLBACK_ANSWER_KEY_3B;
+  const isReview = Boolean(isTeacher || (effectiveAnswerKey && isReadOnly));
+
+  const orig = originalAnswers ?? (context.answers as Record<string, unknown> | undefined);
+  const isDiff = (origVal: unknown, currentVal: unknown) =>
+    orig !== undefined && origVal !== undefined && origVal !== currentVal;
 
   // Упражнения через централизованный хук
   const ex1 = useExerciseAnswer<string>('exercise_1_objects', '');
@@ -200,28 +217,52 @@ export default function Lesson3BContent({
   const ex9a = useExerciseAnswer<Record<string, string>>('exercise_9a_word_order', {});
   const ex10 = useExerciseAnswer<Record<string, { flat1?: string; flat2?: string }>>('exercise_10_holiday_flats', {});
 
-  const getInputClass = (status?: string) => {
-    if (status === 'correct') return styles.inputValid;
-    if (status === 'incorrect') return styles.inputInvalid;
-    return '';
-  };
-
   // Гарантированная верификация: берем ключи из контекста или локального FALLBACK_ANSWER_KEY_3B
   const getFieldVerify = (exerciseKey: string, fieldKey: string): VerificationResult | null => {
     const fromCtx = context.getVerification(exerciseKey, fieldKey);
     if (fromCtx) return fromCtx;
 
-    const exKey = getExerciseKey(FALLBACK_ANSWER_KEY_3B, exerciseKey);
+    const exKey = getExerciseKey(effectiveAnswerKey, exerciseKey);
     if (!exKey) return null;
 
     const studentEx = context.getAnswer(exerciseKey);
     const studentVal =
       studentEx && typeof studentEx === 'object'
         ? (studentEx as Record<string, unknown>)[fieldKey]
-        : undefined;
+      : undefined;
     const expected = exKey[fieldKey];
     return verifyAnswer(studentVal, expected);
   };
+
+  const getVerifySingle = (exerciseKey: string): VerificationResult | null => {
+    const fromCtx = context.getVerification(exerciseKey);
+    if (fromCtx) return fromCtx;
+
+    const exKey = getExerciseKey(effectiveAnswerKey, exerciseKey);
+    if (!exKey) return null;
+
+    const studentVal = context.getAnswer(exerciseKey);
+    const expected = exKey.answer || exKey['1'] || exKey[exerciseKey];
+    return verifyAnswer(studentVal, expected);
+  };
+
+  const getInputClass = (ver?: VerificationResult | null) => {
+    if (!isReview || !ver || !ver.hasKey) return '';
+    return ver.isCorrect ? styles.inputValid : styles.inputInvalid;
+  };
+
+  // Оригинальные значения для диффа
+  const origEx1 = typeof orig?.exercise_1_objects === 'string' ? orig.exercise_1_objects : undefined;
+  const origEx2a = (orig?.exercise_2a_matching as Record<string, string> | undefined) || {};
+  const origEx3 = (orig?.exercise_3_questions as Record<string, string> | undefined) || {};
+  const origEx4 = typeof orig?.exercise_4_sentences === 'string' ? orig.exercise_4_sentences : undefined;
+  const origEx5a = typeof orig?.exercise_5a_flat === 'string' ? orig.exercise_5a_flat : undefined;
+  const origEx5b = (orig?.exercise_5b_ticks as Record<string, boolean> | undefined) || {};
+  const origEx5c = (orig?.exercise_5c_articles as Record<string, string> | undefined) || {};
+  const origEx6 = (orig?.exercise_6_grammar as Record<string, string> | undefined) || {};
+  const origEx7a = (orig?.exercise_7a_intonation as Record<string, string> | undefined) || {};
+  const origEx8 = (orig?.exercise_8_conversation as Record<string, string> | undefined) || {};
+  const origEx9a = (orig?.exercise_9a_word_order as Record<string, string> | undefined) || {};
 
   return (
     <div className={styles.pageContainer}>
@@ -269,7 +310,7 @@ export default function Lesson3BContent({
                   Example: <em>There is a table.</em>
                 </div>
                 <textarea
-                  className={styles.notesTextarea}
+                  className={`${styles.notesTextarea} ${isDiff(origEx1, ex1.value) ? styles.diffHighlight : ''}`}
                   placeholder="e.g. There is a table. There is a sofa. There are lamps..."
                   value={ex1.value}
                   onChange={(e) => ex1.setValue(e.target.value)}
@@ -346,7 +387,7 @@ export default function Lesson3BContent({
                   <div className={styles.flatImageWrap}>
                     <Image
                       src="/images/lesson3b/flat_block.png"
-                      alt="City Flat Brighton: photos A-D (living room, kitchen, bedroom, bathroom) and icons E-K (toilet, shower, bed, oven, lift, TV, wifi)"
+                      alt="City Flat Brighton: photos A-D and icons E-K"
                       width={480}
                       height={400}
                       unoptimized
@@ -357,15 +398,17 @@ export default function Lesson3BContent({
                   <div className={styles.matchingGrid}>
                     {MATCHING_ITEMS.map((item) => {
                       const ver = getFieldVerify('exercise_2a_matching', item.key);
+                      const currentVal = ex2a.value[item.key] || '';
+                      const isFieldDiff = isDiff(origEx2a[item.key], currentVal);
                       return (
                         <div key={item.key} className={styles.matchRow}>
                           <span className={styles.matchKey}>{item.key}</span>
                           <span className={styles.matchLabel}>{item.label}:</span>
                           <select
-                            value={ex2a.value[item.key] || ''}
+                            value={currentVal}
                             onChange={(e) => ex2a.setField(item.key, e.target.value)}
                             disabled={isReadOnly}
-                            className={`${styles.selectInput} ${getInputClass(ver?.status)}`}
+                            className={`${styles.selectInput} ${getInputClass(ver)} ${isFieldDiff ? styles.diffHighlight : ''}`}
                           >
                             <option value="">– choose –</option>
                             {VOCAB_WORDS.map((w) => (
@@ -374,7 +417,14 @@ export default function Lesson3BContent({
                               </option>
                             ))}
                           </select>
-                          {ex2a.isReview && <TeacherAnswerBadge result={ver} />}
+                          {isReview && ver?.hasKey && ver.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
+                          {isReview && ver && !ver.isCorrect && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={ver} />
+                            </div>
+                          )}
                         </div>
                       );
                     })}
@@ -391,76 +441,28 @@ export default function Lesson3BContent({
                   </span>
                 </div>
                 <div className={styles.qaList}>
-                  <div className={styles.qaItem}>
-                    <div className={styles.qaQuestion}>
-                      1. Where is the clock?
-                      <PronounceButton word="Where is the clock?" size="small" />
+                  {[
+                    { id: '1', q: '1. Where is the clock?', p: 'e.g. It is in the kitchen on the wall.' },
+                    { id: '2', q: '2. What is in the bathroom?', p: 'e.g. There is a shower and a toilet.' },
+                    { id: '3', q: '3. Where is the oven?', p: 'e.g. It is in the kitchen.' },
+                    { id: '4', q: '4. What is in the living room?', p: 'e.g. There is a lamp, a table, and a TV.' },
+                    { id: '5', q: '5. What is in the bedroom?', p: 'e.g. There are two beds.' },
+                  ].map((item) => (
+                    <div key={item.id} className={styles.qaItem}>
+                      <div className={styles.qaQuestion}>
+                        {item.q}
+                        <PronounceButton word={item.q.replace(/^\d+\.\s*/, '')} size="small" />
+                      </div>
+                      <input
+                        type="text"
+                        placeholder={item.p}
+                        value={ex3.value[item.id] || ''}
+                        onChange={(e) => ex3.setField(item.id, e.target.value)}
+                        disabled={isReadOnly}
+                        className={`${styles.textInput} ${isDiff(origEx3[item.id], ex3.value[item.id]) ? styles.diffHighlight : ''}`}
+                      />
                     </div>
-                    <input
-                      type="text"
-                      placeholder="e.g. It is in the kitchen on the wall."
-                      value={ex3.value['1'] || ''}
-                      onChange={(e) => ex3.setField('1', e.target.value)}
-                      disabled={isReadOnly}
-                      className={styles.textInput}
-                    />
-                  </div>
-                  <div className={styles.qaItem}>
-                    <div className={styles.qaQuestion}>
-                      2. What is in the bathroom?
-                      <PronounceButton word="What is in the bathroom?" size="small" />
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="e.g. There is a shower and a toilet."
-                      value={ex3.value['2'] || ''}
-                      onChange={(e) => ex3.setField('2', e.target.value)}
-                      disabled={isReadOnly}
-                      className={styles.textInput}
-                    />
-                  </div>
-                  <div className={styles.qaItem}>
-                    <div className={styles.qaQuestion}>
-                      3. Where is the oven?
-                      <PronounceButton word="Where is the oven?" size="small" />
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="e.g. It is in the kitchen."
-                      value={ex3.value['3'] || ''}
-                      onChange={(e) => ex3.setField('3', e.target.value)}
-                      disabled={isReadOnly}
-                      className={styles.textInput}
-                    />
-                  </div>
-                  <div className={styles.qaItem}>
-                    <div className={styles.qaQuestion}>
-                      4. What is in the living room?
-                      <PronounceButton word="What is in the living room?" size="small" />
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="e.g. There is a lamp, a table, and a TV."
-                      value={ex3.value['4'] || ''}
-                      onChange={(e) => ex3.setField('4', e.target.value)}
-                      disabled={isReadOnly}
-                      className={styles.textInput}
-                    />
-                  </div>
-                  <div className={styles.qaItem}>
-                    <div className={styles.qaQuestion}>
-                      5. What is in the bedroom?
-                      <PronounceButton word="What is in the bedroom?" size="small" />
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="e.g. There are two beds."
-                      value={ex3.value['5'] || ''}
-                      onChange={(e) => ex3.setField('5', e.target.value)}
-                      disabled={isReadOnly}
-                      className={styles.textInput}
-                    />
-                  </div>
+                  ))}
                 </div>
               </div>
 
@@ -476,7 +478,7 @@ export default function Lesson3BContent({
                   Example: <em>There are two beds in the bedroom.</em>
                 </div>
                 <textarea
-                  className={styles.notesTextarea}
+                  className={`${styles.notesTextarea} ${isDiff(origEx4, ex4.value) ? styles.diffHighlight : ''}`}
                   placeholder="Type your sentences from memory..."
                   value={ex4.value}
                   onChange={(e) => ex4.setValue(e.target.value)}
@@ -529,16 +531,24 @@ export default function Lesson3BContent({
                 <div className={styles.flatsList}>
                   {FLATS_DATA.map((flat) => {
                     const isSelected = ex5a.value === flat.id;
+                    const ver5a = getVerifySingle('exercise_5a_flat');
                     return (
                       <div
                         key={flat.id}
                         onClick={() => !isReadOnly && ex5a.setValue(flat.id)}
-                        className={`${styles.flatCard} ${isSelected ? styles.flatCardSelected : ''}`}
+                        className={`${styles.flatCard} ${isSelected ? styles.flatCardSelected : ''} ${
+                          isSelected && isDiff(origEx5a, ex5a.value) ? styles.diffHighlight : ''
+                        }`}
                         role="button"
                         tabIndex={0}
                         aria-pressed={isSelected}
                       >
-                        <div className={styles.flatCardHeader}>{flat.title}</div>
+                        <div className={styles.flatCardHeader}>
+                          {flat.title}
+                          {isReview && isSelected && ver5a?.hasKey && ver5a.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
+                        </div>
                         <div className={styles.flatCardBody}>
                           {flat.features.map((f, i) => (
                             <p key={i}>• {f}</p>
@@ -548,6 +558,14 @@ export default function Lesson3BContent({
                     );
                   })}
                 </div>
+                {isReview && (() => {
+                  const ver5a = getVerifySingle('exercise_5a_flat');
+                  return ver5a && !ver5a.isCorrect ? (
+                    <div className={styles.feedbackRow}>
+                      <TeacherAnswerBadge result={ver5a} />
+                    </div>
+                  ) : null;
+                })()}
               </div>
 
               {/* Ex 5b: Tick sentences */}
@@ -589,8 +607,13 @@ export default function Lesson3BContent({
                 <div className={styles.checkboxList}>
                   {TICK_SENTENCES.map((item) => {
                     const checked = !!ex5b.value[item.id];
+                    const ver = getFieldVerify('exercise_5b_ticks', item.id);
+                    const isTickDiff = isDiff(origEx5b[item.id], checked);
                     return (
-                      <label key={item.id} className={styles.checkboxItem}>
+                      <label
+                        key={item.id}
+                        className={`${styles.checkboxItem} ${isTickDiff ? styles.diffHighlight : ''}`}
+                      >
                         <input
                           type="checkbox"
                           checked={checked}
@@ -602,6 +625,12 @@ export default function Lesson3BContent({
                         />
                         <span>{item.text}</span>
                         <PronounceButton word={item.text.replace(/^\d+\.\s*/, '')} size="small" />
+                        {isReview && checked && ver?.hasKey && ver.isCorrect && (
+                          <span className={styles.correctBadge} title="Correct">✓</span>
+                        )}
+                        {isReview && ver && !ver.isCorrect && checked && (
+                          <TeacherAnswerBadge result={ver} />
+                        )}
                       </label>
                     );
                   })}
@@ -626,38 +655,71 @@ export default function Lesson3BContent({
                       value={ex5c.value['1'] || ''}
                       onChange={(e) => ex5c.setField('1', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_5c_articles', '1')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_5c_articles', '1'))} ${
+                        isDiff(origEx5c['1'], ex5c.value['1']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="a/an"
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_5c_articles', '1')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     bathroom,{' '}
                     <input
                       type="text"
                       value={ex5c.value['2'] || ''}
                       onChange={(e) => ex5c.setField('2', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_5c_articles', '2')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_5c_articles', '2'))} ${
+                        isDiff(origEx5c['2'], ex5c.value['2']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="a/an"
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_5c_articles', '2')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     shower and{' '}
                     <input
                       type="text"
                       value={ex5c.value['3'] || ''}
                       onChange={(e) => ex5c.setField('3', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_5c_articles', '3')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_5c_articles', '3'))} ${
+                        isDiff(origEx5c['3'], ex5c.value['3']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="a/an"
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_5c_articles', '3')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     TV. There isn&apos;t{' '}
                     <input
                       type="text"
                       value={ex5c.value['4'] || ''}
                       onChange={(e) => ex5c.setField('4', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_5c_articles', '4')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_5c_articles', '4'))} ${
+                        isDiff(origEx5c['4'], ex5c.value['4']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="a/an"
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_5c_articles', '4')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     oven.
                   </p>
+                  {isReview && (
+                    <div className={styles.feedbackRow}>
+                      {['1', '2', '3', '4'].map((idx) => {
+                        const ver = getFieldVerify('exercise_5c_articles', idx);
+                        return ver && !ver.isCorrect ? (
+                          <div key={idx} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem' }}>
+                            <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>({idx})</span>
+                            <TeacherAnswerBadge result={ver} />
+                          </div>
+                        ) : null;
+                      })}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -704,10 +766,21 @@ export default function Lesson3BContent({
                             value={ex6.value['1'] || ''}
                             onChange={(e) => ex6.setField('1', e.target.value)}
                             disabled={isReadOnly}
-                            className={`${styles.tableInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '1')?.status)}`}
+                            className={`${styles.tableInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '1'))} ${
+                              isDiff(origEx6['1'], ex6.value['1']) ? styles.diffHighlight : ''
+                            }`}
                             placeholder="Is"
-                          />{' '}
+                          />
+                          {isReview && getFieldVerify('exercise_6_grammar', '1')?.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}{' '}
                           there a shower?
+                          {isReview && (() => {
+                            const ver = getFieldVerify('exercise_6_grammar', '1');
+                            return ver && !ver.isCorrect ? (
+                              <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                            ) : null;
+                          })()}
                         </td>
                         <td>
                           <strong>2.</strong>{' '}
@@ -716,10 +789,21 @@ export default function Lesson3BContent({
                             value={ex6.value['2'] || ''}
                             onChange={(e) => ex6.setField('2', e.target.value)}
                             disabled={isReadOnly}
-                            className={`${styles.tableInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '2')?.status)}`}
+                            className={`${styles.tableInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '2'))} ${
+                              isDiff(origEx6['2'], ex6.value['2']) ? styles.diffHighlight : ''
+                            }`}
                             placeholder="Are"
-                          />{' '}
+                          />
+                          {isReview && getFieldVerify('exercise_6_grammar', '2')?.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}{' '}
                           there any flats?
+                          {isReview && (() => {
+                            const ver = getFieldVerify('exercise_6_grammar', '2');
+                            return ver && !ver.isCorrect ? (
+                              <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                            ) : null;
+                          })()}
                         </td>
                       </tr>
                       <tr>
@@ -731,9 +815,20 @@ export default function Lesson3BContent({
                             value={ex6.value['3'] || ''}
                             onChange={(e) => ex6.setField('3', e.target.value)}
                             disabled={isReadOnly}
-                            className={`${styles.tableInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '3')?.status)}`}
+                            className={`${styles.tableInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '3'))} ${
+                              isDiff(origEx6['3'], ex6.value['3']) ? styles.diffHighlight : ''
+                            }`}
                             placeholder="is"
-                          />.
+                          />
+                          {isReview && getFieldVerify('exercise_6_grammar', '3')?.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}.
+                          {isReview && (() => {
+                            const ver = getFieldVerify('exercise_6_grammar', '3');
+                            return ver && !ver.isCorrect ? (
+                              <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                            ) : null;
+                          })()}
                         </td>
                         <td>Yes, there are.</td>
                       </tr>
@@ -746,10 +841,21 @@ export default function Lesson3BContent({
                             value={ex6.value['4'] || ''}
                             onChange={(e) => ex6.setField('4', e.target.value)}
                             disabled={isReadOnly}
-                            className={`${styles.tableInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '4')?.status)}`}
+                            className={`${styles.tableInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '4'))} ${
+                              isDiff(origEx6['4'], ex6.value['4']) ? styles.diffHighlight : ''
+                            }`}
                             placeholder="isn't"
-                          />.<br />
+                          />
+                          {isReview && getFieldVerify('exercise_6_grammar', '4')?.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}.<br />
                           <small style={{ color: '#64748b' }}>(= No, there is not.)</small>
+                          {isReview && (() => {
+                            const ver = getFieldVerify('exercise_6_grammar', '4');
+                            return ver && !ver.isCorrect ? (
+                              <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                            ) : null;
+                          })()}
                         </td>
                         <td>
                           No, there <strong>5.</strong>{' '}
@@ -758,10 +864,21 @@ export default function Lesson3BContent({
                             value={ex6.value['5'] || ''}
                             onChange={(e) => ex6.setField('5', e.target.value)}
                             disabled={isReadOnly}
-                            className={`${styles.tableInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '5')?.status)}`}
+                            className={`${styles.tableInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '5'))} ${
+                              isDiff(origEx6['5'], ex6.value['5']) ? styles.diffHighlight : ''
+                            }`}
                             placeholder="aren't"
-                          />.<br />
+                          />
+                          {isReview && getFieldVerify('exercise_6_grammar', '5')?.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}.<br />
                           <small style={{ color: '#64748b' }}>(= No, there are not.)</small>
+                          {isReview && (() => {
+                            const ver = getFieldVerify('exercise_6_grammar', '5');
+                            return ver && !ver.isCorrect ? (
+                              <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                            ) : null;
+                          })()}
                         </td>
                       </tr>
                     </tbody>
@@ -783,12 +900,23 @@ export default function Lesson3BContent({
                       value={ex6.value['6'] || ''}
                       onChange={(e) => ex6.setField('6', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '6')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '6'))} ${
+                        isDiff(origEx6['6'], ex6.value['6']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="are"
                       style={{ width: '4rem' }}
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_6_grammar', '6')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     there?
                   </p>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_6_grammar', '6');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
                   <p style={{ margin: '0 0 0.35rem 0' }}>
                     There <strong>7.</strong>{' '}
                     <input
@@ -796,12 +924,23 @@ export default function Lesson3BContent({
                       value={ex6.value['7'] || ''}
                       onChange={(e) => ex6.setField('7', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '7')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '7'))} ${
+                        isDiff(origEx6['7'], ex6.value['7']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="is"
                       style={{ width: '3.5rem' }}
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_6_grammar', '7')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     one.
                   </p>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_6_grammar', '7');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
                   <p style={{ margin: 0 }}>
                     There <strong>8.</strong>{' '}
                     <input
@@ -809,12 +948,23 @@ export default function Lesson3BContent({
                       value={ex6.value['8'] || ''}
                       onChange={(e) => ex6.setField('8', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '8')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_6_grammar', '8'))} ${
+                        isDiff(origEx6['8'], ex6.value['8']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="are"
                       style={{ width: '3.5rem' }}
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_6_grammar', '8')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     two.
                   </p>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_6_grammar', '8');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
                 </div>
               </div>
 
@@ -858,6 +1008,7 @@ export default function Lesson3BContent({
                   {INTONATION_SENTENCES.map((item) => {
                     const selected = ex7a.value[item.id] || '';
                     const ver = getFieldVerify('exercise_7a_intonation', item.id);
+                    const isItemDiff = isDiff(origEx7a[item.id], selected);
                     return (
                       <div key={item.id} className={styles.intonationItem}>
                         <span className={styles.intonationText}>{item.text}</span>
@@ -865,7 +1016,9 @@ export default function Lesson3BContent({
                           <button
                             type="button"
                             onClick={() => !isReadOnly && ex7a.setField(item.id, 'up')}
-                            className={`${styles.chipBtn} ${selected === 'up' ? styles.chipBtnSelected : ''}`}
+                            className={`${styles.chipBtn} ${selected === 'up' ? styles.chipBtnSelected : ''} ${
+                              isItemDiff && selected === 'up' ? styles.diffHighlight : ''
+                            }`}
                             title="Voice goes up ↑"
                           >
                             ↑
@@ -873,12 +1026,21 @@ export default function Lesson3BContent({
                           <button
                             type="button"
                             onClick={() => !isReadOnly && ex7a.setField(item.id, 'down')}
-                            className={`${styles.chipBtn} ${selected === 'down' ? styles.chipBtnSelected : ''}`}
+                            className={`${styles.chipBtn} ${selected === 'down' ? styles.chipBtnSelected : ''} ${
+                              isItemDiff && selected === 'down' ? styles.diffHighlight : ''
+                            }`}
                             title="Voice goes down ↓"
                           >
                             ↓
                           </button>
-                          {ex7a.isReview && <TeacherAnswerBadge result={ver} />}
+                          {isReview && ver?.hasKey && ver.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
+                          {isReview && ver && !ver.isCorrect && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={ver} />
+                            </div>
+                          )}
                         </div>
                       </div>
                     );
@@ -966,11 +1128,23 @@ export default function Lesson3BContent({
                       value={ex8.value['1'] || ''}
                       onChange={(e) => ex8.setField('1', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '1')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '1'))} ${
+                        isDiff(origEx8['1'], ex8.value['1']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="are there"
                       style={{ width: '6.5rem' }}
-                    />?
+                    />
+                    {isReview && getFieldVerify('exercise_8_conversation', '1')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}?
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_8_conversation', '1');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.speakerLine}>
                     <strong>William:</strong> <strong>2.</strong>{' '}
                     <input
@@ -978,12 +1152,24 @@ export default function Lesson3BContent({
                       value={ex8.value['2'] || ''}
                       onChange={(e) => ex8.setField('2', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '2')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '2'))} ${
+                        isDiff(origEx8['2'], ex8.value['2']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="There are"
                       style={{ width: '6.5rem' }}
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_8_conversation', '2')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     five rooms: two bedrooms, a living room, a kitchen and a bathroom.
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_8_conversation', '2');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.speakerLine}>
                     <strong>Jakub:</strong> Wow! <strong>3.</strong>{' '}
                     <input
@@ -991,12 +1177,24 @@ export default function Lesson3BContent({
                       value={ex8.value['3'] || ''}
                       onChange={(e) => ex8.setField('3', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '3')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '3'))} ${
+                        isDiff(origEx8['3'], ex8.value['3']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="Is there"
                       style={{ width: '5.5rem' }}
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_8_conversation', '3')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     a shower?
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_8_conversation', '3');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.speakerLine}>
                     <strong>William:</strong> Yes, <strong>4.</strong>{' '}
                     <input
@@ -1004,11 +1202,23 @@ export default function Lesson3BContent({
                       value={ex8.value['4'] || ''}
                       onChange={(e) => ex8.setField('4', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '4')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '4'))} ${
+                        isDiff(origEx8['4'], ex8.value['4']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="there is"
                       style={{ width: '5.5rem' }}
-                    />.
+                    />
+                    {isReview && getFieldVerify('exercise_8_conversation', '4')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}.
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_8_conversation', '4');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.speakerLine}>
                     <strong>Jakub:</strong> <strong>5.</strong>{' '}
                     <input
@@ -1016,12 +1226,24 @@ export default function Lesson3BContent({
                       value={ex8.value['5'] || ''}
                       onChange={(e) => ex8.setField('5', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '5')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '5'))} ${
+                        isDiff(origEx8['5'], ex8.value['5']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="Is there"
                       style={{ width: '5.5rem' }}
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_8_conversation', '5')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     wifi?
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_8_conversation', '5');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.speakerLine}>
                     <strong>William:</strong> Yes, <strong>6.</strong>{' '}
                     <input
@@ -1029,11 +1251,23 @@ export default function Lesson3BContent({
                       value={ex8.value['6'] || ''}
                       onChange={(e) => ex8.setField('6', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '6')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '6'))} ${
+                        isDiff(origEx8['6'], ex8.value['6']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="there is"
                       style={{ width: '5.5rem' }}
-                    />.
+                    />
+                    {isReview && getFieldVerify('exercise_8_conversation', '6')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}.
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_8_conversation', '6');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.speakerLine}>
                     <strong>Jakub:</strong> <strong>7.</strong>{' '}
                     <input
@@ -1041,12 +1275,24 @@ export default function Lesson3BContent({
                       value={ex8.value['7'] || ''}
                       onChange={(e) => ex8.setField('7', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '7')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '7'))} ${
+                        isDiff(origEx8['7'], ex8.value['7']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="Are there"
                       style={{ width: '6rem' }}
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_8_conversation', '7')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     TVs in the bedrooms?
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_8_conversation', '7');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.speakerLine}>
                     <strong>William:</strong> No, <strong>8.</strong>{' '}
                     <input
@@ -1054,21 +1300,42 @@ export default function Lesson3BContent({
                       value={ex8.value['8'] || ''}
                       onChange={(e) => ex8.setField('8', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '8')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '8'))} ${
+                        isDiff(origEx8['8'], ex8.value['8']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="there aren't"
                       style={{ width: '7rem' }}
-                    />. <strong>9.</strong>{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_8_conversation', '8')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}. <strong>9.</strong>{' '}
                     <input
                       type="text"
                       value={ex8.value['9'] || ''}
                       onChange={(e) => ex8.setField('9', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '9')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '9'))} ${
+                        isDiff(origEx8['9'], ex8.value['9']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="There is"
                       style={{ width: '5.5rem' }}
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_8_conversation', '9')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     a TV in the living room.
                   </div>
+                  {isReview && (() => {
+                    const ver8 = getFieldVerify('exercise_8_conversation', '8');
+                    const ver9 = getFieldVerify('exercise_8_conversation', '9');
+                    return (
+                      <div className={styles.feedbackRow}>
+                        {ver8 && !ver8.isCorrect && <TeacherAnswerBadge result={ver8} />}
+                        {ver9 && !ver9.isCorrect && <TeacherAnswerBadge result={ver9} />}
+                      </div>
+                    );
+                  })()}
+
                   <div className={styles.speakerLine}>
                     <strong>Jakub:</strong> <strong>10.</strong>{' '}
                     <input
@@ -1076,12 +1343,24 @@ export default function Lesson3BContent({
                       value={ex8.value['10'] || ''}
                       onChange={(e) => ex8.setField('10', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '10')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '10'))} ${
+                        isDiff(origEx8['10'], ex8.value['10']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="Is there"
                       style={{ width: '5.5rem' }}
-                    />{' '}
+                    />
+                    {isReview && getFieldVerify('exercise_8_conversation', '10')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}{' '}
                     a lift?
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_8_conversation', '10');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.speakerLine}>
                     <strong>William:</strong> No, <strong>11.</strong>{' '}
                     <input
@@ -1089,11 +1368,23 @@ export default function Lesson3BContent({
                       value={ex8.value['11'] || ''}
                       onChange={(e) => ex8.setField('11', e.target.value)}
                       disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '11')?.status)}`}
+                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_8_conversation', '11'))} ${
+                        isDiff(origEx8['11'], ex8.value['11']) ? styles.diffHighlight : ''
+                      }`}
                       placeholder="there isn't"
                       style={{ width: '6.5rem' }}
-                    />.
+                    />
+                    {isReview && getFieldVerify('exercise_8_conversation', '11')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
+                    )}.
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_8_conversation', '11');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.speakerLine}>
                     <strong>Jakub:</strong> Oh.
                   </div>
@@ -1118,18 +1409,31 @@ export default function Lesson3BContent({
                 <div className={styles.orderList}>
                   {WORD_ORDER_ITEMS.map((item) => {
                     const ver = getFieldVerify('exercise_9a_word_order', item.id);
+                    const currentVal = ex9a.value[item.id] || '';
+                    const isItemDiff = isDiff(origEx9a[item.id], currentVal);
                     return (
                       <div key={item.id} className={styles.orderItem}>
                         <span className={styles.scrambledWords}>{item.words}</span>
-                        <input
-                          type="text"
-                          placeholder="Type the question..."
-                          value={ex9a.value[item.id] || ''}
-                          onChange={(e) => ex9a.setField(item.id, e.target.value)}
-                          disabled={isReadOnly}
-                          className={`${styles.orderInput} ${getInputClass(ver?.status)}`}
-                        />
-                        {ex9a.isReview && <TeacherAnswerBadge result={ver} />}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%' }}>
+                          <input
+                            type="text"
+                            placeholder="Type the question..."
+                            value={currentVal}
+                            onChange={(e) => ex9a.setField(item.id, e.target.value)}
+                            disabled={isReadOnly}
+                            className={`${styles.orderInput} ${getInputClass(ver)} ${
+                              isItemDiff ? styles.diffHighlight : ''
+                            }`}
+                          />
+                          {isReview && ver?.hasKey && ver.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
+                        </div>
+                        {isReview && ver && !ver.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={ver} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -1162,6 +1466,7 @@ export default function Lesson3BContent({
                       {SPEAKING_TABLE_ROWS.map((rowName) => {
                         const rowKey = rowName.replace(/[^a-zA-Z0-9]/g, '_').toLowerCase();
                         const rowVal = ex10.value[rowKey] || {};
+                        const origVal = ((orig?.exercise_10_holiday_flats as Record<string, { flat1?: string; flat2?: string }>) || {})[rowKey] || {};
                         return (
                           <tr key={rowName}>
                             <td className={styles.labelCell}>{rowName}</td>
@@ -1175,6 +1480,7 @@ export default function Lesson3BContent({
                                   ex10.setField(rowKey, { ...rowVal, flat1: e.target.value });
                                 }}
                                 disabled={isReadOnly}
+                                className={isDiff(origVal.flat1, rowVal.flat1) ? styles.diffHighlight : ''}
                               />
                             </td>
                             <td>
@@ -1187,6 +1493,7 @@ export default function Lesson3BContent({
                                   ex10.setField(rowKey, { ...rowVal, flat2: e.target.value });
                                 }}
                                 disabled={isReadOnly}
+                                className={isDiff(origVal.flat2, rowVal.flat2) ? styles.diffHighlight : ''}
                               />
                             </td>
                           </tr>

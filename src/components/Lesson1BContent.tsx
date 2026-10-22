@@ -217,27 +217,49 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
                 </div>
                 <div className={styles.profileContent}>
                   <p className={styles.profileName}>Name: {profile.name}</p>
-                  <p><strong>City:</strong> {profile.city}</p>
-                  <p><strong>Country:</strong> {profile.country}</p>
+                  <p className={styles.profileInfoLine}><strong>City:</strong> {profile.city}</p>
+                  <p className={styles.profileInfoLine}><strong>Country:</strong> {profile.country}</p>
                   <div className={styles.jobField}>
-                    <strong>Job:</strong>
-                    <span className={styles.jobBadgeNum}>{profile.id}</span>
-                    <input
-                      type="text"
-                      list="vocabulary-jobs-list"
-                      value={currentVal}
-                      onChange={(e) => onJobChange(String(profile.id), e.target.value)}
-                      placeholder="select or enter job..."
-                      disabled={readOnly}
-                      className={`${styles.jobInput} ${isChanged ? styles.diffHighlight : ''} ${
-                        verification?.status === 'correct'
-                          ? styles.inputValid
-                          : verification?.status === 'incorrect'
-                          ? styles.inputInvalid
-                          : ''
-                      }`}
-                    />
-                    {verification && <TeacherAnswerBadge result={verification} />}
+                    <div className={styles.jobInputRow}>
+                      <label htmlFor={`job-input-${profile.id}`} className={styles.jobLabel}>
+                        <strong>Job:</strong>
+                        <span className={styles.jobBadgeNum}>{profile.id}</span>
+                      </label>
+                      <div className={styles.jobInputWrapper}>
+                        <input
+                          id={`job-input-${profile.id}`}
+                          type="text"
+                          list="vocabulary-jobs-list"
+                          value={currentVal}
+                          onChange={(e) => onJobChange(String(profile.id), e.target.value)}
+                          placeholder="select or enter job..."
+                          disabled={readOnly}
+                          autoComplete="off"
+                          spellCheck="false"
+                          aria-label={`Job for ${profile.name}`}
+                          className={`${styles.jobInput} ${isChanged ? styles.diffHighlight : ''} ${
+                            verification?.status === 'correct'
+                              ? styles.inputValid
+                              : verification?.status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                          }`}
+                        />
+                        {verification?.status === 'correct' && (
+                          <span className={styles.jobCorrectBadge}>
+                            <TeacherAnswerBadge result={verification} />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {verification && verification.status !== 'correct' && (
+                      <div className={styles.jobFeedbackRow}>
+                        <TeacherAnswerBadge
+                          result={verification}
+                          className={styles.jobTeacherBadge}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -266,8 +288,11 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
             <p className={styles.vocabTitle}>Match 1–8 in the profiles with jobs a–h:</p>
             <div className={styles.vocabGrid}>
               {vocabularyJobs.map((item) => (
-                <div key={item.key} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px' }}>
-                  <span><span>{item.key}</span> {item.label}</span>
+                <div key={item.key} className={styles.vocabItem}>
+                  <div className={styles.vocabLabelGroup}>
+                    <span className={styles.vocabKey}>{item.key}</span>
+                    <span className={styles.vocabLabel}>{item.label}</span>
+                  </div>
                   <PronounceButton word={item.label} size="small" />
                 </div>
               ))}
@@ -339,12 +364,27 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
             </h2>
           </div>
 
-          <p style={{ fontSize: '0.85rem', color: '#475569', marginBottom: '0.75rem' }}>
+          <p className={styles.instructionText}>
             Read the web page below. Match people 1–3 with jobs a–c:
           </p>
 
           <div className={styles.matchingContainer}>
-            <div className={styles.matchingQuestions}>
+            <div className={styles.matchingBank}>
+              <span className={styles.matchingBankTitle}>Options:</span>
+              <div className={styles.matchingBankTags}>
+                <span className={styles.matchingBankTag}>
+                  <strong>a</strong> office worker
+                </span>
+                <span className={styles.matchingBankTag}>
+                  <strong>b</strong> doctor
+                </span>
+                <span className={styles.matchingBankTag}>
+                  <strong>c</strong> nurse
+                </span>
+              </div>
+            </div>
+
+            <div className={styles.matchingList}>
               {[
                 { id: '1', name: '1. Lucy' },
                 { id: '2', name: '2. Paul' },
@@ -358,43 +398,54 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
                   : null;
 
                 return (
-                  <div key={person.id} className={styles.matchingRow}>
-                    <span>{person.name}</span>
-                    <select
-                      value={currentVal}
-                      onChange={(e) => onReadingChange(person.id, e.target.value)}
-                      disabled={readOnly}
-                      className={`${styles.matchingSelect} ${isChanged ? styles.diffHighlight : ''} ${
-                        verification?.status === 'correct'
-                          ? styles.inputValid
-                          : verification?.status === 'incorrect'
-                          ? styles.inputInvalid
-                          : ''
-                      }`}
-                    >
-                      <option value="">- select -</option>
-                      <option value="a">a (office worker)</option>
-                      <option value="b">b (doctor)</option>
-                      <option value="c">c (nurse)</option>
-                    </select>
-                    {verification && <TeacherAnswerBadge result={verification} />}
+                  <div key={person.id} className={styles.matchingCard}>
+                    <div className={styles.matchingRowMain}>
+                      <span className={styles.matchingPersonName}>{person.name}</span>
+                      <div className={styles.matchingSelectWrap}>
+                        <select
+                          value={currentVal}
+                          onChange={(e) => onReadingChange(person.id, e.target.value)}
+                          disabled={readOnly}
+                          aria-label={`Job for ${person.name}`}
+                          className={`${styles.matchingSelect} ${isChanged ? styles.diffHighlight : ''} ${
+                            verification?.status === 'correct'
+                              ? styles.inputValid
+                              : verification?.status === 'incorrect'
+                              ? styles.inputInvalid
+                              : ''
+                          }`}
+                        >
+                          <option value="">- select -</option>
+                          <option value="a">a (office worker)</option>
+                          <option value="b">b (doctor)</option>
+                          <option value="c">c (nurse)</option>
+                        </select>
+                        {verification?.status === 'correct' && (
+                          <span className={styles.matchingCorrectBadge}>
+                            <TeacherAnswerBadge result={verification} />
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    {verification && verification.status !== 'correct' && (
+                      <div className={styles.matchingFeedbackRow}>
+                        <TeacherAnswerBadge
+                          result={verification}
+                          className={styles.matchingTeacherBadge}
+                        />
+                      </div>
+                    )}
                   </div>
                 );
               })}
-            </div>
-
-
-            <div className={styles.matchingOptions}>
-              <p><strong>a</strong> office worker</p>
-              <p><strong>b</strong> doctor</p>
-              <p><strong>c</strong> nurse</p>
             </div>
           </div>
 
           {/* Hospital Web Simulator */}
           <div className={styles.hospitalCard}>
             <div className={styles.hospitalHeader}>
-              🏥 Green Cross Hospital
+              <span className={styles.hospitalHeaderIcon}>🏥</span>
+              <span>Green Cross Hospital</span>
             </div>
             <div className={styles.hospitalSubHeader}>
               About us

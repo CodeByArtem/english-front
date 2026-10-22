@@ -9,31 +9,13 @@
   width: 100%;
   min-width: 0;
   box-sizing: border-box;
-}
 
-// Разделитель между разделами урока
-.partDivider {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin: clamp(1rem, 2.5vw, 1.75rem) 0;
-
-  .partDividerLine {
-    flex: 1;
-    height: 1px;
-    background: #e2e8f0;
-  }
-
-  .partDividerBadge {
-    font-size: clamp(0.75rem, 1.6vw, 0.85rem);
-    font-weight: 700;
-    color: #0369a1;
-    background: #e0f2fe;
-    border: 1px solid #bae6fd;
-    padding: 0.35rem 0.9rem;
-    border-radius: $border-radius-full;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
   }
 }
 
@@ -46,17 +28,18 @@
   overflow: hidden;
   position: relative;
   box-sizing: border-box;
+  width: 100%;
 }
 
 // Header Banner
 .headerBanner {
   position: relative;
-  background: linear-gradient(135deg, #b91c1c 0%, #dc2626 50%, #ea580c 100%);
+  background: linear-gradient(135deg, #991b1b 0%, $color-danger-dark 50%, #c2410c 100%);
   padding: clamp(1rem, 3vw, 1.75rem);
   color: $color-white;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: $spacing-md;
 }
 
 .headerTop {
@@ -68,8 +51,8 @@
 
 .badge3B {
   background: $color-white;
-  color: #dc2626;
-  font-weight: 900;
+  color: $color-danger-dark;
+  font-weight: $font-weight-bold;
   font-size: clamp(1.5rem, 3.5vw, 2.2rem);
   padding: 0.35rem clamp(0.75rem, 2vw, 1.2rem);
   border-radius: $border-radius-lg;
@@ -79,7 +62,7 @@
   line-height: 1;
 
   .letterB {
-    color: #f43f5e;
+    color: #e11d48;
     margin-left: 2px;
   }
 }
@@ -90,7 +73,7 @@
 }
 
 .titleHeading {
-  font-size: clamp(1.5rem, 4vw, 2.4rem);
+  font-size: clamp(1.4rem, 4vw, 2.2rem);
   font-weight: 800;
   margin: 0;
   color: $color-white;
@@ -115,7 +98,7 @@
     line-height: 1.4;
 
     strong {
-      color: #fef08a;
+      color: $color-warning-light;
     }
   }
 }
@@ -134,7 +117,7 @@
   grid-template-columns: 1fr;
   gap: clamp(1.25rem, 3vw, 2rem);
 
-  @media (min-width: 900px) {
+  @include respond-to(lg) {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -150,7 +133,7 @@
 .sectionTitle {
   font-size: clamp(1.2rem, 2.5vw, 1.45rem);
   font-weight: 800;
-  color: #0f172a;
+  color: $color-gray-900;
   margin: 0 0 $spacing-sm 0;
   display: flex;
   align-items: center;
@@ -159,13 +142,15 @@
 
 // Exercise Block
 .exerciseBlock {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
   border-radius: $border-radius-xl;
   padding: clamp(1rem, 2.5vw, 1.35rem);
   display: flex;
   flex-direction: column;
   gap: $spacing-md;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .exerciseHeader {
@@ -179,7 +164,7 @@
 
 .exNumber {
   background: #fee2e2;
-  color: #dc2626;
+  color: $color-danger-dark;
   font-weight: 800;
   font-size: 0.85rem;
   min-width: 1.6rem;
@@ -193,7 +178,7 @@
 
 .exLetter {
   font-weight: 800;
-  color: #dc2626;
+  color: $color-danger-dark;
   margin-right: 0.2rem;
 }
 
@@ -212,46 +197,84 @@
   flex-direction: column;
   gap: 0.4rem;
   font-size: 0.85rem;
+}
 
-  .wordBoxRow {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.35rem 0.65rem;
+.wordBoxGroup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.65rem;
 
-    strong {
-      color: #9f1239;
-      font-weight: 700;
-      min-width: 55px;
-    }
+  strong {
+    color: #9f1239;
+    font-weight: 700;
   }
 }
 
-.wordChip {
-  background: $color-white;
-  border: 1px solid #fecdd3;
-  padding: 0.15rem 0.5rem;
-  border-radius: $border-radius-sm;
-  color: #881337;
-  font-weight: $font-weight-medium;
-  font-size: 0.8rem;
+// Pronounce Chips
+.pronounceChipGrid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
-// Flat block showcase
-.flatShowcase {
+.pronounceChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-md;
+  padding: 0.3rem 0.65rem;
+  font-size: 0.825rem;
+  font-weight: $font-weight-medium;
+  color: $color-gray-800;
+}
+
+// Flat Brighton Card
+.flatCardBrighton {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: $spacing-md;
+  padding-bottom: $spacing-md;
+}
+
+.flatCardBrightonHeader {
+  background: #0284c7;
+  color: $color-white;
+  padding: 0.75rem 1rem;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.flatTitle {
+  font-weight: 800;
+  font-size: 0.95rem;
+  letter-spacing: 0.03em;
+}
+
+.flatPrice {
+  font-weight: 700;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.2rem 0.6rem;
+  border-radius: $border-radius-sm;
 }
 
 .flatImageWrap {
   width: 100%;
-  max-width: 320px;
-  border-radius: 10px;
+  max-width: 480px;
+  margin: 0 auto;
+  border-radius: 8px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  border: 2px solid #0284c7;
+  border: 1px solid $color-gray-200;
 
   img {
     width: 100%;
@@ -264,24 +287,30 @@
 // Matching Grid (A–K)
 .matchingGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(clamp(130px, 30vw, 170px), 1fr));
+  grid-template-columns: 1fr;
   gap: 0.65rem;
   width: 100%;
+  padding: 0 $spacing-md;
+  box-sizing: border-box;
+
+  @include respond-to(sm) {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
-.matchingItem {
-  background: $color-white;
+.matchRow {
+  background: $color-gray-50;
   border: 1px solid $color-gray-200;
   border-radius: $border-radius-md;
   padding: 0.5rem 0.65rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  flex-wrap: wrap;
 }
 
-.letterTag {
-  background: #1e293b;
+.matchKey {
+  background: $color-gray-800;
   color: $color-white;
   font-weight: 800;
   font-size: 0.75rem;
@@ -294,23 +323,101 @@
   flex-shrink: 0;
 }
 
+.matchLabel {
+  font-size: 0.8rem;
+  font-weight: $font-weight-medium;
+  color: $color-gray-700;
+  min-width: 50px;
+}
+
 .selectInput {
   flex: 1;
+  min-width: 120px;
   border: 1px solid $color-gray-300;
   border-radius: 4px;
-  padding: 0.3rem 0.4rem;
-  font-size: 0.8rem;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.85rem;
   background: $color-white;
   outline: none;
   color: $color-gray-900;
-  min-width: 0;
 
   &:focus {
     border-color: $color-primary;
   }
 
   &:disabled {
-    background: #f1f5f9;
+    background: $color-gray-100;
+  }
+}
+
+// Notes Textarea
+.notesTextarea {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.9rem;
+  font-family: inherit;
+  color: $color-gray-900;
+  background: $color-white;
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.15s ease;
+
+  &:focus {
+    border-color: $color-primary;
+  }
+
+  &:disabled {
+    background: $color-gray-100;
+  }
+}
+
+// Q&A List
+.qaList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.qaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: $color-white;
+  padding: 0.65rem 0.85rem;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+}
+
+.qaQuestion {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-800;
+}
+
+.textInput {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border: 1px solid $color-gray-300;
+  border-radius: 4px;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.875rem;
+  outline: none;
+  color: $color-gray-900;
+
+  &:focus {
+    border-color: $color-primary;
+  }
+
+  &:disabled {
+    background: $color-gray-100;
   }
 }
 
@@ -327,10 +434,10 @@
 }
 
 .audioBtn {
-  background: #d02a27;
-  color: #ffffff;
+  background: $color-danger-dark;
+  color: $color-white;
   border: none;
-  padding: 0.3rem 0.75rem;
+  padding: 0.35rem 0.85rem;
   border-radius: 4px;
   font-size: 0.825rem;
   font-weight: 700;
@@ -346,7 +453,7 @@
 
   &:hover:not(:disabled) {
     opacity: 0.92;
-    background: #b91c1c;
+    background: #991b1b;
     transform: translateY(-1px);
   }
 
@@ -362,8 +469,7 @@
 
 .audioBtnActive {
   background: #1b4c5b !important;
-  color: #ffffff;
-  padding: 0.3rem 0.85rem;
+  color: $color-white;
 }
 
 .equalizer {
@@ -375,7 +481,7 @@
 
 .bar {
   width: 2px;
-  background: #ffffff;
+  background: $color-white;
   animation: equalize 1s ease-in-out infinite;
 
   &:nth-child(1) { height: 60%; animation-delay: -0.4s; }
@@ -397,13 +503,17 @@
 // Flat Cards (Exercise 5a)
 .flatsList {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(clamp(200px, 30vw, 240px), 1fr));
-  gap: 1rem;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
 }
 
 .flatCard {
   background: $color-white;
-  border: 2px solid #e2e8f0;
+  border: 2px solid $color-gray-200;
   border-radius: $border-radius-lg;
   overflow: hidden;
   cursor: pointer;
@@ -412,7 +522,7 @@
   flex-direction: column;
 
   &:hover {
-    border-color: #38bdf8;
+    border-color: $color-primary-light;
     transform: translateY(-2px);
   }
 
@@ -464,7 +574,7 @@
   transition: background-color 0.15s ease;
 
   &:hover {
-    background: #f8fafc;
+    background: $color-gray-50;
   }
 
   input[type='checkbox'] {
@@ -475,17 +585,30 @@
   }
 }
 
-// Text Inputs in sentences
+// Text Inputs in sentences (Ex 5c)
+.fillSentencesBox {
+  background: $color-white;
+  padding: 0.85rem 1rem;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+  line-height: 2;
+  font-size: 0.9rem;
+
+  p {
+    margin: 0;
+  }
+}
+
 .inlineInput {
   border: none;
-  border-bottom: 2px solid #94a3b8;
+  border-bottom: 2px solid $color-gray-400;
   padding: 0.1rem 0.35rem;
   font-size: 0.9rem;
   font-weight: 600;
   color: $color-primary-dark;
   background: transparent;
   outline: none;
-  width: 4rem;
+  width: 4.5rem;
   text-align: center;
   transition: border-color 0.15s ease;
 
@@ -495,6 +618,32 @@
 
   &:disabled {
     color: $color-gray-700;
+  }
+}
+
+// Part Divider
+.partDivider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: clamp(1rem, 2.5vw, 1.75rem) 0;
+
+  .partDividerLine {
+    flex: 1;
+    height: 1px;
+    background: $color-gray-200;
+  }
+
+  .partDividerBadge {
+    font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+    font-weight: 700;
+    color: $color-primary-dark;
+    background: $color-primary-50;
+    border: 1px solid $color-primary-200;
+    padding: 0.35rem 0.9rem;
+    border-radius: $border-radius-full;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
   }
 }
 
@@ -508,24 +657,24 @@
 
 .grammarTable {
   width: 100%;
-  min-width: 320px;
+  min-width: 300px;
   border-collapse: collapse;
   background: $color-white;
-  border: 1px solid #cbd5e1;
+  border: 1px solid $color-gray-300;
   border-radius: 8px;
   overflow: hidden;
 
   th,
   td {
-    border: 1px solid #e2e8f0;
+    border: 1px solid $color-gray-200;
     padding: 0.6rem 0.75rem;
     font-size: 0.85rem;
     text-align: left;
   }
 
   th {
-    background: #e0f2fe;
-    color: #0369a1;
+    background: $color-primary-50;
+    color: $color-primary-dark;
     font-weight: 700;
   }
 
@@ -533,12 +682,12 @@
     font-weight: 700;
     width: 2.2rem;
     text-align: center;
-    background: #f1f5f9;
+    background: $color-gray-100;
   }
 }
 
 .tableInput {
-  border: 1px solid #cbd5e1;
+  border: 1px solid $color-gray-300;
   border-radius: 4px;
   padding: 0.25rem 0.4rem;
   font-size: 0.85rem;
@@ -578,7 +727,9 @@
 
 .intonationButtons {
   display: flex;
+  align-items: center;
   gap: 0.35rem;
+  flex-wrap: wrap;
 }
 
 .chipBtn {
@@ -610,7 +761,7 @@
 
 // Conversation Box (Exercise 8)
 .dialogueBox {
-  background: #f8fafc;
+  background: $color-gray-50;
   border-left: 4px solid #0284c7;
   padding: 1rem;
   border-radius: 0 8px 8px 0;
@@ -618,14 +769,14 @@
   flex-direction: column;
   gap: 0.65rem;
   font-size: 0.875rem;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
 .speakerLine {
   display: flex;
   align-items: baseline;
   flex-wrap: wrap;
-  gap: 0.25rem 0.4rem;
+  gap: 0.3rem 0.45rem;
 
   strong {
     color: #0369a1;
@@ -652,12 +803,12 @@
 
 .scrambledWords {
   font-size: 0.85rem;
-  color: #64748b;
+  color: $color-gray-500;
   font-style: italic;
 }
 
 .orderInput {
-  border: 1px solid #cbd5e1;
+  border: 1px solid $color-gray-300;
   border-radius: 4px;
   padding: 0.4rem 0.6rem;
   font-size: 0.875rem;
@@ -672,13 +823,13 @@
 // Speaking Section & Table (Exercise 10)
 .speakingTable {
   width: 100%;
-  min-width: 340px;
+  min-width: 320px;
   border-collapse: collapse;
   font-size: 0.825rem;
 
   th,
   td {
-    border: 1px solid #cbd5e1;
+    border: 1px solid $color-gray-300;
     padding: 0.45rem 0.6rem;
   }
 
@@ -690,9 +841,9 @@
   }
 
   .labelCell {
-    background: #f8fafc;
+    background: $color-gray-50;
     font-weight: 600;
-    color: #334155;
+    color: $color-gray-700;
     width: 40%;
   }
 
@@ -705,7 +856,7 @@
     text-align: center;
 
     &:focus {
-      background: #eff6ff;
+      background: $color-primary-50;
     }
   }
 }
@@ -716,7 +867,7 @@
   gap: 1rem;
   align-items: center;
 
-  @media (min-width: 640px) {
+  @include respond-to(sm) {
     flex-direction: row;
     justify-content: space-between;
   }
@@ -737,13 +888,44 @@
   }
 }
 
-// Validation feedback classes
+// Verification and Review styles
+.feedbackRow {
+  margin-top: $spacing-xs;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-xs;
+  width: 100%;
+}
+
+.correctBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  background: $color-success;
+  color: $color-white;
+  border-radius: $border-radius-full;
+  font-size: 0.75rem;
+  font-weight: $font-weight-bold;
+  margin-left: $spacing-xs;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.diffHighlight {
+  outline: 2px dashed $color-warning !important;
+  outline-offset: 1px;
+  background-color: rgba(251, 191, 36, 0.12) !important;
+}
+
 .inputValid {
-  border-color: #16a34a !important;
-  background-color: #f0fdf4 !important;
+  border-color: $color-success-dark !important;
+  background-color: rgba(34, 197, 94, 0.08) !important;
 }
 
 .inputInvalid {
-  border-color: #dc2626 !important;
-  background-color: #fef2f2 !important;
+  border-color: $color-danger-dark !important;
+  background-color: rgba(239, 68, 68, 0.08) !important;
 }

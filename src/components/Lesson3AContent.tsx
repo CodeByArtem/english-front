@@ -135,6 +135,7 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
     onEx8TextGapsChange,
     onEx9SentencesChange,
     onEx11SpeakingNotesChange,
+    originalAnswers,
   } = props;
 
   const activeAnswerKey: LessonAnswerKey | null =
@@ -148,6 +149,17 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
   const ex7aAlternativesKeys = getExerciseKey(activeAnswerKey, 'exercise_7a_alternatives');
   const ex7bListsKeys = getExerciseKey(activeAnswerKey, 'exercise_7b_lists');
   const ex8TextKeys = getExerciseKey(activeAnswerKey, 'exercise_8_text');
+
+  const origEx1aPlaces = originalAnswers?.exercise_1a_places as Record<string, string> | undefined;
+  const origEx2PairNotes = typeof originalAnswers?.exercise_2_pair_notes === 'string' ? originalAnswers.exercise_2_pair_notes : undefined;
+  const origEx3Speakers = originalAnswers?.exercise_3_speakers as Record<string, string> | undefined;
+  const origEx4ListeningChoices = originalAnswers?.exercise_4_listening_choices as Record<string, string> | undefined;
+  const origEx5GrammarGaps = originalAnswers?.exercise_5_grammar_gaps as Record<string, string> | undefined;
+  const origEx7aAlternatives = originalAnswers?.exercise_7a_alternatives as Record<string, string> | undefined;
+  const origEx7bLists = originalAnswers?.exercise_7b_lists as Record<string, string> | undefined;
+  const origEx8TextGaps = originalAnswers?.exercise_8_text_gaps as Record<string, string> | undefined;
+  const origEx9Sentences = originalAnswers?.exercise_9_sentences as Record<string, string> | undefined;
+  const origEx11SpeakingNotes = typeof originalAnswers?.exercise_11_speaking_notes === 'string' ? originalAnswers.exercise_11_speaking_notes : undefined;
 
   const [modalImage, setModalImage] = useState<string | null>(null);
 
@@ -218,6 +230,7 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
               <div className={styles.placesGrid}>
                 {PLACES_1A.map((place) => {
                   const val = ex1aPlaces[place.id] || '';
+                  const isChanged = origEx1aPlaces && origEx1aPlaces[place.id] !== undefined && origEx1aPlaces[place.id] !== val;
                   const verification = isReview
                     ? verifyAnswer(val, ex1aPlacesKeys?.[place.id])
                     : null;
@@ -226,27 +239,31 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                       <span className={styles.placeNum}>{place.id}</span>
                       <span className={styles.placeName}>{place.name}</span>
                       <PronounceButton word={place.name} size="small" />
-                      <select
-                        value={val}
-                        onChange={(e) => onEx1aPlacesChange?.(place.id, e.target.value)}
-                        disabled={readOnly}
-                        className={`${styles.letterSelect} ${
-                          verification?.status === 'correct'
-                            ? styles.inputValid
-                            : verification?.status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                        }`}
-                        aria-label={`Match for ${place.name}`}
-                      >
-                        <option value="">–</option>
-                        {LETTER_OPTIONS.map((letter) => (
-                          <option key={letter} value={letter}>
-                            {letter}
-                          </option>
+                      <span className={styles.feedbackRow}>
+                        <select
+                          value={val}
+                          onChange={(e) => onEx1aPlacesChange?.(place.id, e.target.value)}
+                          disabled={readOnly}
+                          className={`${styles.letterSelect} ${
+                            verification?.hasKey
+                              ? (verification.isCorrect ? styles.inputValid : styles.inputInvalid)
+                              : ''
+                          } ${isChanged ? styles.diffHighlight : ''}`}
+                          aria-label={`Match for ${place.name}`}
+                        >
+                          <option value="">–</option>
+                          {LETTER_OPTIONS.map((letter) => (
+                            <option key={letter} value={letter}>
+                              {letter}
+                            </option>
+                          ))}
+                        </select>
+                        {verification && (verification.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={verification} />
                         ))}
-                      </select>
-                      {verification && <TeacherAnswerBadge result={verification} />}
+                      </span>
                     </div>
                   );
                 })}
@@ -305,6 +322,7 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                 disabled={readOnly}
                 placeholder="Partner speaking notes..."
                 rows={2}
+                className={origEx2PairNotes !== undefined && origEx2PairNotes !== ex2PairNotes ? styles.diffHighlight : ''}
                 style={{
                   width: '100%',
                   border: '1px solid #cbd5e1',
@@ -395,6 +413,7 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                 {(['1', '2', '3'] as const).map((speakerNum) => {
                   const names: Record<string, string> = { '1': 'Jack', '2': 'Diana', '3': 'Yuki' };
                   const val = ex3Speakers[speakerNum] || '';
+                  const isChanged = origEx3Speakers && origEx3Speakers[speakerNum] !== undefined && origEx3Speakers[speakerNum] !== val;
                   const verification = isReview
                     ? verifyAnswer(val, ex3SpeakersKeys?.[speakerNum])
                     : null;
@@ -403,24 +422,28 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                       <strong>
                         {speakerNum} {names[speakerNum]}:
                       </strong>
-                      <select
-                        value={val}
-                        onChange={(e) => onEx3SpeakersChange?.(speakerNum, e.target.value)}
-                        disabled={readOnly}
-                        className={
-                          verification?.status === 'correct'
-                            ? styles.inputValid
-                            : verification?.status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                        }
-                      >
-                        <option value="">–</option>
-                        <option value="A">A</option>
-                        <option value="B">B</option>
-                        <option value="C">C</option>
-                      </select>
-                      {verification && <TeacherAnswerBadge result={verification} />}
+                      <span className={styles.feedbackRow}>
+                        <select
+                          value={val}
+                          onChange={(e) => onEx3SpeakersChange?.(speakerNum, e.target.value)}
+                          disabled={readOnly}
+                          className={`${
+                            verification?.hasKey
+                              ? (verification.isCorrect ? styles.inputValid : styles.inputInvalid)
+                              : ''
+                          } ${isChanged ? styles.diffHighlight : ''}`}
+                        >
+                          <option value="">–</option>
+                          <option value="A">A</option>
+                          <option value="B">B</option>
+                          <option value="C">C</option>
+                        </select>
+                        {verification && (verification.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={verification} />
+                        ))}
+                      </span>
                     </div>
                   );
                 })}
@@ -468,20 +491,19 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                     <div className={styles.personName}>{group.person}</div>
                     {group.items.map((item) => {
                       const chosen = ex4ListeningChoices[item.id];
+                      const isChanged = origEx4ListeningChoices && origEx4ListeningChoices[item.id] !== undefined && origEx4ListeningChoices[item.id] !== chosen;
                       const verification = isReview
                         ? verifyAnswer(chosen, ex4ChoicesKeys?.[item.id])
                         : null;
                       return (
                         <div key={item.id} className={styles.choiceQuestion}>
-                          <div className={styles.optionsGroup}>
+                          <div className={`${styles.optionsGroup} ${isChanged ? styles.diffHighlight : ''}`}>
                             <label
                               className={`${
                                 chosen === 'a' ? styles.selectedOption : ''
                               } ${
-                                verification && chosen === 'a'
-                                  ? verification.status === 'correct'
-                                    ? styles.choiceValid
-                                    : styles.choiceInvalid
+                                verification?.hasKey && chosen === 'a'
+                                  ? (verification.isCorrect ? styles.choiceValid : styles.choiceInvalid)
                                   : ''
                               }`}
                             >
@@ -501,10 +523,8 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                               className={`${
                                 chosen === 'b' ? styles.selectedOption : ''
                               } ${
-                                verification && chosen === 'b'
-                                  ? verification.status === 'correct'
-                                    ? styles.choiceValid
-                                    : styles.choiceInvalid
+                                verification?.hasKey && chosen === 'b'
+                                  ? (verification.isCorrect ? styles.choiceValid : styles.choiceInvalid)
                                   : ''
                               }`}
                             >
@@ -520,7 +540,11 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                                 <strong>b</strong> {item.b}
                               </span>
                             </label>
-                            {verification && <TeacherAnswerBadge result={verification} />}
+                            {verification && (verification.isCorrect ? (
+                              <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                            ) : (
+                              <TeacherAnswerBadge result={verification} />
+                            ))}
                           </div>
                         </div>
                       );
@@ -563,11 +587,12 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                           <span className={styles.supNum}>1</span>
                           {(() => {
                             const val = ex5GrammarGaps['1'] || '';
+                            const isChanged = origEx5GrammarGaps && origEx5GrammarGaps['1'] !== undefined && origEx5GrammarGaps['1'] !== val;
                             const verification = isReview
                               ? verifyAnswer(val, ex5GrammarKeys?.['1'])
                               : null;
                             return (
-                              <>
+                              <span className={styles.feedbackRow}>
                                 <input
                                   type="text"
                                   value={val}
@@ -575,19 +600,21 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                                   disabled={readOnly}
                                   placeholder=""
                                   className={`${styles.grammarInput} ${
-                                    verification?.status === 'correct'
-                                      ? styles.inputValid
-                                      : verification?.status === 'incorrect'
-                                      ? styles.inputInvalid
+                                    verification?.hasKey
+                                      ? (verification.isCorrect ? styles.inputValid : styles.inputInvalid)
                                       : ''
-                                  }`}
+                                  } ${isChanged ? styles.diffHighlight : ''}`}
                                   aria-label="Gap 1: There is a park"
                                 />
                                 <span className={styles.gapAfter}>
                                   <strong>a</strong> park.
                                 </span>
-                                {verification && <TeacherAnswerBadge result={verification} />}
-                              </>
+                                {verification && (verification.isCorrect ? (
+                                  <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                                ) : (
+                                  <TeacherAnswerBadge result={verification} />
+                                ))}
+                              </span>
                             );
                           })()}
                         </div>
@@ -600,11 +627,12 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                           <span className={styles.supNum}>2</span>
                           {(() => {
                             const val = ex5GrammarGaps['2'] || '';
+                            const isChanged = origEx5GrammarGaps && origEx5GrammarGaps['2'] !== undefined && origEx5GrammarGaps['2'] !== val;
                             const verification = isReview
                               ? verifyAnswer(val, ex5GrammarKeys?.['2'])
                               : null;
                             return (
-                              <>
+                              <span className={styles.feedbackRow}>
                                 <input
                                   type="text"
                                   value={val}
@@ -612,19 +640,21 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                                   disabled={readOnly}
                                   placeholder=""
                                   className={`${styles.grammarInput} ${
-                                    verification?.status === 'correct'
-                                      ? styles.inputValid
-                                      : verification?.status === 'incorrect'
-                                      ? styles.inputInvalid
+                                    verification?.hasKey
+                                      ? (verification.isCorrect ? styles.inputValid : styles.inputInvalid)
                                       : ''
-                                  }`}
+                                  } ${isChanged ? styles.diffHighlight : ''}`}
                                   aria-label="Gap 2: There are three cafés"
                                 />
                                 <span className={styles.gapAfter}>
                                   <strong>three</strong> cafés.
                                 </span>
-                                {verification && <TeacherAnswerBadge result={verification} />}
-                              </>
+                                {verification && (verification.isCorrect ? (
+                                  <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                                ) : (
+                                  <TeacherAnswerBadge result={verification} />
+                                ))}
+                              </span>
                             );
                           })()}
                         </div>
@@ -646,11 +676,12 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                           <span className={styles.supNum}>3</span>
                           {(() => {
                             const val = ex5GrammarGaps['3'] || '';
+                            const isChanged = origEx5GrammarGaps && origEx5GrammarGaps['3'] !== undefined && origEx5GrammarGaps['3'] !== val;
                             const verification = isReview
                               ? verifyAnswer(val, ex5GrammarKeys?.['3'])
                               : null;
                             return (
-                              <>
+                              <span className={styles.feedbackRow}>
                                 <input
                                   type="text"
                                   value={val}
@@ -658,19 +689,21 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                                   disabled={readOnly}
                                   placeholder=""
                                   className={`${styles.grammarInput} ${
-                                    verification?.status === 'correct'
-                                      ? styles.inputValid
-                                      : verification?.status === 'incorrect'
-                                      ? styles.inputInvalid
+                                    verification?.hasKey
+                                      ? (verification.isCorrect ? styles.inputValid : styles.inputInvalid)
                                       : ''
-                                  }`}
+                                  } ${isChanged ? styles.diffHighlight : ''}`}
                                   aria-label="Gap 3: There are no supermarkets"
                                 />
                                 <span className={styles.gapAfter}>
                                   <strong>no</strong> supermarkets.
                                 </span>
-                                {verification && <TeacherAnswerBadge result={verification} />}
-                              </>
+                                {verification && (verification.isCorrect ? (
+                                  <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                                ) : (
+                                  <TeacherAnswerBadge result={verification} />
+                                ))}
+                              </span>
                             );
                           })()}
                         </div>
@@ -793,6 +826,7 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
               <div className={styles.alternativesList7a}>
                 {EX7A_ALTERNATIVES.map((alt) => {
                   const val = ex7aAlternatives[alt.id] || '';
+                  const isChanged = origEx7aAlternatives && origEx7aAlternatives[alt.id] !== undefined && origEx7aAlternatives[alt.id] !== val;
                   const verification = isReview
                     ? verifyAnswer(val, ex7aAlternativesKeys?.[alt.id])
                     : null;
@@ -800,43 +834,45 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                     <div key={alt.id} className={styles.altRow}>
                       <span className={styles.altNum}>{alt.id}</span>
                       {alt.before && <span>{alt.before}</span>}
-                      <span className={styles.choicePills}>
-                        <button
-                          type="button"
-                          className={`${styles.choiceBtn} ${
-                            val === alt.opt1 ? styles.choiceSelected : ''
-                          } ${
-                            verification && val === alt.opt1
-                              ? verification.status === 'correct'
-                                ? styles.choiceValid
-                                : styles.choiceInvalid
-                              : ''
-                          }`}
-                          onClick={() => !readOnly && onEx7aAlternativesChange?.(alt.id, alt.opt1)}
-                          disabled={readOnly}
-                        >
-                          {alt.opt1}
-                        </button>
-                        <span>/</span>
-                        <button
-                          type="button"
-                          className={`${styles.choiceBtn} ${
-                            val === alt.opt2 ? styles.choiceSelected : ''
-                          } ${
-                            verification && val === alt.opt2
-                              ? verification.status === 'correct'
-                                ? styles.choiceValid
-                                : styles.choiceInvalid
-                              : ''
-                          }`}
-                          onClick={() => !readOnly && onEx7aAlternativesChange?.(alt.id, alt.opt2)}
-                          disabled={readOnly}
-                        >
-                          {alt.opt2}
-                        </button>
+                      <span className={`${styles.feedbackRow} ${isChanged ? styles.diffHighlight : ''}`}>
+                        <span className={styles.choicePills}>
+                          <button
+                            type="button"
+                            className={`${styles.choiceBtn} ${
+                              val === alt.opt1 ? styles.choiceSelected : ''
+                            } ${
+                              verification?.hasKey && val === alt.opt1
+                                ? (verification.isCorrect ? styles.choiceValid : styles.choiceInvalid)
+                                : ''
+                            }`}
+                            onClick={() => !readOnly && onEx7aAlternativesChange?.(alt.id, alt.opt1)}
+                            disabled={readOnly}
+                          >
+                            {alt.opt1}
+                          </button>
+                          <span>/</span>
+                          <button
+                            type="button"
+                            className={`${styles.choiceBtn} ${
+                              val === alt.opt2 ? styles.choiceSelected : ''
+                            } ${
+                              verification?.hasKey && val === alt.opt2
+                                ? (verification.isCorrect ? styles.choiceValid : styles.choiceInvalid)
+                                : ''
+                            }`}
+                            onClick={() => !readOnly && onEx7aAlternativesChange?.(alt.id, alt.opt2)}
+                            disabled={readOnly}
+                          >
+                            {alt.opt2}
+                          </button>
+                        </span>
+                        {verification && (verification.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={verification} />
+                        ))}
                       </span>
                       <span>{alt.after}</span>
-                      {verification && <TeacherAnswerBadge result={verification} />}
                     </div>
                   );
                 })}
@@ -852,77 +888,92 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
               <div className={styles.lists7b}>
                 {(() => {
                   const val1 = ex7bLists['1'] || '';
+                  const isChanged1 = origEx7bLists && origEx7bLists['1'] !== undefined && origEx7bLists['1'] !== val1;
                   const v1 = isReview ? verifyAnswer(val1, ex7bListsKeys?.['1']) : null;
                   return (
                     <div className={styles.listRow}>
                       <span className={styles.rowNum}>1</span>
                       <span>one park; two parks; three</span>
-                      <input
-                        type="text"
-                        value={val1}
-                        onChange={(e) => onEx7bListsChange?.('1', e.target.value)}
-                        disabled={readOnly}
-                        placeholder="..."
-                        className={`${styles.underlinedInput} ${
-                          v1?.status === 'correct'
-                            ? styles.inputValid
-                            : v1?.status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                        }`}
-                      />
-                      {v1 && <TeacherAnswerBadge result={v1} />}
+                      <span className={styles.feedbackRow}>
+                        <input
+                          type="text"
+                          value={val1}
+                          onChange={(e) => onEx7bListsChange?.('1', e.target.value)}
+                          disabled={readOnly}
+                          placeholder="..."
+                          className={`${styles.underlinedInput} ${
+                            v1?.hasKey
+                              ? (v1.isCorrect ? styles.inputValid : styles.inputInvalid)
+                              : ''
+                          } ${isChanged1 ? styles.diffHighlight : ''}`}
+                        />
+                        {v1 && (v1.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={v1} />
+                        ))}
+                      </span>
                     </div>
                   );
                 })()}
                 {(() => {
                   const val2 = ex7bLists['2'] || '';
+                  const isChanged2 = origEx7bLists && origEx7bLists['2'] !== undefined && origEx7bLists['2'] !== val2;
                   const v2 = isReview ? verifyAnswer(val2, ex7bListsKeys?.['2']) : null;
                   return (
                     <div className={styles.listRow}>
                       <span className={styles.rowNum}>2</span>
                       <span>one</span>
-                      <input
-                        type="text"
-                        value={val2}
-                        onChange={(e) => onEx7bListsChange?.('2', e.target.value)}
-                        disabled={readOnly}
-                        placeholder="..."
-                        className={`${styles.underlinedInput} ${
-                          v2?.status === 'correct'
-                            ? styles.inputValid
-                            : v2?.status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                        }`}
-                      />
+                      <span className={styles.feedbackRow}>
+                        <input
+                          type="text"
+                          value={val2}
+                          onChange={(e) => onEx7bListsChange?.('2', e.target.value)}
+                          disabled={readOnly}
+                          placeholder="..."
+                          className={`${styles.underlinedInput} ${
+                            v2?.hasKey
+                              ? (v2.isCorrect ? styles.inputValid : styles.inputInvalid)
+                              : ''
+                          } ${isChanged2 ? styles.diffHighlight : ''}`}
+                        />
+                        {v2 && (v2.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={v2} />
+                        ))}
+                      </span>
                       <span>; two cafés; three cafés</span>
-                      {v2 && <TeacherAnswerBadge result={v2} />}
                     </div>
                   );
                 })()}
                 {(() => {
                   const val3 = ex7bLists['3'] || '';
+                  const isChanged3 = origEx7bLists && origEx7bLists['3'] !== undefined && origEx7bLists['3'] !== val3;
                   const v3 = isReview ? verifyAnswer(val3, ex7bListsKeys?.['3']) : null;
                   return (
                     <div className={styles.listRow}>
                       <span className={styles.rowNum}>3</span>
                       <span>one restaurant; two restaurants; three</span>
-                      <input
-                        type="text"
-                        value={val3}
-                        onChange={(e) => onEx7bListsChange?.('3', e.target.value)}
-                        disabled={readOnly}
-                        placeholder="..."
-                        className={`${styles.underlinedInput} ${
-                          v3?.status === 'correct'
-                            ? styles.inputValid
-                            : v3?.status === 'incorrect'
-                            ? styles.inputInvalid
-                            : ''
-                        }`}
-                      />
-                      {v3 && <TeacherAnswerBadge result={v3} />}
+                      <span className={styles.feedbackRow}>
+                        <input
+                          type="text"
+                          value={val3}
+                          onChange={(e) => onEx7bListsChange?.('3', e.target.value)}
+                          disabled={readOnly}
+                          placeholder="..."
+                          className={`${styles.underlinedInput} ${
+                            v3?.hasKey
+                              ? (v3.isCorrect ? styles.inputValid : styles.inputInvalid)
+                              : ''
+                          } ${isChanged3 ? styles.diffHighlight : ''}`}
+                        />
+                        {v3 && (v3.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={v3} />
+                        ))}
+                      </span>
                     </div>
                   );
                 })()}
@@ -938,11 +989,12 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
               <div className={styles.textFillCard}>
                 Uvo is a good town. There <span className={styles.gapIndex}>1</span>
                 {(() => {
+                  const isChanged = origEx8TextGaps && origEx8TextGaps['1'] !== undefined && origEx8TextGaps['1'] !== (ex8TextGaps['1'] || '');
                   const v = isReview
                     ? verifyAnswer(ex8TextGaps['1'] || '', ex8TextKeys?.['1'])
                     : null;
                   return (
-                    <>
+                    <span className={styles.feedbackRow}>
                       <input
                         type="text"
                         value={ex8TextGaps['1'] || ''}
@@ -950,25 +1002,28 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                         disabled={readOnly}
                         placeholder="..."
                         className={`${styles.gapInput} ${
-                          v?.status === 'correct'
-                            ? styles.inputValid
-                            : v?.status === 'incorrect'
-                            ? styles.inputInvalid
+                          v?.hasKey
+                            ? (v.isCorrect ? styles.inputValid : styles.inputInvalid)
                             : ''
-                        }`}
+                        } ${isChanged ? styles.diffHighlight : ''}`}
                       />
-                      {v && <TeacherAnswerBadge result={v} />}
-                    </>
+                      {v && (v.isCorrect ? (
+                        <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                      ) : (
+                        <TeacherAnswerBadge result={v} />
+                      ))}
+                    </span>
                   );
                 })()}{' '}
                 two parks, Thorpe Park and Stanley Park. There are no restaurants, but there&apos;s{' '}
                 <span className={styles.gapIndex}>2</span>
                 {(() => {
+                  const isChanged = origEx8TextGaps && origEx8TextGaps['2'] !== undefined && origEx8TextGaps['2'] !== (ex8TextGaps['2'] || '');
                   const v = isReview
                     ? verifyAnswer(ex8TextGaps['2'] || '', ex8TextKeys?.['2'])
                     : null;
                   return (
-                    <>
+                    <span className={styles.feedbackRow}>
                       <input
                         type="text"
                         value={ex8TextGaps['2'] || ''}
@@ -976,25 +1031,28 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                         disabled={readOnly}
                         placeholder="..."
                         className={`${styles.gapInput} ${
-                          v?.status === 'correct'
-                            ? styles.inputValid
-                            : v?.status === 'incorrect'
-                            ? styles.inputInvalid
+                          v?.hasKey
+                            ? (v.isCorrect ? styles.inputValid : styles.inputInvalid)
                             : ''
-                        }`}
+                        } ${isChanged ? styles.diffHighlight : ''}`}
                         style={{ minWidth: '40px' }}
                       />
-                      {v && <TeacherAnswerBadge result={v} />}
-                    </>
+                      {v && (v.isCorrect ? (
+                        <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                      ) : (
+                        <TeacherAnswerBadge result={v} />
+                      ))}
+                    </span>
                   );
                 })()}{' '}
                 café – it&apos;s really good! <span className={styles.gapIndex}>3</span>
                 {(() => {
+                  const isChanged = origEx8TextGaps && origEx8TextGaps['3'] !== undefined && origEx8TextGaps['3'] !== (ex8TextGaps['3'] || '');
                   const v = isReview
                     ? verifyAnswer(ex8TextGaps['3'] || '', ex8TextKeys?.['3'])
                     : null;
                   return (
-                    <>
+                    <span className={styles.feedbackRow}>
                       <input
                         type="text"
                         value={ex8TextGaps['3'] || ''}
@@ -1002,24 +1060,27 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                         disabled={readOnly}
                         placeholder="..."
                         className={`${styles.gapInput} ${
-                          v?.status === 'correct'
-                            ? styles.inputValid
-                            : v?.status === 'incorrect'
-                            ? styles.inputInvalid
+                          v?.hasKey
+                            ? (v.isCorrect ? styles.inputValid : styles.inputInvalid)
                             : ''
-                        }`}
+                        } ${isChanged ? styles.diffHighlight : ''}`}
                       />
-                      {v && <TeacherAnswerBadge result={v} />}
-                    </>
+                      {v && (v.isCorrect ? (
+                        <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                      ) : (
+                        <TeacherAnswerBadge result={v} />
+                      ))}
+                    </span>
                   );
                 })()}{' '}
                 a train station and <span className={styles.gapIndex}>4</span>
                 {(() => {
+                  const isChanged = origEx8TextGaps && origEx8TextGaps['4'] !== undefined && origEx8TextGaps['4'] !== (ex8TextGaps['4'] || '');
                   const v = isReview
                     ? verifyAnswer(ex8TextGaps['4'] || '', ex8TextKeys?.['4'])
                     : null;
                   return (
-                    <>
+                    <span className={styles.feedbackRow}>
                       <input
                         type="text"
                         value={ex8TextGaps['4'] || ''}
@@ -1027,24 +1088,27 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                         disabled={readOnly}
                         placeholder="..."
                         className={`${styles.gapInput} ${
-                          v?.status === 'correct'
-                            ? styles.inputValid
-                            : v?.status === 'incorrect'
-                            ? styles.inputInvalid
+                          v?.hasKey
+                            ? (v.isCorrect ? styles.inputValid : styles.inputInvalid)
                             : ''
-                        }`}
+                        } ${isChanged ? styles.diffHighlight : ''}`}
                       />
-                      {v && <TeacherAnswerBadge result={v} />}
-                    </>
+                      {v && (v.isCorrect ? (
+                        <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                      ) : (
+                        <TeacherAnswerBadge result={v} />
+                      ))}
+                    </span>
                   );
                 })()}{' '}
                 are two bookshops. There <span className={styles.gapIndex}>5</span>
                 {(() => {
+                  const isChanged = origEx8TextGaps && origEx8TextGaps['5'] !== undefined && origEx8TextGaps['5'] !== (ex8TextGaps['5'] || '');
                   const v = isReview
                     ? verifyAnswer(ex8TextGaps['5'] || '', ex8TextKeys?.['5'])
                     : null;
                   return (
-                    <>
+                    <span className={styles.feedbackRow}>
                       <input
                         type="text"
                         value={ex8TextGaps['5'] || ''}
@@ -1052,24 +1116,27 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                         disabled={readOnly}
                         placeholder="..."
                         className={`${styles.gapInput} ${
-                          v?.status === 'correct'
-                            ? styles.inputValid
-                            : v?.status === 'incorrect'
-                            ? styles.inputInvalid
+                          v?.hasKey
+                            ? (v.isCorrect ? styles.inputValid : styles.inputInvalid)
                             : ''
-                        }`}
+                        } ${isChanged ? styles.diffHighlight : ''}`}
                       />
-                      {v && <TeacherAnswerBadge result={v} />}
-                    </>
+                      {v && (v.isCorrect ? (
+                        <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                      ) : (
+                        <TeacherAnswerBadge result={v} />
+                      ))}
+                    </span>
                   );
                 })()}{' '}
                 no cinemas, no hotels and <span className={styles.gapIndex}>6</span>
                 {(() => {
+                  const isChanged = origEx8TextGaps && origEx8TextGaps['6'] !== undefined && origEx8TextGaps['6'] !== (ex8TextGaps['6'] || '');
                   const v = isReview
                     ? verifyAnswer(ex8TextGaps['6'] || '', ex8TextKeys?.['6'])
                     : null;
                   return (
-                    <>
+                    <span className={styles.feedbackRow}>
                       <input
                         type="text"
                         value={ex8TextGaps['6'] || ''}
@@ -1077,16 +1144,18 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                         disabled={readOnly}
                         placeholder="..."
                         className={`${styles.gapInput} ${
-                          v?.status === 'correct'
-                            ? styles.inputValid
-                            : v?.status === 'incorrect'
-                            ? styles.inputInvalid
+                          v?.hasKey
+                            ? (v.isCorrect ? styles.inputValid : styles.inputInvalid)
                             : ''
-                        }`}
+                        } ${isChanged ? styles.diffHighlight : ''}`}
                         style={{ minWidth: '40px' }}
                       />
-                      {v && <TeacherAnswerBadge result={v} />}
-                    </>
+                      {v && (v.isCorrect ? (
+                        <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                      ) : (
+                        <TeacherAnswerBadge result={v} />
+                      ))}
+                    </span>
                   );
                 })()}{' '}
                 banks, but I love my town!
@@ -1118,7 +1187,11 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                       onChange={(e) => onEx9SentencesChange?.(num, e.target.value)}
                       disabled={readOnly}
                       placeholder={`Sentence ${num}...`}
-                      className={styles.underlinedInput}
+                      className={`${styles.underlinedInput} ${
+                        origEx9Sentences && origEx9Sentences[num] !== undefined && origEx9Sentences[num] !== (ex9Sentences[num] || '')
+                          ? styles.diffHighlight
+                          : ''
+                      }`}
                     />
                   </div>
                 ))}
@@ -1163,6 +1236,7 @@ export default function Lesson3AContent(props: Lesson3AContentProps) {
                 disabled={readOnly}
                 placeholder="Differences found (e.g. 1. Student A has 2 cafés, Student B has 3 cafés...)..."
                 rows={3}
+                className={origEx11SpeakingNotes !== undefined && origEx11SpeakingNotes !== ex11SpeakingNotes ? styles.diffHighlight : ''}
                 style={{
                   width: '100%',
                   border: '1px solid #cbd5e1',

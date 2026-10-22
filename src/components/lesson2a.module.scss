@@ -1,133 +1,194 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
 .pageContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
+  @include flex-column;
+  gap: $spacing-xl;
   font-family: inherit;
-  color: #222222;
+  color: $color-gray-800;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Common Textbook Page */
-.textbookPage {
-  max-width: 900px;
+.textbookPage,
+.textbookPage15 {
+  max-width: 960px;
   margin: 0 auto;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  width: 100%;
+  background: $color-white;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-base;
+  border: 1px solid $color-gray-200;
   position: relative;
   overflow: hidden;
-  padding-bottom: 2.5rem;
+  padding-bottom: $spacing-2xl;
 }
 
-/* ================= PAGE 14 ================= */
+/* ========================================================================= */
+/* ================= PAGE 14: 2A FAMILIES (VOCABULARY) ===================== */
+/* ========================================================================= */
 .headerBanner14 {
   position: relative;
-  height: 126px;
+  min-height: 80px;
   width: 100%;
   overflow: hidden;
-  background: linear-gradient(90deg, #f1f5f9 0%, #f8fafc 50%, #d4e1e9 100%);
+  background: linear-gradient(90deg, $color-gray-50 0%, $color-gray-100 50%, #d4e1e9 100%);
   display: flex;
   align-items: center;
   user-select: none;
+  padding: $spacing-sm $spacing-md;
+  border-bottom: 1px solid $color-gray-200;
+
+  @include respond-to(md) {
+    height: 126px;
+    padding: 0;
+  }
 }
 
 .chevronWrap2A {
   position: relative;
   height: 100%;
-  width: 190px;
-  flex-shrink: 0;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+  width: 120px;
+
+  @include respond-to(md) {
+    width: 190px;
+  }
 }
 
 .chevronRed2A {
   position: absolute;
   inset: 0;
-  background-color: #d32027;
+  background-color: $color-danger-dark;
   clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0 100%);
 }
 
 .badgeContent2A {
   position: relative;
   z-index: 10;
-  padding-left: 2rem;
+  padding-left: $spacing-md;
   display: flex;
   align-items: baseline;
   line-height: 1;
 
+  @include respond-to(md) {
+    padding-left: $spacing-xl;
+  }
+
   .num2 {
-    color: #ffffff;
-    font-weight: 800;
-    font-size: 52px;
+    color: $color-white;
+    font-weight: $font-weight-bold;
+    font-size: clamp(32px, 6vw, 52px);
     letter-spacing: -0.03em;
   }
 
   .letterA {
-    color: #fca5a5;
-    font-weight: 800;
-    font-size: 38px;
+    color: $color-danger-light;
+    font-weight: $font-weight-bold;
+    font-size: clamp(24px, 4.5vw, 38px);
     margin-left: 3px;
   }
 }
 
 .titleHeading14 {
-  font-family: 'Merriweather Sans', sans-serif;
+  font-family: $font-family-heading;
   color: #214354;
-  font-size: 34px;
-  font-weight: 800;
-  margin-left: 1rem;
+  font-size: clamp(1.4rem, 5vw, 2.1rem);
+  font-weight: $font-weight-bold;
+  margin-left: $spacing-md;
   letter-spacing: -0.02em;
+  margin-bottom: 0;
 }
 
+/* Top Section: Goals + 2x2 Photos */
 .topGrid14 {
-  padding: 1rem 2rem 0.5rem 2rem;
+  padding: $spacing-md;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: $spacing-lg;
 
-  @media (min-width: 768px) {
+  @include respond-to(md) {
     grid-template-columns: 1fr 1fr;
+    padding: $spacing-lg $spacing-xl $spacing-sm;
+  }
+}
+
+.topInfoCol {
+  @include flex-column;
+  gap: $spacing-md;
+}
+
+.sectionHeading {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: #214354;
+  margin: 0 0 $spacing-xs 0;
+}
+
+.exerciseInstruction {
+  display: flex;
+  align-items: baseline;
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-800;
+  line-height: $line-height-normal;
+
+  .exNum {
+    color: $color-danger-dark;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-base;
+  }
+
+  .exSub {
+    color: $color-danger-dark;
+    font-weight: $font-weight-bold;
   }
 }
 
 .goalsBox14 {
   background: #d95e52;
-  color: #ffffff;
-  padding: 0.75rem 1rem;
-  border-radius: 4px;
-  font-size: 13px;
-  line-height: 1.45;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  color: $color-white;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+  @include flex-column;
+  gap: $spacing-xs;
+  box-shadow: $shadow-sm;
 
   p {
     margin: 0;
   }
 
   strong {
-    font-weight: 700;
+    font-weight: $font-weight-bold;
   }
 }
 
 .photoGrid14 {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
-  background-color: #ffffff;
-  padding: 4px;
-  border-radius: 4px;
+  gap: $spacing-sm;
+  background-color: $color-white;
+  padding: $spacing-xs;
+  border-radius: $border-radius-md;
 
   .photoCard {
-    display: flex;
-    flex-direction: column;
+    @include flex-column;
+    box-shadow: $shadow-sm;
+    border-radius: $border-radius-md;
+    overflow: hidden;
 
     .photoFrame {
-      height: 105px;
+      height: clamp(95px, 20vw, 125px);
       position: relative;
-      background: #e2e8f0;
+      background: $color-gray-200;
       overflow: hidden;
-      border-radius: 4px 4px 0 0;
 
       img {
         width: 100%;
@@ -139,59 +200,106 @@
     .photoLabel {
       background: #d2bed6;
       text-align: center;
-      font-size: 11px;
-      font-weight: 600;
-      color: #222222;
-      padding: 2px 0;
-      border-radius: 0 0 4px 4px;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-semibold;
+      color: $color-gray-900;
+      padding: 3px 0;
     }
   }
 }
 
-/* Family Tree */
+/* ================= Family Tree (Exercise 1) ================= */
+.treeWrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: $spacing-xs $spacing-sm;
+
+  @include respond-to(md) {
+    padding: $spacing-xs $spacing-lg;
+  }
+}
+
 .treeContainer {
   background: #cde3f0;
-  margin: 1rem 2rem;
-  padding: 1.25rem 1rem;
-  border-radius: 6px;
+  padding: $spacing-md $spacing-sm;
+  border-radius: $border-radius-lg;
   position: relative;
+  min-width: 560px;
+  border: 1px solid #b7d6e7;
+  box-shadow: $shadow-sm;
+
+  @include respond-to(md) {
+    padding: $spacing-lg $spacing-md;
+  }
+}
+
+.treeScrollHint {
+  font-size: $font-size-xs;
+  color: $color-gray-500;
+  text-align: center;
+  margin-bottom: $spacing-xs;
+
+  @include respond-to(md) {
+    display: none;
+  }
 }
 
 .treeRow {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 1.5rem;
+  gap: $spacing-lg;
   position: relative;
   z-index: 10;
 }
 
 .treeMember {
-  display: flex;
-  flex-direction: column;
+  @include flex-column;
   align-items: center;
   text-align: center;
-  width: 140px;
-  font-size: 11.5px;
-  line-height: 1.35;
-  color: #1e293b;
+  width: 130px;
+  font-size: $font-size-xs;
+  line-height: $line-height-normal;
+  color: $color-gray-800;
 
   .avatarSvg {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    border-radius: $border-radius-full;
+    box-shadow: $shadow-sm;
   }
 
   p {
-    margin: 4px 0 0 0;
+    margin: $spacing-xs 0 0 0;
   }
 }
 
-.heartConnector {
-  display: flex;
-  flex-direction: column;
+.treeInputWrap {
+  margin-top: $spacing-xs;
+  @include flex-column;
   align-items: center;
-  margin-top: 1.25rem;
+  width: 100%;
+}
+
+.treeInputRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.treeFeedbackRow {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 3px;
+}
+
+.heartConnector {
+  @include flex-column;
+  align-items: center;
+  margin-top: $spacing-md;
 
   .heartSvg {
     width: 22px;
@@ -201,7 +309,7 @@
   .verticalStem {
     width: 3px;
     height: 26px;
-    background-color: #ffffff;
+    background-color: $color-white;
     margin-top: -3px;
   }
 }
@@ -209,7 +317,7 @@
 .branchBar {
   position: relative;
   height: 16px;
-  margin: -4px auto 8px auto;
+  margin: -4px auto $spacing-sm auto;
 
   .hLine {
     position: absolute;
@@ -217,7 +325,7 @@
     left: 0;
     right: 0;
     height: 3px;
-    background-color: #ffffff;
+    background-color: $color-white;
   }
 
   .leftLeg {
@@ -226,7 +334,7 @@
     left: 0;
     width: 3px;
     height: 16px;
-    background-color: #ffffff;
+    background-color: $color-white;
   }
 
   .rightLeg {
@@ -235,41 +343,74 @@
     right: 0;
     width: 3px;
     height: 16px;
-    background-color: #ffffff;
+    background-color: $color-white;
   }
 }
 
+.gen2Grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $spacing-md;
+  margin-top: $spacing-xs;
+}
+
+.gen2Couple {
+  @include flex-column;
+  align-items: center;
+}
+
+/* Bottom Section: Ex 2a (Table) & Ex 3 (Sentences) */
 .bottomGrid14 {
-  padding: 0.5rem 2rem;
+  padding: $spacing-sm $spacing-md;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
+  gap: $spacing-lg;
   align-items: start;
 
-  @media (min-width: 768px) {
+  @include respond-to(md) {
     grid-template-columns: 1fr 1fr;
+    padding: $spacing-md $spacing-xl;
   }
 }
 
-/* Vocabulary Table */
+.pronounceRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: $spacing-xs;
+  margin-bottom: $spacing-sm;
+  align-items: center;
+}
+
+.pronounceLabel {
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  color: $color-gray-600;
+}
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 .vocabTable {
   width: 100%;
   border-collapse: collapse;
   background-color: #efc5b5;
-  font-size: 11.5px;
-  color: #1e293b;
-  border: 1px solid #ffffff;
+  font-size: $font-size-xs;
+  color: $color-gray-800;
+  border: 1px solid $color-white;
 
   th {
     background-color: #e7b29f;
     padding: 6px 8px;
-    border: 1px solid #ffffff;
+    border: 1px solid $color-white;
     text-align: center;
   }
 
   td {
-    padding: 5px 8px;
-    border: 1px solid #ffffff;
+    padding: 6px 8px;
+    border: 1px solid $color-white;
     vertical-align: middle;
   }
 
@@ -278,93 +419,182 @@
   }
 }
 
-/* ================= PAGE 15 ================= */
-.textbookPage15 {
-  max-width: 900px;
-  margin: 0 auto;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
-  position: relative;
-  overflow: hidden;
-  padding-bottom: 2.5rem;
+.sentencesList {
+  padding-left: 1.25rem;
+  margin: 0;
+  @include flex-column;
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+
+  li {
+    line-height: 1.6;
+    color: $color-gray-800;
+  }
 }
 
-.rightEdgeTab15 {
-  position: absolute;
-  top: 40px;
-  right: 0;
-  height: 140px;
+.sentenceItem {
+  @include flex-column;
+  gap: 3px;
+  background: $color-gray-50;
+  padding: 6px 10px;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+}
+
+.sentenceTextRow {
   display: flex;
-  align-items: stretch;
-  z-index: 20;
-  user-select: none;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
 
-  .tabText {
-    writing-mode: vertical-rl;
-    font-size: 11px;
-    color: #64748b;
-    padding: 4px;
-    font-weight: 500;
+/* ========================================================================= */
+/* ================= PAGE 15: 2A FAMILIES (LISTENING & GRAMMAR) ============ */
+/* ========================================================================= */
+.rightEdgeTab15 {
+  display: none;
 
-    strong {
-      color: #d32027;
-      margin-left: 2px;
+  @include respond-to(lg) {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    height: 140px;
+    display: flex;
+    align-items: stretch;
+    z-index: 20;
+    user-select: none;
+
+    .tabText {
+      writing-mode: vertical-rl;
+      font-size: $font-size-xs;
+      color: $color-gray-500;
+      padding: 4px;
+      font-weight: $font-weight-medium;
+
+      strong {
+        color: $color-danger-dark;
+        margin-left: 2px;
+      }
     }
-  }
 
-  .tabStripes {
-    width: 10px;
-    background-image: repeating-linear-gradient(
-      -45deg,
-      #d32027,
-      #d32027 3px,
-      #ffffff 3px,
-      #ffffff 6px
-    );
+    .tabStripes {
+      width: 10px;
+      background-image: repeating-linear-gradient(
+        -45deg,
+        $color-danger-dark,
+        $color-danger-dark 3px,
+        $color-white 3px,
+        $color-white 6px
+      );
+    }
   }
 }
 
 .grid15 {
-  padding: 2rem 2.5rem 1rem 2rem;
+  padding: $spacing-md;
   display: grid;
   grid-template-columns: 1fr;
-  gap: 2rem;
+  gap: $spacing-xl;
   align-items: start;
 
-  @media (min-width: 768px) {
+  @include respond-to(lg) {
     grid-template-columns: 1fr 1fr;
+    padding: $spacing-xl $spacing-2xl $spacing-md $spacing-xl;
   }
 }
 
 .leftCol15,
 .rightCol15 {
+  @include flex-column;
+  gap: $spacing-lg;
+  font-size: $font-size-sm;
+  line-height: $line-height-normal;
+  min-width: 0;
+}
+
+.listeningPhotosGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: $spacing-sm;
+  margin: $spacing-sm 0;
+}
+
+.listeningPhotoCard {
+  position: relative;
+  height: clamp(85px, 18vw, 110px);
+  background: $color-gray-200;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .photoBadge {
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    background: #78b7cd;
+    color: $color-white;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    padding: 1px 6px;
+    border-radius: $border-radius-sm;
+  }
+}
+
+.speakerMatchRow {
   display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  font-size: 12.5px;
-  line-height: 1.45;
+  gap: $spacing-sm;
+  flex-wrap: wrap;
+  font-size: $font-size-xs;
+  margin-bottom: $spacing-sm;
+}
+
+.speakerMatchItem {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  background: $color-gray-50;
+  padding: 4px 8px;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+}
+
+.listeningSentencesList {
+  padding-left: 1.25rem;
+  margin: 0;
+  @include flex-column;
+  gap: $spacing-md;
+  font-size: $font-size-sm;
+
+  li {
+    line-height: 1.8;
+    color: $color-gray-800;
+  }
 }
 
 /* Grammar Box */
 .grammarBox15 {
   background-color: #dce3e8;
-  padding: 12px 14px;
-  border-radius: 4px;
+  padding: $spacing-md;
+  border-radius: $border-radius-md;
   position: relative;
 
   h4 {
     color: #214354;
-    font-weight: 700;
-    font-size: 13px;
-    margin: 4px 0;
+    font-weight: $font-weight-bold;
+    font-size: $font-size-sm;
+    margin: $spacing-xs 0;
   }
 
   p {
-    font-size: 11.5px;
-    color: #334155;
-    margin: 2px 0;
+    font-size: $font-size-xs;
+    color: $color-gray-700;
+    margin: 3px 0;
   }
 }
 
@@ -372,84 +602,85 @@
   width: 100%;
   border-collapse: collapse;
   background-color: #cbd4dc;
-  font-size: 11.5px;
-  margin-top: 6px;
+  font-size: $font-size-xs;
+  margin-top: $spacing-xs;
 
   th {
     background-color: #b2bec8;
-    padding: 4px 8px;
+    padding: 6px 10px;
     text-align: left;
-    border: 1px solid #ffffff;
-    font-weight: 700;
+    border: 1px solid $color-white;
+    font-weight: $font-weight-bold;
   }
 
   td {
-    padding: 4px 8px;
-    border: 1px solid #ffffff;
+    padding: 6px 10px;
+    border: 1px solid $color-white;
+    vertical-align: middle;
   }
 }
 
-/* Pronunciation Exercise 6 */
+/* Pronunciation Box (Ex 6) */
 .pronunciationBox {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 10px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 6px;
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-md;
+  padding: $spacing-sm;
+  @include flex-column;
+  gap: $spacing-sm;
+  margin-top: $spacing-xs;
 
   .pronPairCard {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    padding: 8px 10px;
+    background: $color-white;
+    border: 1px solid $color-gray-300;
+    border-radius: $border-radius-md;
+    padding: $spacing-sm $spacing-md;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 12px;
+    gap: $spacing-md;
     flex-wrap: wrap;
 
     .sentences {
-      display: flex;
-      flex-direction: column;
+      @include flex-column;
       gap: 3px;
-      font-size: 12.5px;
-      color: #334155;
+      font-size: $font-size-sm;
+      color: $color-gray-700;
 
       .targetWord {
-        color: #0284c7;
-        font-weight: 700;
+        color: $color-primary-dark;
+        font-weight: $font-weight-bold;
       }
     }
 
     .choiceGroup {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: $spacing-xs;
+      flex-wrap: wrap;
 
       .choiceBtn {
-        border: 1px solid #cbd5e1;
-        background: #f8fafc;
-        color: #475569;
-        font-weight: 700;
-        font-size: 11.5px;
-        padding: 4px 10px;
-        border-radius: 4px;
+        border: 1.5px solid $color-gray-300;
+        background: $color-gray-50;
+        color: $color-gray-700;
+        font-weight: $font-weight-bold;
+        font-size: $font-size-xs;
+        padding: 6px 12px;
+        border-radius: $border-radius-md;
         cursor: pointer;
-        transition: all 0.15s ease;
+        min-height: 36px;
+        transition: all $transition-fast;
 
         &:hover:not(:disabled) {
-          border-color: #0284c7;
-          background: #f0f9ff;
-          color: #0284c7;
+          border-color: $color-primary;
+          background: $color-primary-50;
+          color: $color-primary-dark;
         }
 
         &.active {
-          background: #0284c7;
-          border-color: #0284c7;
-          color: #ffffff;
+          background: $color-primary;
+          border-color: $color-primary-dark;
+          color: $color-white;
         }
 
         &:disabled {
@@ -461,98 +692,155 @@
   }
 }
 
-/* Dialogue with Selectable Alternatives */
+/* Dialogue (Ex 7) */
 .dialogue15 {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  font-size: 12px;
-  line-height: 1.5;
+  @include flex-column;
+  gap: $spacing-sm;
+  font-size: $font-size-sm;
+  line-height: 1.7;
+  background: $color-gray-50;
+  padding: $spacing-md;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-gray-200;
 
   .dialogueRow {
-    display: grid;
-    grid-template-columns: 70px 1fr;
-    gap: 8px;
-    align-items: baseline;
+    @include flex-column;
+    gap: 4px;
+    padding-bottom: $spacing-xs;
+    border-bottom: 1px dashed $color-gray-200;
+
+    &:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .speakerRow {
+      display: flex;
+      align-items: baseline;
+      gap: $spacing-xs;
+      flex-wrap: wrap;
+    }
 
     .speaker {
-      font-weight: 700;
+      font-weight: $font-weight-bold;
       color: #214354;
-    }
-  }
-
-  .altSelect {
-    border: 1px solid #94a3b8;
-    border-radius: 4px;
-    padding: 1px 4px;
-    font-size: 11.5px;
-    font-weight: 600;
-    color: #0369a1;
-    background: #f8fafc;
-    cursor: pointer;
-
-    &:focus {
-      outline: none;
-      border-color: #0284c7;
+      min-width: 65px;
+      flex-shrink: 0;
     }
   }
 }
 
+.dialoguePhotoWrap {
+  position: relative;
+  height: clamp(140px, 28vw, 180px);
+  background: $color-gray-200;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  margin-bottom: $spacing-sm;
+  box-shadow: $shadow-sm;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+/* Styled Select */
+.styledSelect {
+  border: 1.5px solid $color-gray-400;
+  border-radius: $border-radius-md;
+  padding: 3px 6px;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-primary-dark;
+  background: $color-white;
+  cursor: pointer;
+  min-height: 32px;
+  transition: border-color $transition-fast;
+
+  @include respond-to-max(md) {
+    font-size: 16px;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+
+  &:disabled {
+    cursor: default;
+    background: $color-gray-100;
+  }
+}
+
+/* Speaking Section */
 .speakingSection {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
+  @include flex-column;
+  gap: $spacing-md;
 
   .ribbonTag {
     background-color: #d95e52;
-    color: #ffffff;
-    font-size: 11px;
-    font-weight: 800;
+    color: $color-white;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
     letter-spacing: 0.05em;
-    padding: 2px 10px;
+    padding: 3px 12px;
     display: inline-block;
     width: fit-content;
     clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%, 6% 50%);
+    margin-bottom: $spacing-xs;
   }
 
   .notesArea {
     width: 100%;
-    min-height: 70px;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    padding: 6px 8px;
-    font-size: 12px;
+    min-height: 80px;
+    border: 1.5px solid $color-gray-300;
+    border-radius: $border-radius-md;
+    padding: $spacing-sm;
+    font-size: $font-size-sm;
     font-family: inherit;
     resize: vertical;
+    transition: border-color $transition-fast;
+
+    @include respond-to-max(md) {
+      font-size: 16px;
+    }
 
     &:focus {
       outline: none;
-      border-color: #0284c7;
+      border-color: $color-primary;
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
     }
   }
 }
 
+/* Audio Button */
 .audioBtn {
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  padding: 2px 7px;
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #d32027;
+  background: $color-gray-100;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  padding: 3px 8px;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  color: $color-danger-dark;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  transition: all 0.15s ease;
+  min-height: 32px;
+  transition: all $transition-fast;
+  flex-shrink: 0;
 
   &:hover {
     background: #fee2e2;
+    border-color: $color-danger;
   }
 
   &.playing {
     background: #fee2e2;
-    border-color: #ef4444;
+    border-color: $color-danger;
     color: #b91c1c;
     box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
   }
@@ -563,57 +851,54 @@
   }
 }
 
-.audioBarWrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: wrap;
-  padding: 6px 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #475569;
-}
-
 .diamondIcon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 14px;
   height: 14px;
-  background-color: #d32027;
+  background-color: $color-danger-dark;
   transform: rotate(45deg);
   border-radius: 1px;
+  flex-shrink: 0;
 
   svg {
     transform: rotate(-45deg);
     width: 8px;
     height: 8px;
-    fill: #ffffff;
+    fill: $color-white;
   }
 }
 
-/* Inputs */
+/* Text Input Line */
 .textInputLine {
   border: none;
-  border-bottom: 1.5px solid #64748b;
+  border-bottom: 1.5px solid $color-gray-500;
   background: transparent;
-  padding: 1px 4px;
-  font-size: 12.5px;
+  padding: 2px 4px;
+  font-size: $font-size-sm;
   outline: none;
-  transition: border-color 0.15s ease;
-  color: #0284c7;
-  font-weight: 600;
+  transition: border-color $transition-fast;
+  color: $color-primary-dark;
+  font-weight: $font-weight-semibold;
+  min-height: 28px;
+
+  @include respond-to-max(md) {
+    font-size: 16px;
+  }
 
   &:focus {
-    border-bottom-color: #0284c7;
-    background-color: rgba(2, 132, 199, 0.04);
+    border-bottom-color: $color-primary-dark;
+    background-color: rgba(59, 130, 246, 0.05);
   }
 
   &:disabled {
-    cursor: not-allowed;
+    cursor: default;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  &::placeholder {
+    color: $color-gray-400;
   }
 }
 
@@ -621,7 +906,7 @@
 .pagePin {
   width: 32px;
   height: 32px;
-  background: #d32027;
+  background: $color-danger-dark;
   border-radius: 50% 50% 50% 0;
   transform: rotate(-45deg);
   display: flex;
@@ -641,37 +926,90 @@
   .pinInner {
     width: 22px;
     height: 22px;
-    background: #ffffff;
-    border-radius: 50%;
+    background: $color-white;
+    border-radius: $border-radius-full;
     transform: rotate(45deg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 11px;
-    font-weight: 800;
-    color: #334155;
+    @include flex-center;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-bold;
+    color: $color-gray-700;
   }
 }
 
+/* ========================================================================= */
+/* ================= VALIDATION, BADGES & DIFF HIGHLIGHTS ================== */
+/* ========================================================================= */
+.feedbackRow {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin-top: 3px;
+}
+
+.sentenceFeedbackList {
+  @include flex-column;
+  gap: 3px;
+  padding-top: 3px;
+  border-top: 1px dashed $color-gray-200;
+}
+
+.teacherBadge {
+  margin-left: 0 !important;
+  display: inline-flex !important;
+  flex-wrap: wrap !important;
+  max-width: 100% !important;
+  word-break: break-word !important;
+  padding: 2px 7px !important;
+  font-size: 0.75rem !important;
+  line-height: 1.3 !important;
+  border-radius: $border-radius-md !important;
+}
+
+.correctBadge {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.diffHighlight {
+  border-color: $color-warning !important;
+  background-color: #fef3c7 !important;
+}
+
 .inputValid {
-  border-color: #10b981 !important;
+  border-color: $color-secondary !important;
   background-color: #f0fdf4 !important;
 }
 
 .inputInvalid {
-  border-color: #ef4444 !important;
+  border-color: $color-danger !important;
   background-color: #fef2f2 !important;
 }
 
 .choiceValid {
-  border-color: #10b981 !important;
+  border-color: $color-secondary !important;
   background-color: #dcfce7 !important;
   color: #15803d !important;
-  font-weight: 600;
+  font-weight: $font-weight-bold;
 }
 
 .choiceInvalid {
-  border-color: #ef4444 !important;
+  border-color: $color-danger !important;
   background-color: #fee2e2 !important;
   color: #b91c1c !important;
+  font-weight: $font-weight-bold;
+}
+
+.diffHighlight.inputValid,
+.diffHighlight.choiceValid {
+  border-color: $color-secondary !important;
+  background-color: #f0fdf4 !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.4) !important;
+}
+
+.diffHighlight.inputInvalid,
+.diffHighlight.choiceInvalid {
+  border-color: $color-danger !important;
+  background-color: #fef2f2 !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.4) !important;
 }

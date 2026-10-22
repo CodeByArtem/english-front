@@ -3,12 +3,15 @@
   flex-direction: column;
   gap: 1.5rem;
   font-family: inherit;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 .headerSection {
   background: linear-gradient(135deg, #dc2626 0%, #ef4444 50%, #e11d48 100%);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: clamp(1rem, 3vw, 1.5rem);
   color: white;
   display: flex;
   flex-direction: column;
@@ -31,10 +34,11 @@
   background: white;
   color: #dc2626;
   font-weight: 800;
-  font-size: 1.75rem;
-  padding: 0.5rem 1rem;
+  font-size: clamp(1.4rem, 3vw, 1.75rem);
+  padding: 0.4rem 0.85rem;
   border-radius: 8px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  flex-shrink: 0;
 
   span {
     color: #f43f5e;
@@ -42,7 +46,7 @@
 }
 
 .lessonTitle {
-  font-size: 1.85rem;
+  font-size: clamp(1.4rem, 4vw, 1.85rem);
   font-weight: 800;
   margin: 0;
   line-height: 1.2;
@@ -64,6 +68,12 @@
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    width: auto;
+    max-width: 320px;
+  }
 
   p {
     margin: 0;
@@ -77,7 +87,7 @@
   background: white;
   border-radius: 12px;
   border: 1px solid #e2e8f0;
-  padding: 1.5rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
@@ -113,25 +123,30 @@
   justify-content: center;
   font-size: 0.85rem;
   font-weight: 800;
+  flex-shrink: 0;
 }
 
 .sectionSubtext {
   font-size: 0.85rem;
   color: #64748b;
   margin: 0.35rem 0 0 2.25rem;
+
+  @media (max-width: 480px) {
+    margin: 0.35rem 0 0 0;
+  }
 }
 
 /* World Map Grid for 6 Profiles */
 .worldMapGrid {
   background-color: #e0f2fe;
-  background-image: radial-gradient(#bae6fd 1.5px, transparent 1.5px);
+  background-image: radial-gradient(#7dd3fc 1.5px, transparent 1.5px);
   background-size: 24px 24px;
   border-radius: 12px;
-  border: 2px dashed #7dd3fc;
-  padding: 1.25rem;
+  border: 2px dashed #38bdf8;
+  padding: clamp(0.75rem, 2vw, 1.25rem);
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.25rem;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
 
   @media (min-width: 640px) {
     grid-template-columns: repeat(2, 1fr);
@@ -150,10 +165,12 @@
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease;
+  min-width: 0;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   &:hover {
     transform: translateY(-2px);
+    box-shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.1);
   }
 }
 
@@ -189,10 +206,11 @@
   padding: 0.2rem 0.5rem;
   border-radius: 4px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 2;
 }
 
 .profileContent {
-  padding: 1rem;
+  padding: 0.85rem 1rem;
   background: #fffbeb;
   flex: 1;
   display: flex;
@@ -200,6 +218,7 @@
   gap: 0.35rem;
   font-size: 0.85rem;
   color: #334155;
+  min-width: 0;
 
   p {
     margin: 0;
@@ -210,45 +229,123 @@
   font-size: 0.95rem;
   font-weight: 700;
   color: #1e293b;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px dashed #fde68a;
+}
+
+.profileInfoLine {
+  font-size: 0.85rem;
+  color: #334155;
+  line-height: 1.45;
 }
 
 .jobField {
   display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.jobInputRow {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-top: 0.25rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.jobLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  color: #1e293b;
+  flex-shrink: 0;
+  cursor: pointer;
 }
 
 .jobBadgeNum {
   background: #fde68a;
   color: #92400e;
   font-weight: 800;
-  padding: 0.1rem 0.35rem;
-  border-radius: 3px;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
   font-size: 0.75rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.jobInputWrapper {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 0;
 }
 
 .jobInput {
   flex: 1;
+  min-width: 0;
+  height: 38px;
   background: white;
-  border: 1px solid #fcd34d;
-  border-radius: 4px;
-  padding: 0.3rem 0.5rem;
-  font-size: 0.85rem;
+  border: 1.5px solid #fcd34d;
+  border-radius: 6px;
+  padding: 0.35rem 0.65rem;
+  font-size: 0.875rem;
+  color: #0f172a;
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+
   &:focus {
     border-color: #d97706;
-    box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
   }
 
   &:disabled {
     background: #f8fafc;
-    color: #475569;
+    color: #334155;
     cursor: default;
+    opacity: 1;
+    -webkit-text-fill-color: currentColor;
   }
+
+  &::placeholder {
+    color: #94a3b8;
+    font-size: 0.8rem;
+  }
+}
+
+.jobCorrectBadge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.jobFeedbackRow {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding-left: 0.1rem;
+}
+
+.jobTeacherBadge {
+  margin-left: 0 !important;
+  display: inline-flex !important;
+  flex-wrap: wrap !important;
+  max-width: 100% !important;
+  word-break: break-word !important;
+  padding: 3px 8px !important;
+  font-size: 0.75rem !important;
+  line-height: 1.3 !important;
+  border-radius: 5px !important;
 }
 
 /* Two-column layout for Vocabulary / Reading */
@@ -257,7 +354,7 @@
   grid-template-columns: 1fr;
   gap: 1.5rem;
 
-  @media (min-width: 768px) {
+  @media (min-width: 992px) {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -266,32 +363,67 @@
 .vocabBox {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .vocabTitle {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   font-weight: 700;
   color: #334155;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
 }
 
 .vocabGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.4rem;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+
+  @media (min-width: 480px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.vocabItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.65rem;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  min-width: 0;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+
+  &:hover {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+  }
+}
+
+.vocabLabelGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.vocabKey {
+  color: #dc2626;
+  font-weight: 800;
+  font-size: 0.85rem;
+  width: 1.2rem;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.vocabLabel {
   font-size: 0.85rem;
   color: #1e293b;
-
-  div {
-    span {
-      color: #dc2626;
-      font-weight: 700;
-      margin-right: 0.3rem;
-    }
-  }
+  font-weight: 500;
+  white-space: nowrap;
 }
 
 /* Audio Row */
@@ -299,13 +431,19 @@
   background: #f0f9ff;
   border: 1px solid #bae6fd;
   border-radius: 8px;
-  padding: 0.85rem 1rem;
+  padding: 0.75rem 1rem;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0.75rem;
   margin-bottom: 1rem;
   transition: all 0.25s ease;
+
+  @media (min-width: 520px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
 }
 
 .audioRowActive {
@@ -401,18 +539,30 @@
     margin: 0 0 0.5rem 0;
     color: #6b21a8;
     font-size: 0.9rem;
+    font-weight: 700;
   }
 
   .stressList {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.3rem;
+    grid-template-columns: 1fr;
+    gap: 0.35rem 0.5rem;
     color: #4c1d95;
-    font-size: 0.8rem;
+    font-size: 0.82rem;
 
-    span strong {
-      text-decoration: underline;
-      color: #7e22ce;
+    @media (min-width: 420px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    span {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+
+      strong {
+        text-decoration: underline;
+        color: #7e22ce;
+        font-weight: 700;
+      }
     }
   }
 }
@@ -425,9 +575,10 @@
   padding: 1rem;
 
   h4 {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.65rem 0;
     font-size: 0.9rem;
     color: #92400e;
+    font-weight: 700;
   }
 }
 
@@ -436,9 +587,12 @@
   border: 1px solid #fef3c7;
   border-radius: 6px;
   padding: 0.75rem 1rem;
-  font-family: monospace;
+  font-family: inherit;
   font-size: 0.85rem;
-  line-height: 1.6;
+  line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 
   p {
     margin: 0;
@@ -447,67 +601,260 @@
   .speakerA {
     color: #dc2626;
     font-weight: 700;
+    margin-right: 0.35rem;
   }
 
   .speakerB {
     color: #1e293b;
     font-weight: 700;
+    margin-right: 0.35rem;
   }
+}
+
+.instructionText {
+  font-size: 0.85rem;
+  color: #475569;
+  margin-bottom: 0.75rem;
+}
+
+/* Matching Exercise 3 */
+.matchingContainer {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.matchingBank {
+  background: white;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+
+  @media (min-width: 540px) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 0.75rem;
+  }
+}
+
+.matchingBankTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #475569;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  flex-shrink: 0;
+}
+
+.matchingBankTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.matchingBankTag {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  padding: 0.25rem 0.65rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+
+  strong {
+    color: #059669;
+    font-weight: 800;
+  }
+}
+
+.matchingList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.matchingCard {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: #cbd5e1;
+  }
+}
+
+.matchingRowMain {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.matchingPersonName {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #1e293b;
+  flex-shrink: 0;
+}
+
+.matchingSelectWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex: 1;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.matchingSelect {
+  background: white;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  outline: none;
+  cursor: pointer;
+  height: 38px;
+  max-width: 180px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  @media (max-width: 768px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 480px) {
+    max-width: 155px;
+    padding: 0.35rem 0.5rem;
+  }
+
+  &:focus {
+    border-color: #059669;
+    box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
+  }
+
+  &:disabled {
+    background: #f1f5f9;
+    cursor: default;
+    color: #334155;
+    opacity: 1;
+    -webkit-text-fill-color: currentColor;
+  }
+}
+
+.matchingCorrectBadge {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.matchingFeedbackRow {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  padding-top: 0.25rem;
+  border-top: 1px dashed #fee2e2;
+}
+
+.matchingTeacherBadge {
+  margin-left: 0 !important;
+  display: inline-flex !important;
+  flex-wrap: wrap !important;
+  max-width: 100% !important;
+  word-break: break-word !important;
+  padding: 3px 8px !important;
+  font-size: 0.75rem !important;
+  line-height: 1.3 !important;
+  border-radius: 5px !important;
 }
 
 /* Green Cross Hospital Reading Section */
 .hospitalCard {
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #059669;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  margin-top: 1rem;
+  border: 1px solid #10b981;
+  box-shadow: 0 2px 8px -2px rgba(16, 185, 129, 0.15);
+  margin-top: 1.25rem;
 }
 
 .hospitalHeader {
   background: #059669;
   color: white;
-  padding: 0.65rem 1rem;
+  padding: 0.75rem 1rem;
   font-weight: 700;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
+.hospitalHeaderIcon {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
 .hospitalSubHeader {
   background: #ecfdf5;
   color: #065f46;
-  padding: 0.35rem 1rem;
-  font-size: 0.75rem;
+  padding: 0.45rem 1rem;
+  font-size: 0.8rem;
   font-weight: 700;
   border-bottom: 1px solid #a7f3d0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .hospitalBody {
   background: white;
   padding: 1rem;
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: #334155;
-  line-height: 1.5;
+  line-height: 1.55;
 
   p {
-    margin: 0 0 0.5rem 0;
+    margin: 0 0 0.75rem 0;
   }
 
   ul {
     list-style: none;
     padding: 0;
-    margin: 0.5rem 0 0 0;
+    margin: 0.75rem 0 0 0;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.65rem;
 
     li {
       background: #f8fafc;
-      padding: 0.5rem 0.75rem;
-      border-radius: 4px;
+      padding: 0.65rem 0.85rem;
+      border-radius: 6px;
       border-left: 3px solid #10b981;
+      font-size: 0.85rem;
+      line-height: 1.45;
+
+      strong {
+        color: #0f172a;
+        font-size: 0.9rem;
+      }
     }
   }
 }
@@ -515,84 +862,29 @@
 .staffSectionTitle {
   background: #d1fae5;
   color: #064e3b;
-  padding: 0.25rem 0.5rem;
+  padding: 0.25rem 0.6rem;
   border-radius: 4px;
   font-weight: 700;
   font-size: 0.8rem;
   display: inline-block;
-}
-
-/* Matching Exercise 3 */
-.matchingContainer {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1rem;
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1rem;
-
-  @media (min-width: 640px) {
-    grid-template-columns: 1.2fr 1fr;
-  }
-}
-
-.matchingQuestions {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.matchingRow {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 0.9rem;
-  color: #1e293b;
-  font-weight: 500;
-}
-
-.matchingSelect {
-  background: white;
-  border: 1px solid #cbd5e1;
-  border-radius: 4px;
-  padding: 0.3rem 0.6rem;
-  font-size: 0.85rem;
-  font-weight: 700;
-  outline: none;
-  cursor: pointer;
-
-  &:focus {
-    border-color: #059669;
-  }
-
-  &:disabled {
-    background: #f1f5f9;
-    cursor: default;
-  }
-}
-
-.matchingOptions {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  padding: 0.75rem;
-  font-size: 0.85rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-
-  p {
-    margin: 0;
-    strong {
-      color: #059669;
-    }
-  }
+  margin-top: 0.25rem;
 }
 
 .diffHighlight {
-  border: 2px solid #f59e0b !important;
+  border-color: #f59e0b !important;
   background-color: #fef3c7 !important;
+}
+
+.diffHighlight.inputValid {
+  border-color: #16a34a !important;
+  background-color: #f0fdf4 !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.4) !important;
+}
+
+.diffHighlight.inputInvalid {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.4) !important;
 }
 
 /* Page 9 Section Styles */

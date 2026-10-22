@@ -137,7 +137,10 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
     onAudioBlobChange,
     submissionId,
     submittedAudios,
+    originalAnswers,
   } = props;
+
+  const isReview = Boolean(isTeacherReview || (answerKey && readOnly));
 
   const ex1bKey = getExerciseKey(answerKey, 'exercise_1b_vocab');
   const ex3Key = getExerciseKey(answerKey, 'exercise_3_photos');
@@ -146,6 +149,15 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
   const ex6Key = getExerciseKey(answerKey, 'exercise_6_grammar');
   const ex7aKey = getExerciseKey(answerKey, 'exercise_7a_choice');
   const ex8Key = getExerciseKey(answerKey, 'exercise_8_conversations');
+
+  const origEx1b = originalAnswers?.exercise_1b_vocab as Record<string, string> | undefined;
+  const origEx3 = originalAnswers?.exercise_3_photos as Record<string, string> | undefined;
+  const origEx5a = originalAnswers?.exercise_5a_picture as Record<string, string> | undefined;
+  const origEx5b = originalAnswers?.exercise_5b_dialogue as Record<string, string> | undefined;
+  const origEx6 = originalAnswers?.exercise_6_grammar as Record<string, string> | undefined;
+  const origEx7a = originalAnswers?.exercise_7a_choice as Record<string, string> | undefined;
+  const origEx8 = originalAnswers?.exercise_8_conversations as Record<string, string> | undefined;
+  const origRoomObjects = typeof originalAnswers?.exercise_room_objects === 'string' ? originalAnswers.exercise_room_objects : undefined;
 
   const [hoveredMarker, setHoveredMarker] = useState<string | null>(null);
   const [zoomedImage, setZoomedImage] = useState<{ src: string; title: string } | null>(null);
@@ -348,17 +360,20 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                 <div className={styles.matchingGrid}>
                   {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((num) => {
                     const val = ex1bVocab[String(num)] || '';
-                    const vRes = isTeacherReview ? verifyAnswer(val, ex1bKey?.[String(num)]) : null;
+                    const origVal = origEx1b?.[String(num)];
+                    const isChanged = origVal !== undefined && origVal !== val;
+                    const vRes = isReview ? verifyAnswer(val, ex1bKey?.[String(num)]) : null;
                     const valClass =
                       vRes?.status === 'correct'
                         ? styles.inputValid
                         : vRes?.status === 'incorrect'
                         ? styles.inputInvalid
                         : '';
+                    const diffClass = isChanged ? styles.diffHighlight : '';
                     return (
                       <div
                         key={num}
-                        className={styles.matchingItem}
+                        className={`${styles.matchingItem} ${diffClass}`}
                         onMouseEnter={() => setHoveredMarker(String(num))}
                         onMouseLeave={() => setHoveredMarker(null)}
                       >
@@ -377,7 +392,18 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                             </option>
                           ))}
                         </select>
-                        {isTeacherReview && <TeacherAnswerBadge result={vRes} />}
+                        {vRes?.status === 'correct' && (
+                          <span className={styles.correctBadge} title="Correct answer">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </span>
+                        )}
+                        {isReview && vRes?.status === 'incorrect' && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={vRes} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -431,22 +457,25 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
               <div className={styles.thumbnailsGrid}>
                 {THUMBNAIL_PHOTOS.map((photo) => {
                   const val = ex3Photos[String(photo.num)] || '';
-                  const vRes = isTeacherReview ? verifyAnswer(val, ex3Key?.[String(photo.num)]) : null;
+                  const origVal = origEx3?.[String(photo.num)];
+                  const isChanged = origVal !== undefined && origVal !== val;
+                  const vRes = isReview ? verifyAnswer(val, ex3Key?.[String(photo.num)]) : null;
                   const valClass =
                     vRes?.status === 'correct'
                       ? styles.inputValid
                       : vRes?.status === 'incorrect'
                       ? styles.inputInvalid
                       : '';
+                  const diffClass = isChanged ? styles.diffHighlight : '';
                   return (
-                    <div key={photo.num} className={styles.thumbCard}>
+                    <div key={photo.num} className={`${styles.thumbCard} ${diffClass}`}>
                       <div className={styles.thumbImgFrame}>
                         <span className={styles.thumbBadge}>{photo.num}</span>
                         <Image
                           src={photo.url}
                           alt={photo.alt}
                           fill
-                          sizes="(max-width: 768px) 25vw, 120px"
+                          sizes="(max-width: 768px) 50vw, 120px"
                           style={{ objectFit: 'cover' }}
                           unoptimized
                         />
@@ -469,7 +498,18 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                           <option value="box">box</option>
                           <option value="phone">phone</option>
                         </select>
-                        {isTeacherReview && <TeacherAnswerBadge result={vRes} />}
+                        {vRes?.status === 'correct' && (
+                          <span className={styles.correctBadge} title="Correct answer">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </span>
+                        )}
+                        {isReview && vRes?.status === 'incorrect' && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={vRes} />
+                          </div>
+                        )}
                       </div>
                     </div>
                   );
@@ -491,7 +531,7 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                   onChange={(e) => onExRoomObjectsChange(e.target.value)}
                   disabled={readOnly}
                   placeholder="Type objects in your room (e.g. It's a desk. It's a phone)..."
-                  className={styles.roomInput}
+                  className={`${styles.roomInput} ${origRoomObjects !== undefined && origRoomObjects !== exRoomObjects ? styles.diffHighlight : ''}`}
                   aria-label="Names of things in your room"
                 />
               </div>
@@ -740,11 +780,15 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
             <div className={styles.ex5aChoices}>
               {(() => {
                 const val = ex5aPicture.choice || '';
-                const vRes = isTeacherReview ? verifyAnswer(val, ex5aKey?.choice) : null;
+                const origVal = origEx5a?.choice;
+                const isChanged = origVal !== undefined && origVal !== val;
+                const vRes = isReview ? verifyAnswer(val, ex5aKey?.choice) : null;
                 const getClass = (choiceOpt: string) => {
-                  if (!isTeacherReview) return '';
+                  if (!isReview) return '';
                   if (val === choiceOpt) {
-                    return vRes?.status === 'correct' ? styles.choiceValid : styles.choiceInvalid;
+                    const statusClass = vRes?.status === 'correct' ? styles.choiceValid : styles.choiceInvalid;
+                    const diff = isChanged ? styles.diffHighlight : '';
+                    return `${statusClass} ${diff}`.trim();
                   }
                   return '';
                 };
@@ -772,7 +816,18 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                       />
                       <span>Picture B</span>
                     </label>
-                    {isTeacherReview && <TeacherAnswerBadge result={vRes} />}
+                    {vRes?.status === 'correct' && (
+                      <span className={styles.correctBadge} title="Correct answer">
+                        <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                        </svg>
+                      </span>
+                    )}
+                    {isReview && vRes?.status === 'incorrect' && (
+                      <div className={styles.feedbackRow}>
+                        <TeacherAnswerBadge result={vRes} />
+                      </div>
+                    )}
                   </>
                 );
               })()}
@@ -815,31 +870,44 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
             <div className={styles.dialogueRow}>
               <div className={styles.speakerMax}>Max:</div>
               <div className={styles.speechText}>
-                <span>Welcome to the company. This is our office. And this is your</span>
-                <span className={styles.gapInline}>
-                  <span className={styles.gapNum}>1</span>
-                  <input
-                    type="text"
-                    value={ex5bDialogue['1'] || ''}
-                    onChange={(e) => onEx5bDialogueChange('1', e.target.value)}
-                    disabled={readOnly}
-                    placeholder="________"
-                    className={`${styles.gapInput} ${
-                      isTeacherReview
-                        ? verifyAnswer(ex5bDialogue['1'], ex5bKey?.['1']).status === 'correct'
-                          ? styles.inputValid
-                          : verifyAnswer(ex5bDialogue['1'], ex5bKey?.['1']).status === 'incorrect'
-                          ? styles.inputInvalid
-                          : ''
-                        : ''
-                    }`}
-                    aria-label="Gap 1"
-                  />
-                  {isTeacherReview && (
-                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['1'], ex5bKey?.['1'])} />
-                  )}
-                </span>
-                <span>.</span>
+                {(() => {
+                  const val = ex5bDialogue['1'] || '';
+                  const origVal = origEx5b?.['1'];
+                  const isChanged = origVal !== undefined && origVal !== val;
+                  const vRes = isReview ? verifyAnswer(val, ex5bKey?.['1']) : null;
+                  const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                  const diffClass = isChanged ? styles.diffHighlight : '';
+                  return (
+                    <>
+                      <span>Welcome to the company. This is our office. And this is your</span>
+                      <span className={styles.gapInline}>
+                        <span className={styles.gapNum}>1</span>
+                        <input
+                          type="text"
+                          value={val}
+                          onChange={(e) => onEx5bDialogueChange('1', e.target.value)}
+                          disabled={readOnly}
+                          placeholder="________"
+                          className={`${styles.gapInput} ${valClass} ${diffClass}`}
+                          aria-label="Gap 1"
+                        />
+                        {vRes?.status === 'correct' && (
+                          <span className={styles.correctBadge} title="Correct answer">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </span>
+                        )}
+                      </span>
+                      <span>.</span>
+                      {isReview && vRes?.status === 'incorrect' && (
+                        <div className={styles.feedbackRow}>
+                          <TeacherAnswerBadge result={vRes} />
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -853,31 +921,44 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
             <div className={styles.dialogueRow}>
               <div className={styles.speakerMax}>Max:</div>
               <div className={styles.speechText}>
-                <span>These are your</span>
-                <span className={styles.gapInline}>
-                  <span className={styles.gapNum}>2</span>
-                  <input
-                    type="text"
-                    value={ex5bDialogue['2'] || ''}
-                    onChange={(e) => onEx5bDialogueChange('2', e.target.value)}
-                    disabled={readOnly}
-                    placeholder="________"
-                    className={`${styles.gapInput} ${
-                      isTeacherReview
-                        ? verifyAnswer(ex5bDialogue['2'], ex5bKey?.['2']).status === 'correct'
-                          ? styles.inputValid
-                          : verifyAnswer(ex5bDialogue['2'], ex5bKey?.['2']).status === 'incorrect'
-                          ? styles.inputInvalid
-                          : ''
-                        : ''
-                    }`}
-                    aria-label="Gap 2"
-                  />
-                  {isTeacherReview && (
-                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['2'], ex5bKey?.['2'])} />
-                  )}
-                </span>
-                <span>for the office.</span>
+                {(() => {
+                  const val = ex5bDialogue['2'] || '';
+                  const origVal = origEx5b?.['2'];
+                  const isChanged = origVal !== undefined && origVal !== val;
+                  const vRes = isReview ? verifyAnswer(val, ex5bKey?.['2']) : null;
+                  const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                  const diffClass = isChanged ? styles.diffHighlight : '';
+                  return (
+                    <>
+                      <span>These are your</span>
+                      <span className={styles.gapInline}>
+                        <span className={styles.gapNum}>2</span>
+                        <input
+                          type="text"
+                          value={val}
+                          onChange={(e) => onEx5bDialogueChange('2', e.target.value)}
+                          disabled={readOnly}
+                          placeholder="________"
+                          className={`${styles.gapInput} ${valClass} ${diffClass}`}
+                          aria-label="Gap 2"
+                        />
+                        {vRes?.status === 'correct' && (
+                          <span className={styles.correctBadge} title="Correct answer">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </span>
+                        )}
+                      </span>
+                      <span>for the office.</span>
+                      {isReview && vRes?.status === 'incorrect' && (
+                        <div className={styles.feedbackRow}>
+                          <TeacherAnswerBadge result={vRes} />
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -891,31 +972,44 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
             <div className={styles.dialogueRow}>
               <div className={styles.speakerMax}>Max:</div>
               <div className={styles.speechText}>
-                <span>This is your</span>
-                <span className={styles.gapInline}>
-                  <span className={styles.gapNum}>3</span>
-                  <input
-                    type="text"
-                    value={ex5bDialogue['3'] || ''}
-                    onChange={(e) => onEx5bDialogueChange('3', e.target.value)}
-                    disabled={readOnly}
-                    placeholder="________"
-                    className={`${styles.gapInput} ${
-                      isTeacherReview
-                        ? verifyAnswer(ex5bDialogue['3'], ex5bKey?.['3']).status === 'correct'
-                          ? styles.inputValid
-                          : verifyAnswer(ex5bDialogue['3'], ex5bKey?.['3']).status === 'incorrect'
-                          ? styles.inputInvalid
-                          : ''
-                        : ''
-                    }`}
-                    aria-label="Gap 3"
-                  />
-                  {isTeacherReview && (
-                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['3'], ex5bKey?.['3'])} />
-                  )}
-                </span>
-                <span>and this is the password.</span>
+                {(() => {
+                  const val = ex5bDialogue['3'] || '';
+                  const origVal = origEx5b?.['3'];
+                  const isChanged = origVal !== undefined && origVal !== val;
+                  const vRes = isReview ? verifyAnswer(val, ex5bKey?.['3']) : null;
+                  const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                  const diffClass = isChanged ? styles.diffHighlight : '';
+                  return (
+                    <>
+                      <span>This is your</span>
+                      <span className={styles.gapInline}>
+                        <span className={styles.gapNum}>3</span>
+                        <input
+                          type="text"
+                          value={val}
+                          onChange={(e) => onEx5bDialogueChange('3', e.target.value)}
+                          disabled={readOnly}
+                          placeholder="________"
+                          className={`${styles.gapInput} ${valClass} ${diffClass}`}
+                          aria-label="Gap 3"
+                        />
+                        {vRes?.status === 'correct' && (
+                          <span className={styles.correctBadge} title="Correct answer">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </span>
+                        )}
+                      </span>
+                      <span>and this is the password.</span>
+                      {isReview && vRes?.status === 'incorrect' && (
+                        <div className={styles.feedbackRow}>
+                          <TeacherAnswerBadge result={vRes} />
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -929,31 +1023,44 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
             <div className={styles.dialogueRow}>
               <div className={styles.speakerMax}>Max:</div>
               <div className={styles.speechText}>
-                <span>And that is my</span>
-                <span className={styles.gapInline}>
-                  <span className={styles.gapNum}>4</span>
-                  <input
-                    type="text"
-                    value={ex5bDialogue['4'] || ''}
-                    onChange={(e) => onEx5bDialogueChange('4', e.target.value)}
-                    disabled={readOnly}
-                    placeholder="________"
-                    className={`${styles.gapInput} ${
-                      isTeacherReview
-                        ? verifyAnswer(ex5bDialogue['4'], ex5bKey?.['4']).status === 'correct'
-                          ? styles.inputValid
-                          : verifyAnswer(ex5bDialogue['4'], ex5bKey?.['4']).status === 'incorrect'
-                          ? styles.inputInvalid
-                          : ''
-                        : ''
-                    }`}
-                    aria-label="Gap 4"
-                  />
-                  {isTeacherReview && (
-                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['4'], ex5bKey?.['4'])} />
-                  )}
-                </span>
-                <span>. Please ask me for help.</span>
+                {(() => {
+                  const val = ex5bDialogue['4'] || '';
+                  const origVal = origEx5b?.['4'];
+                  const isChanged = origVal !== undefined && origVal !== val;
+                  const vRes = isReview ? verifyAnswer(val, ex5bKey?.['4']) : null;
+                  const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                  const diffClass = isChanged ? styles.diffHighlight : '';
+                  return (
+                    <>
+                      <span>And that is my</span>
+                      <span className={styles.gapInline}>
+                        <span className={styles.gapNum}>4</span>
+                        <input
+                          type="text"
+                          value={val}
+                          onChange={(e) => onEx5bDialogueChange('4', e.target.value)}
+                          disabled={readOnly}
+                          placeholder="________"
+                          className={`${styles.gapInput} ${valClass} ${diffClass}`}
+                          aria-label="Gap 4"
+                        />
+                        {vRes?.status === 'correct' && (
+                          <span className={styles.correctBadge} title="Correct answer">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </span>
+                        )}
+                      </span>
+                      <span>. Please ask me for help.</span>
+                      {isReview && vRes?.status === 'incorrect' && (
+                        <div className={styles.feedbackRow}>
+                          <TeacherAnswerBadge result={vRes} />
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -961,31 +1068,44 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
             <div className={styles.dialogueRow}>
               <div className={styles.speakerCarla}>Carla:</div>
               <div className={styles.speechText}>
-                <span>Thank you. Are those</span>
-                <span className={styles.gapInline}>
-                  <span className={styles.gapNum}>5</span>
-                  <input
-                    type="text"
-                    value={ex5bDialogue['5'] || ''}
-                    onChange={(e) => onEx5bDialogueChange('5', e.target.value)}
-                    disabled={readOnly}
-                    placeholder="________"
-                    className={`${styles.gapInput} ${
-                      isTeacherReview
-                        ? verifyAnswer(ex5bDialogue['5'], ex5bKey?.['5']).status === 'correct'
-                          ? styles.inputValid
-                          : verifyAnswer(ex5bDialogue['5'], ex5bKey?.['5']).status === 'incorrect'
-                          ? styles.inputInvalid
-                          : ''
-                        : ''
-                    }`}
-                    aria-label="Gap 5"
-                  />
-                  {isTeacherReview && (
-                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['5'], ex5bKey?.['5'])} />
-                  )}
-                </span>
-                <span>of your family?</span>
+                {(() => {
+                  const val = ex5bDialogue['5'] || '';
+                  const origVal = origEx5b?.['5'];
+                  const isChanged = origVal !== undefined && origVal !== val;
+                  const vRes = isReview ? verifyAnswer(val, ex5bKey?.['5']) : null;
+                  const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                  const diffClass = isChanged ? styles.diffHighlight : '';
+                  return (
+                    <>
+                      <span>Thank you. Are those</span>
+                      <span className={styles.gapInline}>
+                        <span className={styles.gapNum}>5</span>
+                        <input
+                          type="text"
+                          value={val}
+                          onChange={(e) => onEx5bDialogueChange('5', e.target.value)}
+                          disabled={readOnly}
+                          placeholder="________"
+                          className={`${styles.gapInput} ${valClass} ${diffClass}`}
+                          aria-label="Gap 5"
+                        />
+                        {vRes?.status === 'correct' && (
+                          <span className={styles.correctBadge} title="Correct answer">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </span>
+                        )}
+                      </span>
+                      <span>of your family?</span>
+                      {isReview && vRes?.status === 'incorrect' && (
+                        <div className={styles.feedbackRow}>
+                          <TeacherAnswerBadge result={vRes} />
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -1011,31 +1131,44 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
             <div className={styles.dialogueRow}>
               <div className={styles.speakerCarla}>Carla:</div>
               <div className={styles.speechText}>
-                <span>Yes, where&apos;s my</span>
-                <span className={styles.gapInline}>
-                  <span className={styles.gapNum}>6</span>
-                  <input
-                    type="text"
-                    value={ex5bDialogue['6'] || ''}
-                    onChange={(e) => onEx5bDialogueChange('6', e.target.value)}
-                    disabled={readOnly}
-                    placeholder="________"
-                    className={`${styles.gapInput} ${
-                      isTeacherReview
-                        ? verifyAnswer(ex5bDialogue['6'], ex5bKey?.['6']).status === 'correct'
-                          ? styles.inputValid
-                          : verifyAnswer(ex5bDialogue['6'], ex5bKey?.['6']).status === 'incorrect'
-                          ? styles.inputInvalid
-                          : ''
-                        : ''
-                    }`}
-                    aria-label="Gap 6"
-                  />
-                  {isTeacherReview && (
-                    <TeacherAnswerBadge result={verifyAnswer(ex5bDialogue['6'], ex5bKey?.['6'])} />
-                  )}
-                </span>
-                <span>?</span>
+                {(() => {
+                  const val = ex5bDialogue['6'] || '';
+                  const origVal = origEx5b?.['6'];
+                  const isChanged = origVal !== undefined && origVal !== val;
+                  const vRes = isReview ? verifyAnswer(val, ex5bKey?.['6']) : null;
+                  const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                  const diffClass = isChanged ? styles.diffHighlight : '';
+                  return (
+                    <>
+                      <span>Yes, where&apos;s my</span>
+                      <span className={styles.gapInline}>
+                        <span className={styles.gapNum}>6</span>
+                        <input
+                          type="text"
+                          value={val}
+                          onChange={(e) => onEx5bDialogueChange('6', e.target.value)}
+                          disabled={readOnly}
+                          placeholder="________"
+                          className={`${styles.gapInput} ${valClass} ${diffClass}`}
+                          aria-label="Gap 6"
+                        />
+                        {vRes?.status === 'correct' && (
+                          <span className={styles.correctBadge} title="Correct answer">
+                            <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                            </svg>
+                          </span>
+                        )}
+                      </span>
+                      <span>?</span>
+                      {isReview && vRes?.status === 'incorrect' && (
+                        <div className={styles.feedbackRow}>
+                          <TeacherAnswerBadge result={vRes} />
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
               </div>
             </div>
 
@@ -1318,160 +1451,212 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
 
                 <div className={styles.handsGrid17}>
                   {/* Item 1: key1.png */}
-                  <div className={styles.handCard17}>
-                    <div className={styles.handMediaWrap}>
-                      <div className={styles.keyThumbBox}>
-                        <Image
-                          src="/images/lesson2b/key1.png"
-                          alt="hand pointing close to key"
-                          width={76}
-                          height={48}
-                          unoptimized
-                        />
+                  {(() => {
+                    const val = ex6Grammar['1'] || '';
+                    const origVal = origEx6?.['1'];
+                    const isChanged = origVal !== undefined && origVal !== val;
+                    const vRes = isReview ? verifyAnswer(val, ex6Key?.['1']) : null;
+                    const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                    const diffClass = isChanged ? styles.diffHighlight : '';
+                    return (
+                      <div className={styles.handCard17}>
+                        <div className={styles.handMediaWrap}>
+                          <div className={styles.keyThumbBox}>
+                            <Image
+                              src="/images/lesson2b/key1.png"
+                              alt="hand pointing close to key"
+                              width={76}
+                              height={48}
+                              unoptimized
+                            />
+                          </div>
+                          <span className={styles.cardNumber}>1</span>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
+                          <div className={styles.handInputWrap}>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onEx6GrammarChange('1', e.target.value)}
+                              disabled={readOnly}
+                              className={`${styles.inputBlank} ${valClass} ${diffClass}`}
+                              placeholder="..."
+                              aria-label="Grammar phrase 1"
+                            />
+                            <span>key</span>
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <span className={styles.cardNumber}>1</span>
-                    </div>
-                    <div className={styles.handInputWrap}>
-                      <input
-                        type="text"
-                        value={ex6Grammar['1'] || ''}
-                        onChange={(e) => onEx6GrammarChange('1', e.target.value)}
-                        disabled={readOnly}
-                        className={`${styles.inputBlank} ${
-                          isTeacherReview
-                            ? verifyAnswer(ex6Grammar['1'], ex6Key?.['1']).status === 'correct'
-                              ? styles.inputValid
-                              : verifyAnswer(ex6Grammar['1'], ex6Key?.['1']).status === 'incorrect'
-                              ? styles.inputInvalid
-                              : ''
-                            : ''
-                        }`}
-                        placeholder="..."
-                        aria-label="Grammar phrase 1"
-                      />
-                      <span>key</span>
-                      {isTeacherReview && (
-                        <TeacherAnswerBadge result={verifyAnswer(ex6Grammar['1'], ex6Key?.['1'])} />
-                      )}
-                    </div>
-                  </div>
+                    );
+                  })()}
 
                   {/* Item 2: key2.png */}
-                  <div className={styles.handCard17}>
-                    <div className={styles.handMediaWrap}>
-                      <div className={styles.keyThumbBox}>
-                        <Image
-                          src="/images/lesson2b/key2.png"
-                          alt="hand pointing far to key"
-                          width={76}
-                          height={48}
-                          unoptimized
-                        />
+                  {(() => {
+                    const val = ex6Grammar['2'] || '';
+                    const origVal = origEx6?.['2'];
+                    const isChanged = origVal !== undefined && origVal !== val;
+                    const vRes = isReview ? verifyAnswer(val, ex6Key?.['2']) : null;
+                    const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                    const diffClass = isChanged ? styles.diffHighlight : '';
+                    return (
+                      <div className={styles.handCard17}>
+                        <div className={styles.handMediaWrap}>
+                          <div className={styles.keyThumbBox}>
+                            <Image
+                              src="/images/lesson2b/key2.png"
+                              alt="hand pointing far to key"
+                              width={76}
+                              height={48}
+                              unoptimized
+                            />
+                          </div>
+                          <span className={styles.cardNumber}>2</span>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
+                          <div className={styles.handInputWrap}>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onEx6GrammarChange('2', e.target.value)}
+                              disabled={readOnly}
+                              className={`${styles.inputBlank} ${valClass} ${diffClass}`}
+                              placeholder="..."
+                              aria-label="Grammar phrase 2"
+                            />
+                            <span>key</span>
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <span className={styles.cardNumber}>2</span>
-                    </div>
-                    <div className={styles.handInputWrap}>
-                      <input
-                        type="text"
-                        value={ex6Grammar['2'] || ''}
-                        onChange={(e) => onEx6GrammarChange('2', e.target.value)}
-                        disabled={readOnly}
-                        className={`${styles.inputBlank} ${
-                          isTeacherReview
-                            ? verifyAnswer(ex6Grammar['2'], ex6Key?.['2']).status === 'correct'
-                              ? styles.inputValid
-                              : verifyAnswer(ex6Grammar['2'], ex6Key?.['2']).status === 'incorrect'
-                              ? styles.inputInvalid
-                              : ''
-                            : ''
-                        }`}
-                        placeholder="..."
-                        aria-label="Grammar phrase 2"
-                      />
-                      <span>key</span>
-                      {isTeacherReview && (
-                        <TeacherAnswerBadge result={verifyAnswer(ex6Grammar['2'], ex6Key?.['2'])} />
-                      )}
-                    </div>
-                  </div>
+                    );
+                  })()}
 
                   {/* Item 3: key3.png */}
-                  <div className={styles.handCard17}>
-                    <div className={styles.handMediaWrap}>
-                      <div className={styles.keyThumbBox}>
-                        <Image
-                          src="/images/lesson2b/key3.png"
-                          alt="hand pointing close to keys"
-                          width={76}
-                          height={48}
-                          unoptimized
-                        />
+                  {(() => {
+                    const val = ex6Grammar['3'] || '';
+                    const origVal = origEx6?.['3'];
+                    const isChanged = origVal !== undefined && origVal !== val;
+                    const vRes = isReview ? verifyAnswer(val, ex6Key?.['3']) : null;
+                    const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                    const diffClass = isChanged ? styles.diffHighlight : '';
+                    return (
+                      <div className={styles.handCard17}>
+                        <div className={styles.handMediaWrap}>
+                          <div className={styles.keyThumbBox}>
+                            <Image
+                              src="/images/lesson2b/key3.png"
+                              alt="hand pointing close to keys"
+                              width={76}
+                              height={48}
+                              unoptimized
+                            />
+                          </div>
+                          <span className={styles.cardNumber}>3</span>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
+                          <div className={styles.handInputWrap}>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onEx6GrammarChange('3', e.target.value)}
+                              disabled={readOnly}
+                              className={`${styles.inputBlank} ${valClass} ${diffClass}`}
+                              placeholder="..."
+                              aria-label="Grammar phrase 3"
+                            />
+                            <span>keys</span>
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <span className={styles.cardNumber}>3</span>
-                    </div>
-                    <div className={styles.handInputWrap}>
-                      <input
-                        type="text"
-                        value={ex6Grammar['3'] || ''}
-                        onChange={(e) => onEx6GrammarChange('3', e.target.value)}
-                        disabled={readOnly}
-                        className={`${styles.inputBlank} ${
-                          isTeacherReview
-                            ? verifyAnswer(ex6Grammar['3'], ex6Key?.['3']).status === 'correct'
-                              ? styles.inputValid
-                              : verifyAnswer(ex6Grammar['3'], ex6Key?.['3']).status === 'incorrect'
-                              ? styles.inputInvalid
-                              : ''
-                            : ''
-                        }`}
-                        placeholder="..."
-                        aria-label="Grammar phrase 3"
-                      />
-                      <span>keys</span>
-                      {isTeacherReview && (
-                        <TeacherAnswerBadge result={verifyAnswer(ex6Grammar['3'], ex6Key?.['3'])} />
-                      )}
-                    </div>
-                  </div>
+                    );
+                  })()}
 
                   {/* Item 4: key4.png */}
-                  <div className={styles.handCard17}>
-                    <div className={styles.handMediaWrap}>
-                      <div className={styles.keyThumbBox}>
-                        <Image
-                          src="/images/lesson2b/key4.png"
-                          alt="hand pointing far to keys"
-                          width={76}
-                          height={48}
-                          unoptimized
-                        />
+                  {(() => {
+                    const val = ex6Grammar['4'] || '';
+                    const origVal = origEx6?.['4'];
+                    const isChanged = origVal !== undefined && origVal !== val;
+                    const vRes = isReview ? verifyAnswer(val, ex6Key?.['4']) : null;
+                    const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                    const diffClass = isChanged ? styles.diffHighlight : '';
+                    return (
+                      <div className={styles.handCard17}>
+                        <div className={styles.handMediaWrap}>
+                          <div className={styles.keyThumbBox}>
+                            <Image
+                              src="/images/lesson2b/key4.png"
+                              alt="hand pointing far to keys"
+                              width={76}
+                              height={48}
+                              unoptimized
+                            />
+                          </div>
+                          <span className={styles.cardNumber}>4</span>
+                        </div>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '3px' }}>
+                          <div className={styles.handInputWrap}>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onEx6GrammarChange('4', e.target.value)}
+                              disabled={readOnly}
+                              className={`${styles.inputBlank} ${valClass} ${diffClass}`}
+                              placeholder="..."
+                              aria-label="Grammar phrase 4"
+                            />
+                            <span>keys</span>
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                          </div>
+                          {isReview && vRes?.status === 'incorrect' && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={vRes} />
+                            </div>
+                          )}
+                        </div>
                       </div>
-                      <span className={styles.cardNumber}>4</span>
-                    </div>
-                    <div className={styles.handInputWrap}>
-                      <input
-                        type="text"
-                        value={ex6Grammar['4'] || ''}
-                        onChange={(e) => onEx6GrammarChange('4', e.target.value)}
-                        disabled={readOnly}
-                        className={`${styles.inputBlank} ${
-                          isTeacherReview
-                            ? verifyAnswer(ex6Grammar['4'], ex6Key?.['4']).status === 'correct'
-                              ? styles.inputValid
-                              : verifyAnswer(ex6Grammar['4'], ex6Key?.['4']).status === 'incorrect'
-                              ? styles.inputInvalid
-                              : ''
-                            : ''
-                        }`}
-                        placeholder="..."
-                        aria-label="Grammar phrase 4"
-                      />
-                      <span>keys</span>
-                      {isTeacherReview && (
-                        <TeacherAnswerBadge result={verifyAnswer(ex6Grammar['4'], ex6Key?.['4'])} />
-                      )}
-                    </div>
-                  </div>
+                    );
+                  })()}
                 </div>
               </div>
             </div>
@@ -1519,11 +1704,15 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                   },
                 ].map(({ id, optA, optB }) => {
                   const val = ex7aChoice[id] || '';
-                  const vRes = isTeacherReview ? verifyAnswer(val, ex7aKey?.[id]) : null;
+                  const origVal = origEx7a?.[id];
+                  const isChanged = origVal !== undefined && origVal !== val;
+                  const vRes = isReview ? verifyAnswer(val, ex7aKey?.[id]) : null;
                   const getClass = (choiceOpt: string) => {
-                    if (!isTeacherReview) return '';
+                    if (!isReview) return '';
                     if (val === choiceOpt) {
-                      return vRes?.status === 'correct' ? styles.choiceValid : styles.choiceInvalid;
+                      const statusClass = vRes?.status === 'correct' ? styles.choiceValid : styles.choiceInvalid;
+                      const diff = isChanged ? styles.diffHighlight : '';
+                      return `${statusClass} ${diff}`.trim();
                     }
                     return '';
                   };
@@ -1552,7 +1741,18 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                         />
                         <span>{optB}</span>
                       </label>
-                      {isTeacherReview && <TeacherAnswerBadge result={vRes} />}
+                      {vRes?.status === 'correct' && (
+                        <span className={styles.correctBadge} title="Correct answer">
+                          <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                          </svg>
+                        </span>
+                      )}
+                      {isReview && vRes?.status === 'incorrect' && (
+                        <div className={styles.feedbackRow}>
+                          <TeacherAnswerBadge result={vRes} />
+                        </div>
+                      )}
                     </div>
                   );
                 })}
@@ -1647,28 +1847,41 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     <span className={styles.dialogSubNum}>1</span>
                     <span className={styles.dialogSpeaker}>Monica:</span>
                     <span className={styles.dialogText}>
-                      Is{' '}
-                      <input
-                        type="text"
-                        value={ex8Conversations['1'] || ''}
-                        onChange={(e) => onEx8ConversationsChange('1', e.target.value)}
-                        disabled={readOnly}
-                        className={`${styles.inputBlank} ${
-                          isTeacherReview
-                            ? verifyAnswer(ex8Conversations['1'], ex8Key?.['1']).status === 'correct'
-                              ? styles.inputValid
-                              : verifyAnswer(ex8Conversations['1'], ex8Key?.['1']).status === 'incorrect'
-                              ? styles.inputInvalid
-                              : ''
-                            : ''
-                        }`}
-                        placeholder="..."
-                        aria-label="Dialog 1 gap"
-                      />{' '}
-                      your cup?
-                      {isTeacherReview && (
-                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['1'], ex8Key?.['1'])} />
-                      )}
+                      {(() => {
+                        const val = ex8Conversations['1'] || '';
+                        const origVal = origEx8?.['1'];
+                        const isChanged = origVal !== undefined && origVal !== val;
+                        const vRes = isReview ? verifyAnswer(val, ex8Key?.['1']) : null;
+                        const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                        const diffClass = isChanged ? styles.diffHighlight : '';
+                        return (
+                          <>
+                            <span>Is{' '}</span>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onEx8ConversationsChange('1', e.target.value)}
+                              disabled={readOnly}
+                              className={`${styles.inputBlank} ${valClass} ${diffClass}`}
+                              placeholder="..."
+                              aria-label="Dialog 1 gap"
+                            />
+                            <span>{' '}your cup?</span>
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                            {isReview && vRes?.status === 'incorrect' && (
+                              <div className={styles.feedbackRow}>
+                                <TeacherAnswerBadge result={vRes} />
+                              </div>
+                            )}
+                          </>
+                        );
+                      })()}
                     </span>
                   </div>
                   <div className={styles.dialogLine} style={{ paddingLeft: '22px' }}>
@@ -1683,28 +1896,41 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     <span className={styles.dialogSubNum}>2</span>
                     <span className={styles.dialogSpeaker}>Raquel:</span>
                     <span className={styles.dialogText}>
-                      Are{' '}
-                      <input
-                        type="text"
-                        value={ex8Conversations['2'] || ''}
-                        onChange={(e) => onEx8ConversationsChange('2', e.target.value)}
-                        disabled={readOnly}
-                        className={`${styles.inputBlank} ${
-                          isTeacherReview
-                            ? verifyAnswer(ex8Conversations['2'], ex8Key?.['2']).status === 'correct'
-                              ? styles.inputValid
-                              : verifyAnswer(ex8Conversations['2'], ex8Key?.['2']).status === 'incorrect'
-                              ? styles.inputInvalid
-                              : ''
-                            : ''
-                        }`}
-                        placeholder="..."
-                        aria-label="Dialog 2 gap"
-                      />{' '}
-                      your books?
-                      {isTeacherReview && (
-                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['2'], ex8Key?.['2'])} />
-                      )}
+                      {(() => {
+                        const val = ex8Conversations['2'] || '';
+                        const origVal = origEx8?.['2'];
+                        const isChanged = origVal !== undefined && origVal !== val;
+                        const vRes = isReview ? verifyAnswer(val, ex8Key?.['2']) : null;
+                        const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                        const diffClass = isChanged ? styles.diffHighlight : '';
+                        return (
+                          <>
+                            <span>Are{' '}</span>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onEx8ConversationsChange('2', e.target.value)}
+                              disabled={readOnly}
+                              className={`${styles.inputBlank} ${valClass} ${diffClass}`}
+                              placeholder="..."
+                              aria-label="Dialog 2 gap"
+                            />
+                            <span>{' '}your books?</span>
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                            {isReview && vRes?.status === 'incorrect' && (
+                              <div className={styles.feedbackRow}>
+                                <TeacherAnswerBadge result={vRes} />
+                              </div>
+                            )}
+                          </>
+                        );
+                      })()}
                     </span>
                   </div>
                   <div className={styles.dialogLine} style={{ paddingLeft: '22px' }}>
@@ -1719,54 +1945,80 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     <span className={styles.dialogSubNum}>3</span>
                     <span className={styles.dialogSpeaker}>Nina:</span>
                     <span className={styles.dialogText}>
-                      What&apos;s in{' '}
-                      <input
-                        type="text"
-                        value={ex8Conversations['3_1'] || ''}
-                        onChange={(e) => onEx8ConversationsChange('3_1', e.target.value)}
-                        disabled={readOnly}
-                        className={`${styles.inputBlank} ${
-                          isTeacherReview
-                            ? verifyAnswer(ex8Conversations['3_1'], ex8Key?.['3_1']).status === 'correct'
-                              ? styles.inputValid
-                              : verifyAnswer(ex8Conversations['3_1'], ex8Key?.['3_1']).status === 'incorrect'
-                              ? styles.inputInvalid
-                              : ''
-                            : ''
-                        }`}
-                        placeholder="..."
-                        aria-label="Dialog 3 gap 1"
-                      />{' '}
-                      box?
-                      {isTeacherReview && (
-                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['3_1'], ex8Key?.['3_1'])} />
-                      )}
+                      {(() => {
+                        const val = ex8Conversations['3_1'] || '';
+                        const origVal = origEx8?.['3_1'];
+                        const isChanged = origVal !== undefined && origVal !== val;
+                        const vRes = isReview ? verifyAnswer(val, ex8Key?.['3_1']) : null;
+                        const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                        const diffClass = isChanged ? styles.diffHighlight : '';
+                        return (
+                          <>
+                            <span>What&apos;s in{' '}</span>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onEx8ConversationsChange('3_1', e.target.value)}
+                              disabled={readOnly}
+                              className={`${styles.inputBlank} ${valClass} ${diffClass}`}
+                              placeholder="..."
+                              aria-label="Dialog 3 gap 1"
+                            />
+                            <span>{' '}box?</span>
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                            {isReview && vRes?.status === 'incorrect' && (
+                              <div className={styles.feedbackRow}>
+                                <TeacherAnswerBadge result={vRes} />
+                              </div>
+                            )}
+                          </>
+                        );
+                      })()}
                     </span>
                   </div>
                   <div className={styles.dialogLine} style={{ paddingLeft: '22px' }}>
                     <span className={styles.dialogSpeaker}>Paula:</span>
                     <span className={styles.dialogText}>
-                      <input
-                        type="text"
-                        value={ex8Conversations['3_2'] || ''}
-                        onChange={(e) => onEx8ConversationsChange('3_2', e.target.value)}
-                        disabled={readOnly}
-                        className={`${styles.inputBlank} ${
-                          isTeacherReview
-                            ? verifyAnswer(ex8Conversations['3_2'], ex8Key?.['3_2']).status === 'correct'
-                              ? styles.inputValid
-                              : verifyAnswer(ex8Conversations['3_2'], ex8Key?.['3_2']).status === 'incorrect'
-                              ? styles.inputInvalid
-                              : ''
-                            : ''
-                        }`}
-                        placeholder="..."
-                        aria-label="Dialog 3 gap 2"
-                      />
-                      &apos;s my new clock.
-                      {isTeacherReview && (
-                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['3_2'], ex8Key?.['3_2'])} />
-                      )}
+                      {(() => {
+                        const val = ex8Conversations['3_2'] || '';
+                        const origVal = origEx8?.['3_2'];
+                        const isChanged = origVal !== undefined && origVal !== val;
+                        const vRes = isReview ? verifyAnswer(val, ex8Key?.['3_2']) : null;
+                        const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                        const diffClass = isChanged ? styles.diffHighlight : '';
+                        return (
+                          <>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onEx8ConversationsChange('3_2', e.target.value)}
+                              disabled={readOnly}
+                              className={`${styles.inputBlank} ${valClass} ${diffClass}`}
+                              placeholder="..."
+                              aria-label="Dialog 3 gap 2"
+                            />
+                            <span>&apos;s my new clock.</span>
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                            {isReview && vRes?.status === 'incorrect' && (
+                              <div className={styles.feedbackRow}>
+                                <TeacherAnswerBadge result={vRes} />
+                              </div>
+                            )}
+                          </>
+                        );
+                      })()}
                     </span>
                   </div>
                 </div>
@@ -1777,55 +2029,81 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                     <span className={styles.dialogSubNum}>4</span>
                     <span className={styles.dialogSpeaker}>Erik:</span>
                     <span className={styles.dialogText}>
-                      Are{' '}
-                      <input
-                        type="text"
-                        value={ex8Conversations['4_1'] || ''}
-                        onChange={(e) => onEx8ConversationsChange('4_1', e.target.value)}
-                        disabled={readOnly}
-                        className={`${styles.inputBlank} ${
-                          isTeacherReview
-                            ? verifyAnswer(ex8Conversations['4_1'], ex8Key?.['4_1']).status === 'correct'
-                              ? styles.inputValid
-                              : verifyAnswer(ex8Conversations['4_1'], ex8Key?.['4_1']).status === 'incorrect'
-                              ? styles.inputInvalid
-                              : ''
-                            : ''
-                        }`}
-                        placeholder="..."
-                        aria-label="Dialog 4 gap 1"
-                      />{' '}
-                      my pens?
-                      {isTeacherReview && (
-                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['4_1'], ex8Key?.['4_1'])} />
-                      )}
+                      {(() => {
+                        const val = ex8Conversations['4_1'] || '';
+                        const origVal = origEx8?.['4_1'];
+                        const isChanged = origVal !== undefined && origVal !== val;
+                        const vRes = isReview ? verifyAnswer(val, ex8Key?.['4_1']) : null;
+                        const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                        const diffClass = isChanged ? styles.diffHighlight : '';
+                        return (
+                          <>
+                            <span>Are{' '}</span>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onEx8ConversationsChange('4_1', e.target.value)}
+                              disabled={readOnly}
+                              className={`${styles.inputBlank} ${valClass} ${diffClass}`}
+                              placeholder="..."
+                              aria-label="Dialog 4 gap 1"
+                            />
+                            <span>{' '}my pens?</span>
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                            {isReview && vRes?.status === 'incorrect' && (
+                              <div className={styles.feedbackRow}>
+                                <TeacherAnswerBadge result={vRes} />
+                              </div>
+                            )}
+                          </>
+                        );
+                      })()}
                     </span>
                   </div>
                   <div className={styles.dialogLine} style={{ paddingLeft: '22px' }}>
                     <span className={styles.dialogSpeaker}>Sara:</span>
                     <span className={styles.dialogText}>
-                      No,{' '}
-                      <input
-                        type="text"
-                        value={ex8Conversations['4_2'] || ''}
-                        onChange={(e) => onEx8ConversationsChange('4_2', e.target.value)}
-                        disabled={readOnly}
-                        className={`${styles.inputBlank} ${
-                          isTeacherReview
-                            ? verifyAnswer(ex8Conversations['4_2'], ex8Key?.['4_2']).status === 'correct'
-                              ? styles.inputValid
-                              : verifyAnswer(ex8Conversations['4_2'], ex8Key?.['4_2']).status === 'incorrect'
-                              ? styles.inputInvalid
-                              : ''
-                            : ''
-                        }`}
-                        placeholder="..."
-                        aria-label="Dialog 4 gap 2"
-                      />{' '}
-                      are Jack&apos;s pens.
-                      {isTeacherReview && (
-                        <TeacherAnswerBadge result={verifyAnswer(ex8Conversations['4_2'], ex8Key?.['4_2'])} />
-                      )}
+                      {(() => {
+                        const val = ex8Conversations['4_2'] || '';
+                        const origVal = origEx8?.['4_2'];
+                        const isChanged = origVal !== undefined && origVal !== val;
+                        const vRes = isReview ? verifyAnswer(val, ex8Key?.['4_2']) : null;
+                        const valClass = vRes?.status === 'correct' ? styles.inputValid : vRes?.status === 'incorrect' ? styles.inputInvalid : '';
+                        const diffClass = isChanged ? styles.diffHighlight : '';
+                        return (
+                          <>
+                            <span>No,{' '}</span>
+                            <input
+                              type="text"
+                              value={val}
+                              onChange={(e) => onEx8ConversationsChange('4_2', e.target.value)}
+                              disabled={readOnly}
+                              className={`${styles.inputBlank} ${valClass} ${diffClass}`}
+                              placeholder="..."
+                              aria-label="Dialog 4 gap 2"
+                            />
+                            <span>{' '}are Jack&apos;s pens.</span>
+                            {vRes?.status === 'correct' && (
+                              <span className={styles.correctBadge} title="Correct answer">
+                                <svg width="14" height="14" viewBox="0 0 20 20" fill="#10b981" aria-hidden="true">
+                                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                                </svg>
+                              </span>
+                            )}
+                            {isReview && vRes?.status === 'incorrect' && (
+                              <div className={styles.feedbackRow}>
+                                <TeacherAnswerBadge result={vRes} />
+                              </div>
+                            )}
+                          </>
+                        );
+                      })()}
                     </span>
                   </div>
                 </div>
@@ -1872,7 +2150,7 @@ export default function Lesson2BContent(props: Lesson2BContentProps) {
                 onChange={(e) => onExRoomObjectsChange(e.target.value)}
                 disabled={readOnly}
                 placeholder="Write your notes or object names here (e.g. whiteboard, marker, plant, light)..."
-                className={styles.notesTextarea17}
+                className={`${styles.notesTextarea17} ${origRoomObjects !== undefined && origRoomObjects !== exRoomObjects ? styles.diffHighlight : ''}`}
                 aria-label="Exercise 9 notes"
               />
             </div>

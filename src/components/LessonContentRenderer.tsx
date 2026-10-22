@@ -129,6 +129,7 @@ export default function LessonContentRenderer({
           }}
           playAudio={playAudio}
           playingAudio={playingAudio}
+          originalAnswers={answers}
         />
       );
     }
@@ -161,6 +162,7 @@ export default function LessonContentRenderer({
           onSpeakingNotesChange={(val: string) => setAnswer('exercise_8b_notes', val)}
           playAudio={playAudio}
           playingAudio={playingAudio}
+          originalAnswers={answers}
         />
       );
     }
@@ -181,6 +183,7 @@ export default function LessonContentRenderer({
           answerKey={answerKey}
           playAudio={playAudio}
           playingAudio={playingAudio}
+          originalAnswers={answers}
           ex1Location={ex1Location}
           ex2Audio={getRecord(answers.exercise_2_audio)}
           ex3aOrder={getRecord(answers.exercise_3a_order)}
@@ -230,6 +233,7 @@ export default function LessonContentRenderer({
           answerKey={answerKey}
           playAudio={playAudio}
           playingAudio={playingAudio}
+          originalAnswers={answers}
           ex1FamilyTree={getRecord(answers.exercise_1_family_tree)}
           ex2aTable={getRecord(answers.exercise_2a_table)}
           ex3Sentences={getRecord(answers.exercise_3_sentences)}
@@ -262,6 +266,7 @@ export default function LessonContentRenderer({
           answerKey={answerKey}
           playAudio={playAudio}
           playingAudio={playingAudio}
+          originalAnswers={answers}
           ex1bVocab={getRecord(answers.exercise_1b_vocab)}
           ex3Photos={getRecord(answers.exercise_3_photos)}
           ex5aPicture={getRecord(answers.exercise_5a_picture)}
@@ -296,6 +301,7 @@ export default function LessonContentRenderer({
           answerKey={answerKey}
           playAudio={playAudio}
           playingAudio={playingAudio}
+          originalAnswers={answers}
           ex1aMatch={getRecord(answers.exercise_1a_match)}
           ex2Choice={getRecord(answers.exercise_2_choice)}
           ex3aSequence={getString(answers.exercise_3a_sequence)}
@@ -335,6 +341,7 @@ export default function LessonContentRenderer({
           answerKey={answerKey}
           playAudio={playAudio}
           playingAudio={playingAudio}
+          originalAnswers={answers}
           ex1Objects={getString(answers.exercise_1_objects)}
           ex2aBought={getString(answers.exercise_2a_bought)}
           ex2bPhrases={(answers.exercise_2b_phrases as Record<string, boolean>) || {}}
@@ -381,6 +388,7 @@ export default function LessonContentRenderer({
           answerKey={answerKey}
           playAudio={playAudio}
           playingAudio={playingAudio}
+          originalAnswers={answers}
           ex1aPlaces={getRecord(answers.exercise_1a_places)}
           ex2PairNotes={getString(answers.exercise_2_pair_notes)}
           ex3Speakers={getRecord(answers.exercise_3_speakers)}
@@ -406,15 +414,48 @@ export default function LessonContentRenderer({
     }
 
     case '3B': {
-      return <Lesson3BContent playAudio={playAudio} playingAudio={playingAudio} />;
+      return (
+        <Lesson3BContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+        />
+      );
     }
 
     case '3C': {
-      return <Lesson3CContent playAudio={playAudio} playingAudio={playingAudio} />;
+      return (
+        <Lesson3CContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+        />
+      );
     }
 
     case '3D': {
-      return <Lesson3DContent playAudio={playAudio} playingAudio={playingAudio} />;
+      return (
+        <Lesson3DContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+        />
+      );
     }
 
     case '4A': {
@@ -465,6 +506,7 @@ export default function LessonContentRenderer({
           }}
           playAudio={playAudio}
           playingAudio={playingAudio}
+          originalAnswers={answers}
         />
       );
     }

@@ -3,15 +3,21 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useLessonContext, useExerciseAnswer } from '@/context/LessonContext';
+import { useLessonContext, useExerciseAnswer, LessonContextModel } from '@/context/LessonContext';
 import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
 import PronounceButton from '@/components/PronounceButton';
 import { LessonAnswerKey, verifyAnswer, getExerciseKey, VerificationResult } from '@/lib/answerVerification';
 import styles from './lesson3d.module.scss';
 
 export interface Lesson3DContentProps {
+  lesson?: LessonContextModel | null;
+  user?: Record<string, unknown> | null;
+  isTeacherReview?: boolean;
+  readOnly?: boolean;
+  answerKey?: LessonAnswerKey | null;
   playAudio?: (track: string) => void;
   playingAudio?: string | null;
+  originalAnswers?: Record<string, unknown>;
 }
 
 // Захардкоженный fallbackAnswerKey для полной автономности и мгновенной проверки
@@ -247,29 +253,29 @@ const PLACES_WORD_GAPS: PlaceWordItem[] = [
       { type: 'fixed', char: 't' },
       { type: 'gap', gapIndex: 0, expected: 'r' },
       { type: 'gap', gapIndex: 1, expected: 'a' },
-      { type: 'gap', gapIndex: 2, expected: 'i' },
-      { type: 'fixed', char: 'n' },
+      { type: 'fixed', char: 'i' },
+      { type: 'gap', gapIndex: 2, expected: 'n' },
       { type: 'space' },
       { type: 'fixed', char: 's' },
-      { type: 'gap', gapIndex: 3, expected: 't' },
-      { type: 'gap', gapIndex: 4, expected: 'a' },
-      { type: 'gap', gapIndex: 5, expected: 't' },
-      { type: 'gap', gapIndex: 6, expected: 'i' },
-      { type: 'gap', gapIndex: 7, expected: 'o' },
-      { type: 'fixed', char: 'n' },
+      { type: 'fixed', char: 't' },
+      { type: 'gap', gapIndex: 3, expected: 'a' },
+      { type: 'gap', gapIndex: 4, expected: 't' },
+      { type: 'fixed', char: 'i' },
+      { type: 'gap', gapIndex: 5, expected: 'o' },
+      { type: 'gap', gapIndex: 6, expected: 'n' },
     ],
   },
   {
     id: '2',
     full: 'cinema',
-    totalGaps: 3,
+    totalGaps: 4,
     tokens: [
       { type: 'fixed', char: 'c' },
       { type: 'gap', gapIndex: 0, expected: 'i' },
       { type: 'fixed', char: 'n' },
       { type: 'gap', gapIndex: 1, expected: 'e' },
       { type: 'gap', gapIndex: 2, expected: 'm' },
-      { type: 'fixed', char: 'a' },
+      { type: 'gap', gapIndex: 3, expected: 'a' },
     ],
   },
   {
@@ -279,26 +285,26 @@ const PLACES_WORD_GAPS: PlaceWordItem[] = [
     tokens: [
       { type: 'fixed', char: 'c' },
       { type: 'gap', gapIndex: 0, expected: 'a' },
-      { type: 'gap', gapIndex: 1, expected: 'f' },
-      { type: 'fixed', char: 'é' },
+      { type: 'fixed', char: 'f' },
+      { type: 'gap', gapIndex: 1, expected: 'e' },
     ],
   },
   {
     id: '4',
     full: 'supermarket',
-    totalGaps: 8,
+    totalGaps: 6,
     tokens: [
       { type: 'fixed', char: 's' },
       { type: 'gap', gapIndex: 0, expected: 'u' },
       { type: 'fixed', char: 'p' },
       { type: 'gap', gapIndex: 1, expected: 'e' },
       { type: 'gap', gapIndex: 2, expected: 'r' },
-      { type: 'gap', gapIndex: 3, expected: 'm' },
-      { type: 'gap', gapIndex: 4, expected: 'a' },
-      { type: 'gap', gapIndex: 5, expected: 'r' },
+      { type: 'fixed', char: 'm' },
+      { type: 'gap', gapIndex: 3, expected: 'a' },
+      { type: 'gap', gapIndex: 4, expected: 'r' },
       { type: 'fixed', char: 'k' },
-      { type: 'gap', gapIndex: 6, expected: 'e' },
-      { type: 'gap', gapIndex: 7, expected: 't' },
+      { type: 'gap', gapIndex: 5, expected: 'e' },
+      { type: 'fixed', char: 't' },
     ],
   },
   {
@@ -319,8 +325,8 @@ const PLACES_WORD_GAPS: PlaceWordItem[] = [
     tokens: [
       { type: 'fixed', char: 'h' },
       { type: 'gap', gapIndex: 0, expected: 'o' },
-      { type: 'gap', gapIndex: 1, expected: 't' },
-      { type: 'fixed', char: 'e' },
+      { type: 'fixed', char: 't' },
+      { type: 'gap', gapIndex: 1, expected: 'e' },
       { type: 'gap', gapIndex: 2, expected: 'l' },
     ],
   },
@@ -331,8 +337,8 @@ const PLACES_WORD_GAPS: PlaceWordItem[] = [
     tokens: [
       { type: 'fixed', char: 'h' },
       { type: 'gap', gapIndex: 0, expected: 'o' },
-      { type: 'fixed', char: 'u' },
-      { type: 'gap', gapIndex: 1, expected: 's' },
+      { type: 'gap', gapIndex: 1, expected: 'u' },
+      { type: 'fixed', char: 's' },
       { type: 'gap', gapIndex: 2, expected: 'e' },
     ],
   },
@@ -342,9 +348,9 @@ const PLACES_WORD_GAPS: PlaceWordItem[] = [
     totalGaps: 2,
     tokens: [
       { type: 'fixed', char: 'f' },
-      { type: 'gap', gapIndex: 0, expected: 'l' },
-      { type: 'gap', gapIndex: 1, expected: 'a' },
-      { type: 'fixed', char: 't' },
+      { type: 'fixed', char: 'l' },
+      { type: 'gap', gapIndex: 0, expected: 'a' },
+      { type: 'gap', gapIndex: 1, expected: 't' },
     ],
   },
   {
@@ -409,20 +415,20 @@ interface PlaceWordLetterRowProps {
   item: PlaceWordItem;
   value: string;
   onChange: (val: string) => void;
-  verifyStatus?: string;
   isReview?: boolean;
   verifyResult?: VerificationResult | null;
   disabled?: boolean;
+  isDiff?: boolean;
 }
 
 function PlaceWordLetterRow({
   item,
   value,
   onChange,
-  verifyStatus,
   isReview,
   verifyResult,
   disabled,
+  isDiff,
 }: PlaceWordLetterRowProps) {
   const gapValues = React.useMemo(() => {
     const res: string[] = new Array(item.totalGaps).fill('');
@@ -451,30 +457,29 @@ function PlaceWordLetterRow({
       }
     }
     return res;
-  }, [item, value]);
+  }, [item.tokens, item.totalGaps, value]);
 
-  const reconstructAndSave = (nextGaps: string[]) => {
-    let reconstructed = '';
-    let curGIdx = 0;
+  const assembleWord = (newGaps: string[]): string => {
+    let result = '';
+    let gIdx = 0;
     for (const token of item.tokens) {
       if (token.type === 'fixed') {
-        reconstructed += token.char;
+        result += token.char;
       } else if (token.type === 'space') {
-        reconstructed += ' ';
+        result += ' ';
       } else if (token.type === 'gap') {
-        reconstructed += nextGaps[curGIdx] || ' ';
-        curGIdx++;
+        result += newGaps[gIdx] || ' ';
+        gIdx++;
       }
     }
-    onChange(reconstructed.trimEnd());
+    return result.trimEnd();
   };
 
   const handleCharInput = (gIdx: number, rawInput: string) => {
-    if (disabled) return;
-    const char = rawInput.slice(-1).toLowerCase();
-    const nextGaps = [...gapValues];
-    nextGaps[gIdx] = char;
-    reconstructAndSave(nextGaps);
+    const char = rawInput.slice(-1);
+    const newGaps = [...gapValues];
+    newGaps[gIdx] = char;
+    onChange(assembleWord(newGaps));
 
     if (char && gIdx < item.totalGaps - 1) {
       const nextInput = document.getElementById(`place-gap-${item.id}-${gIdx + 1}`);
@@ -486,14 +491,9 @@ function PlaceWordLetterRow({
   };
 
   const handleKeyDown = (gIdx: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (disabled) return;
-
     if (e.key === 'Backspace') {
       if (!gapValues[gIdx] && gIdx > 0) {
         e.preventDefault();
-        const nextGaps = [...gapValues];
-        nextGaps[gIdx - 1] = '';
-        reconstructAndSave(nextGaps);
         const prevInput = document.getElementById(`place-gap-${item.id}-${gIdx - 1}`);
         if (prevInput) {
           (prevInput as HTMLInputElement).focus();
@@ -518,9 +518,8 @@ function PlaceWordLetterRow({
   };
 
   const getGapClass = () => {
-    if (verifyStatus === 'correct') return styles.gapInputValid;
-    if (verifyStatus === 'incorrect') return styles.gapInputInvalid;
-    return '';
+    if (!isReview || !verifyResult || !verifyResult.hasKey) return '';
+    return verifyResult.isCorrect ? styles.gapInputValid : styles.gapInputInvalid;
   };
 
   const wordChunks = React.useMemo(() => {
@@ -542,7 +541,7 @@ function PlaceWordLetterRow({
     <div className={styles.wordGapCard}>
       <div className={styles.wordGapLeft}>
         <span className={styles.gappedItemNum}>{item.id}.</span>
-        <div className={styles.letterTokensContainer}>
+        <div className={`${styles.letterTokensContainer} ${isDiff ? styles.diffHighlight : ''}`}>
           {wordChunks.map((chunk, cIdx) => (
             <div key={`chunk-${cIdx}`} className={styles.wordChunk}>
               {chunk.map((token, tIdx) => {
@@ -576,8 +575,15 @@ function PlaceWordLetterRow({
             </div>
           ))}
         </div>
+        {isReview && verifyResult?.hasKey && verifyResult.isCorrect && (
+          <span className={styles.correctBadge} title="Correct">✓</span>
+        )}
       </div>
-      {isReview && <TeacherAnswerBadge result={verifyResult} />}
+      {isReview && verifyResult && !verifyResult.isCorrect && (
+        <div className={styles.feedbackRow}>
+          <TeacherAnswerBadge result={verifyResult} />
+        </div>
+      )}
     </div>
   );
 }
@@ -671,14 +677,25 @@ const REFLECT_STATEMENTS = [
 ];
 
 export default function Lesson3DContent({
+  isTeacherReview,
+  readOnly: propReadOnly,
+  answerKey: propAnswerKey,
   playAudio: propPlayAudio,
   playingAudio: propPlayingAudio,
+  originalAnswers,
 }: Lesson3DContentProps) {
   const context = useLessonContext();
   const playAudio = propPlayAudio || context.playAudio;
   const playingAudio = propPlayingAudio ?? context.playingAudio;
-  const isReadOnly = context.isReadOnly;
+  const isTeacher = isTeacherReview ?? context.isTeacher;
+  const isReadOnly = propReadOnly ?? context.isReadOnly;
+  const effectiveAnswerKey = propAnswerKey ?? context.answerKey ?? FALLBACK_ANSWER_KEY_3D;
+  const isReview = Boolean(isTeacher || (effectiveAnswerKey && isReadOnly));
   const [isMapModalOpen, setIsMapModalOpen] = useState<boolean>(false);
+
+  const orig = originalAnswers ?? (context.answers as Record<string, unknown> | undefined);
+  const isDiff = (origVal: unknown, currentVal: unknown) =>
+    orig !== undefined && origVal !== undefined && origVal !== currentVal;
 
   // Состояния упражнений через хук useExerciseAnswer
   // Page 28
@@ -705,17 +722,11 @@ export default function Lesson3DContent({
   const rev8b = useExerciseAnswer<string>('review_8b_speaking', '');
   const revReflect = useExerciseAnswer<Record<string, number>>('review_reflect_ratings', {});
 
-  const getInputClass = (status?: string) => {
-    if (status === 'correct') return styles.inputValid;
-    if (status === 'incorrect') return styles.inputInvalid;
-    return '';
-  };
-
   const getFieldVerify = (exerciseKey: string, fieldKey: string): VerificationResult | null => {
     const fromCtx = context.getVerification(exerciseKey, fieldKey);
     if (fromCtx) return fromCtx;
 
-    const exKey = getExerciseKey(FALLBACK_ANSWER_KEY_3D, exerciseKey);
+    const exKey = getExerciseKey(effectiveAnswerKey, exerciseKey);
     if (!exKey) return null;
 
     const studentEx = context.getAnswer(exerciseKey);
@@ -726,6 +737,33 @@ export default function Lesson3DContent({
     const expected = exKey[fieldKey];
     return verifyAnswer(studentVal, expected);
   };
+
+  const getInputClass = (ver?: VerificationResult | null) => {
+    if (!isReview || !ver || !ver.hasKey) return '';
+    return ver.isCorrect ? styles.inputValid : styles.inputInvalid;
+  };
+
+  // Оригинальные значения для диффа
+  const origEx2a = (orig?.exercise_2a_questions as Record<string, string> | undefined) || {};
+  const origEx2b = (orig?.exercise_2b_order as Record<string, string> | undefined) || {};
+  const origEx2c = typeof orig?.exercise_2c_route === 'string' ? orig.exercise_2c_route : undefined;
+  const origEx3 = (orig?.exercise_3_phrases_order as Record<string, string> | undefined) || {};
+  const origEx4a = (orig?.exercise_4a_conversations as Record<string, string> | undefined) || {};
+  const origEx4b = typeof orig?.exercise_4b_speaking === 'string' ? orig.exercise_4b_speaking : undefined;
+  const origEx5a = typeof orig?.exercise_5a_directions === 'string' ? orig.exercise_5a_directions : undefined;
+  const origEx5b = typeof orig?.exercise_5b_guessing === 'string' ? orig.exercise_5b_guessing : undefined;
+
+  const origRev1a = (orig?.review_1a_places as Record<string, string> | undefined) || {};
+  const origRev1b = typeof orig?.review_1b_speaking === 'string' ? orig.review_1b_speaking : undefined;
+  const origRev2 = (orig?.review_2_is_are as Record<string, string> | undefined) || {};
+  const origRev3 = (orig?.review_3_corrections as Record<string, string> | undefined) || {};
+  const origRev4 = (orig?.review_4_alternatives as Record<string, string> | undefined) || {};
+  const origRev5a = (orig?.review_5a_classroom as Record<string, string> | undefined) || {};
+  const origRev5b = typeof orig?.review_5b_speaking === 'string' ? orig.review_5b_speaking : undefined;
+  const origRev6 = (orig?.review_6_adjectives as Record<string, string> | undefined) || {};
+  const origRev7 = (orig?.review_7_rewrite as Record<string, string> | undefined) || {};
+  const origRev8a = (orig?.review_8a_order as Record<string, string> | undefined) || {};
+  const origRev8b = typeof orig?.review_8b_speaking === 'string' ? orig.review_8b_speaking : undefined;
 
   return (
     <div className={styles.pageContainer}>
@@ -776,13 +814,17 @@ export default function Lesson3DContent({
                 </div>
 
                 <div
-                  className={styles.mapShowcase}
+                  className={styles.mapCardWrap}
                   onClick={() => setIsMapModalOpen(true)}
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => e.key === 'Enter' && setIsMapModalOpen(true)}
                   aria-label="Enlarge Town Map"
                 >
+                  <div className={styles.cardTopLabel}>
+                    <span>Town Centre Map</span>
+                    <span style={{ fontSize: '0.7rem' }}>🔍 Zoom</span>
+                  </div>
                   <Image
                     src="/images/lesson3d/town_map.png"
                     alt="Map of town showing Station Road, Bank Road, Park Street, Market Street, Main Street and various buildings"
@@ -793,11 +835,11 @@ export default function Lesson3DContent({
                   <div className={styles.zoomOverlay}>🔍 Click to zoom</div>
                 </div>
 
-                <div className={styles.mapPlacesGrid}>
+                <div className={styles.directionMatchGrid}>
                   {MAP_PLACES.map((p) => (
-                    <div key={p.id} className={styles.mapPlaceItem}>
-                      <span className={styles.placeNum}>{p.id}</span>
-                      <span>{p.name}</span>
+                    <div key={p.id} className={styles.directionMatchRow}>
+                      <span className={styles.exNumber} style={{ minWidth: '1.4rem', height: '1.4rem', fontSize: '0.75rem' }}>{p.id}</span>
+                      <span style={{ fontSize: '0.8rem', color: '#334155' }}>{p.name}</span>
                     </div>
                   ))}
                 </div>
@@ -836,47 +878,46 @@ export default function Lesson3DContent({
                       </>
                     )}
                   </button>
-                  <div className={styles.audioMeta}>
-                    <span className={styles.audioTrackName}>Track 3.14 (Directions dialogue)</span>
+                  <div className={styles.audioHint}>
+                    Track 3.14 (Directions dialogue)
                   </div>
                 </div>
 
                 <div className={styles.gappedList}>
-                  <div className={styles.gappedItem}>
-                    <span className={styles.gappedItemNum}>1.</span>
-                    <span>Where is the woman?</span>
-                    <input
-                      type="text"
-                      className={`${styles.inputField} ${styles.inputFieldWide} ${getInputClass(
-                        getFieldVerify('exercise_2a_questions', '1')?.status
-                      )}`}
-                      placeholder="e.g. at the train station"
-                      value={ex2a.value['1'] || ''}
-                      onChange={(e) => ex2a.setValue({ ...ex2a.value, '1': e.target.value })}
-                      disabled={isReadOnly}
-                    />
-                    {ex2a.isReview && (
-                      <TeacherAnswerBadge result={getFieldVerify('exercise_2a_questions', '1')} />
-                    )}
-                  </div>
-
-                  <div className={styles.gappedItem}>
-                    <span className={styles.gappedItemNum}>2.</span>
-                    <span>Where is her friend, David?</span>
-                    <input
-                      type="text"
-                      className={`${styles.inputField} ${styles.inputFieldWide} ${getInputClass(
-                        getFieldVerify('exercise_2a_questions', '2')?.status
-                      )}`}
-                      placeholder="e.g. at the Polish restaurant / on Main Street"
-                      value={ex2a.value['2'] || ''}
-                      onChange={(e) => ex2a.setValue({ ...ex2a.value, '2': e.target.value })}
-                      disabled={isReadOnly}
-                    />
-                    {ex2a.isReview && (
-                      <TeacherAnswerBadge result={getFieldVerify('exercise_2a_questions', '2')} />
-                    )}
-                  </div>
+                  {[
+                    { id: '1', q: 'Where is the woman?', ph: 'e.g. at the train station' },
+                    { id: '2', q: 'Where is her friend, David?', ph: 'e.g. at the Polish restaurant / on Main Street' },
+                  ].map((item) => {
+                    const verify = getFieldVerify('exercise_2a_questions', item.id);
+                    const currentVal = ex2a.value[item.id] || '';
+                    const isItemDiff = isDiff(origEx2a[item.id], currentVal);
+                    return (
+                      <div key={item.id} className={styles.gappedItem}>
+                        <span className={styles.gappedItemNum}>{item.id}.</span>
+                        <span>{item.q}</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', width: '100%' }}>
+                          <input
+                            type="text"
+                            className={`${styles.inputField} ${styles.inputFieldWide} ${getInputClass(verify)} ${
+                              isItemDiff ? styles.diffHighlight : ''
+                            }`}
+                            placeholder={item.ph}
+                            value={currentVal}
+                            onChange={(e) => ex2a.setValue({ ...ex2a.value, [item.id]: e.target.value })}
+                            disabled={isReadOnly}
+                          />
+                          {isReview && verify?.hasKey && verify.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
+                        </div>
+                        {isReview && verify && !verify.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={verify} />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -890,7 +931,7 @@ export default function Lesson3DContent({
                   </span>
                 </div>
 
-                <div className={styles.diagramsShowcase}>
+                <div className={styles.imageWrap}>
                   <Image
                     src="/images/lesson3d/directions_diagrams.png"
                     alt="Diagrams A to F showing straight on, turn left, turn right, go past, next to, go down"
@@ -903,23 +944,36 @@ export default function Lesson3DContent({
                 <div className={styles.directionMatchGrid}>
                   {DIRECTION_DIAGRAM_ITEMS.map((item) => {
                     const verify = getFieldVerify('exercise_2b_order', item.key);
+                    const currentVal = ex2b.value[item.key] || '';
+                    const isItemDiff = isDiff(origEx2b[item.key], currentVal);
                     return (
                       <div key={item.key} className={styles.directionMatchRow}>
-                        <span className={styles.letterTag}>{item.key}</span>
+                        <span className={styles.exNumber} style={{ minWidth: '1.4rem', height: '1.4rem', fontSize: '0.75rem' }}>{item.key}</span>
                         <span className={styles.dirText}>{item.text}</span>
-                        <input
-                          type="text"
-                          maxLength={2}
-                          className={`${styles.inputField} ${getInputClass(verify?.status)}`}
-                          style={{ width: '48px', textAlign: 'center' }}
-                          placeholder="1-6"
-                          value={ex2b.value[item.key] || ''}
-                          onChange={(e) =>
-                            ex2b.setValue({ ...ex2b.value, [item.key]: e.target.value })
-                          }
-                          disabled={isReadOnly}
-                        />
-                        {ex2b.isReview && <TeacherAnswerBadge result={verify} />}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <input
+                            type="text"
+                            maxLength={2}
+                            className={`${styles.inputField} ${getInputClass(verify)} ${
+                              isItemDiff ? styles.diffHighlight : ''
+                            }`}
+                            style={{ width: '48px', textAlign: 'center' }}
+                            placeholder="1-6"
+                            value={currentVal}
+                            onChange={(e) =>
+                              ex2b.setValue({ ...ex2b.value, [item.key]: e.target.value })
+                            }
+                            disabled={isReadOnly}
+                          />
+                          {isReview && verify?.hasKey && verify.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
+                        </div>
+                        {isReview && verify && !verify.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={verify} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -940,7 +994,9 @@ export default function Lesson3DContent({
                   <span>Start at <em>Train station</em> on Station Road &rarr; Go down Station Road &rarr; Turn right into Park Street &rarr; Turn left into Main Street &rarr; Go straight on past the hotel &rarr; Polish restaurant next to the bank on the left.</span>
                   <input
                     type="text"
-                    className={`${styles.inputField} ${styles.inputFieldFull}`}
+                    className={`${styles.inputField} ${styles.inputFieldFull} ${
+                      isDiff(origEx2c, ex2c.value) ? styles.diffHighlight : ''
+                    }`}
                     placeholder="Write route notes or partner observations here..."
                     value={ex2c.value || ''}
                     onChange={(e) => ex2c.setValue(e.target.value)}
@@ -986,8 +1042,8 @@ export default function Lesson3DContent({
                       </>
                     )}
                   </button>
-                  <div className={styles.audioMeta}>
-                    <span className={styles.audioTrackName}>Track 3.15 (Useful phrases)</span>
+                  <div className={styles.audioHint}>
+                    Track 3.15 (Useful phrases)
                   </div>
                 </div>
 
@@ -995,27 +1051,40 @@ export default function Lesson3DContent({
                   <div className={styles.phrasesOrderingList}>
                     {USEFUL_PHRASES_ITEMS.map((item) => {
                       const verify = getFieldVerify('exercise_3_phrases_order', item.id);
+                      const currentVal = ex3.value[item.id] || '';
+                      const isItemDiff = isDiff(origEx3[item.id], currentVal);
                       return (
                         <div key={item.id} className={styles.phraseOrderItem}>
                           {item.isExample ? (
                             <span className={styles.exampleBadge}>1</span>
                           ) : (
-                            <input
-                              type="text"
-                              maxLength={2}
-                              className={`${styles.inputField} ${getInputClass(verify?.status)}`}
-                              style={{ width: '42px', textAlign: 'center' }}
-                              placeholder="2-12"
-                              value={ex3.value[item.id] || ''}
-                              onChange={(e) =>
-                                ex3.setValue({ ...ex3.value, [item.id]: e.target.value })
-                              }
-                              disabled={isReadOnly}
-                            />
+                            <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                              <input
+                                type="text"
+                                maxLength={2}
+                                className={`${styles.inputField} ${getInputClass(verify)} ${
+                                  isItemDiff ? styles.diffHighlight : ''
+                                }`}
+                                style={{ width: '42px', textAlign: 'center' }}
+                                placeholder="2-12"
+                                value={currentVal}
+                                onChange={(e) =>
+                                  ex3.setValue({ ...ex3.value, [item.id]: e.target.value })
+                                }
+                                disabled={isReadOnly}
+                              />
+                              {isReview && verify?.hasKey && verify.isCorrect && (
+                                <span className={styles.correctBadge} title="Correct">✓</span>
+                              )}
+                            </div>
                           )}
                           <span className={styles.phraseText}>{item.text}</span>
                           <PronounceButton word={item.audioPhrase} />
-                          {ex3.isReview && !item.isExample && <TeacherAnswerBadge result={verify} />}
+                          {isReview && !item.isExample && verify && !verify.isCorrect && (
+                            <div className={styles.feedbackRow}>
+                              <TeacherAnswerBadge result={verify} />
+                            </div>
+                          )}
                         </div>
                       );
                     })}
@@ -1029,7 +1098,7 @@ export default function Lesson3DContent({
                   <span className={styles.exNumber}>4</span>
                   <span className={styles.exLetter}>a</span>
                   <span className={styles.instruction}>
-                    Look at the map in Exercise 1. Complete the conversations. Use the Useful phrases box to help you. Then listen and check your answers.
+                    Look at the map in Exercise 1. Complete the conversations. Use the Useful phrases box to help you.
                   </span>
                 </div>
 
@@ -1056,8 +1125,8 @@ export default function Lesson3DContent({
                       </>
                     )}
                   </button>
-                  <div className={styles.audioMeta}>
-                    <span className={styles.audioTrackName}>Track 3.16 (Three conversations)</span>
+                  <div className={styles.audioHint}>
+                    Track 3.16 (Three conversations)
                   </div>
                 </div>
 
@@ -1070,39 +1139,49 @@ export default function Lesson3DContent({
                     <input
                       type="text"
                       className={`${styles.inputField} ${styles.inputFieldWide} ${getInputClass(
-                        getFieldVerify('exercise_4a_conversations', '1')?.status
-                      )}`}
+                        getFieldVerify('exercise_4a_conversations', '1')
+                      )} ${isDiff(origEx4a['1'], ex4a.value['1']) ? styles.diffHighlight : ''}`}
                       placeholder="e.g. Is there a supermarket near here?"
                       value={ex4a.value['1'] || ''}
                       onChange={(e) => ex4a.setValue({ ...ex4a.value, '1': e.target.value })}
                       disabled={isReadOnly}
                     />
-                    {ex4a.isReview && (
-                      <TeacherAnswerBadge
-                        result={getFieldVerify('exercise_4a_conversations', '1')}
-                      />
+                    {isReview && getFieldVerify('exercise_4a_conversations', '1')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
                     )}
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_4a_conversations', '1');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.convoLine}>
                     <span className={styles.speaker}>B:</span>
                     <span>Yes, there&apos;s one on Station Road.</span>
                     <input
                       type="text"
                       className={`${styles.inputField} ${styles.inputFieldWide} ${getInputClass(
-                        getFieldVerify('exercise_4a_conversations', '2')?.status
-                      )}`}
+                        getFieldVerify('exercise_4a_conversations', '2')
+                      )} ${isDiff(origEx4a['2'], ex4a.value['2']) ? styles.diffHighlight : ''}`}
                       placeholder="e.g. Go straight on"
                       value={ex4a.value['2'] || ''}
                       onChange={(e) => ex4a.setValue({ ...ex4a.value, '2': e.target.value })}
                       disabled={isReadOnly}
                     />
                     <span>, go past the Turkish restaurant and the supermarket is on the left.</span>
-                    {ex4a.isReview && (
-                      <TeacherAnswerBadge
-                        result={getFieldVerify('exercise_4a_conversations', '2')}
-                      />
+                    {isReview && getFieldVerify('exercise_4a_conversations', '2')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
                     )}
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_4a_conversations', '2');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.convoLine}>
                     <span className={styles.speaker}>A:</span>
                     <span>Thank you.</span>
@@ -1122,39 +1201,49 @@ export default function Lesson3DContent({
                     <input
                       type="text"
                       className={`${styles.inputField} ${styles.inputFieldWide} ${getInputClass(
-                        getFieldVerify('exercise_4a_conversations', '3')?.status
-                      )}`}
+                        getFieldVerify('exercise_4a_conversations', '3')
+                      )} ${isDiff(origEx4a['3'], ex4a.value['3']) ? styles.diffHighlight : ''}`}
                       placeholder="e.g. Where's the cinema, please?"
                       value={ex4a.value['3'] || ''}
                       onChange={(e) => ex4a.setValue({ ...ex4a.value, '3': e.target.value })}
                       disabled={isReadOnly}
                     />
-                    {ex4a.isReview && (
-                      <TeacherAnswerBadge
-                        result={getFieldVerify('exercise_4a_conversations', '3')}
-                      />
+                    {isReview && getFieldVerify('exercise_4a_conversations', '3')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
                     )}
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_4a_conversations', '3');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.convoLine}>
                     <span className={styles.speaker}>B:</span>
                     <span>It&apos;s on Park Street. Go down Station Road,</span>
                     <input
                       type="text"
                       className={`${styles.inputField} ${styles.inputFieldWide} ${getInputClass(
-                        getFieldVerify('exercise_4a_conversations', '4')?.status
-                      )}`}
+                        getFieldVerify('exercise_4a_conversations', '4')
+                      )} ${isDiff(origEx4a['4'], ex4a.value['4']) ? styles.diffHighlight : ''}`}
                       placeholder="e.g. turn left into Park Street"
                       value={ex4a.value['4'] || ''}
                       onChange={(e) => ex4a.setValue({ ...ex4a.value, '4': e.target.value })}
                       disabled={isReadOnly}
                     />
                     <span>, go past the school and the cinema is on the left.</span>
-                    {ex4a.isReview && (
-                      <TeacherAnswerBadge
-                        result={getFieldVerify('exercise_4a_conversations', '4')}
-                      />
+                    {isReview && getFieldVerify('exercise_4a_conversations', '4')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
                     )}
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_4a_conversations', '4');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.convoLine}>
                     <span className={styles.speaker}>A:</span>
                     <span>Thanks.</span>
@@ -1178,20 +1267,25 @@ export default function Lesson3DContent({
                     <input
                       type="text"
                       className={`${styles.inputField} ${styles.inputFieldWide} ${getInputClass(
-                        getFieldVerify('exercise_4a_conversations', '5')?.status
-                      )}`}
+                        getFieldVerify('exercise_4a_conversations', '5')
+                      )} ${isDiff(origEx4a['5'], ex4a.value['5']) ? styles.diffHighlight : ''}`}
                       placeholder="e.g. turn left at the bookshop / into Market Street"
                       value={ex4a.value['5'] || ''}
                       onChange={(e) => ex4a.setValue({ ...ex4a.value, '5': e.target.value })}
                       disabled={isReadOnly}
                     />
                     <span>and turn right onto Market Street.</span>
-                    {ex4a.isReview && (
-                      <TeacherAnswerBadge
-                        result={getFieldVerify('exercise_4a_conversations', '5')}
-                      />
+                    {isReview && getFieldVerify('exercise_4a_conversations', '5')?.isCorrect && (
+                      <span className={styles.correctBadge} title="Correct">✓</span>
                     )}
                   </div>
+                  {isReview && (() => {
+                    const ver = getFieldVerify('exercise_4a_conversations', '5');
+                    return ver && !ver.isCorrect ? (
+                      <div className={styles.feedbackRow}><TeacherAnswerBadge result={ver} /></div>
+                    ) : null;
+                  })()}
+
                   <div className={styles.convoLine}>
                     <span className={styles.speaker}>A:</span>
                     <span>Thank you.</span>
@@ -1213,7 +1307,7 @@ export default function Lesson3DContent({
                   </span>
                 </div>
                 <textarea
-                  className={styles.inputField}
+                  className={`${styles.inputField} ${isDiff(origEx4b, ex4b.value) ? styles.diffHighlight : ''}`}
                   rows={2}
                   style={{ width: '100%', resize: 'vertical' }}
                   placeholder="Practise saying the dialogues aloud with your partner or write practice notes..."
@@ -1243,7 +1337,9 @@ export default function Lesson3DContent({
                   </label>
                   <input
                     type="text"
-                    className={`${styles.inputField} ${styles.inputFieldFull}`}
+                    className={`${styles.inputField} ${styles.inputFieldFull} ${
+                      isDiff(origEx5a, ex5a.value) ? styles.diffHighlight : ''
+                    }`}
                     placeholder="e.g. Go down Station Road, turn right into Park Street, then..."
                     value={ex5a.value || ''}
                     onChange={(e) => ex5a.setValue(e.target.value)}
@@ -1254,7 +1350,9 @@ export default function Lesson3DContent({
                   </label>
                   <input
                     type="text"
-                    className={`${styles.inputField} ${styles.inputFieldFull}`}
+                    className={`${styles.inputField} ${styles.inputFieldFull} ${
+                      isDiff(origEx5b, ex5b.value) ? styles.diffHighlight : ''
+                    }`}
                     placeholder="e.g. Partner guess: Are you at the cinema? — Yes, that's right!"
                     value={ex5b.value || ''}
                     onChange={(e) => ex5b.setValue(e.target.value)}
@@ -1293,16 +1391,17 @@ export default function Lesson3DContent({
                 <div className={styles.wordGapsGrid}>
                   {PLACES_WORD_GAPS.map((item) => {
                     const verify = getFieldVerify('review_1a_places', item.id);
+                    const currentVal = rev1a.value[item.id] || '';
                     return (
                       <PlaceWordLetterRow
                         key={item.id}
                         item={item}
-                        value={rev1a.value[item.id] || ''}
+                        value={currentVal}
                         onChange={(val) => rev1a.setValue({ ...rev1a.value, [item.id]: val })}
-                        verifyStatus={verify?.status}
-                        isReview={rev1a.isReview}
+                        isReview={isReview}
                         verifyResult={verify}
                         disabled={isReadOnly}
+                        isDiff={isDiff(origRev1a[item.id], currentVal)}
                       />
                     );
                   })}
@@ -1325,7 +1424,9 @@ export default function Lesson3DContent({
                 <input
                   type="text"
                   style={{ marginTop: '0.5rem' }}
-                  className={`${styles.inputField} ${styles.inputFieldFull}`}
+                  className={`${styles.inputField} ${styles.inputFieldFull} ${
+                    isDiff(origRev1b, rev1b.value) ? styles.diffHighlight : ''
+                  }`}
                   placeholder="e.g. A: Is there a cinema? B: No, there isn't."
                   value={rev1b.value || ''}
                   onChange={(e) => rev1b.setValue(e.target.value)}
@@ -1355,23 +1456,36 @@ export default function Lesson3DContent({
                       );
                     }
                     const verify = getFieldVerify('review_2_is_are', item.id);
+                    const currentVal = rev2.value[item.id] || '';
+                    const isItemDiff = isDiff(origRev2[item.id], currentVal);
                     return (
                       <div key={item.id} className={styles.gappedItem}>
                         <span className={styles.gappedItemNum}>{item.id}.</span>
                         <span>{item.prefix}</span>
-                        <input
-                          type="text"
-                          className={`${styles.inputField} ${getInputClass(verify?.status)}`}
-                          style={{ width: '80px', textAlign: 'center' }}
-                          placeholder="is / are..."
-                          value={rev2.value[item.id] || ''}
-                          onChange={(e) =>
-                            rev2.setValue({ ...rev2.value, [item.id]: e.target.value })
-                          }
-                          disabled={isReadOnly}
-                        />
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <input
+                            type="text"
+                            className={`${styles.inputField} ${getInputClass(verify)} ${
+                              isItemDiff ? styles.diffHighlight : ''
+                            }`}
+                            style={{ width: '80px', textAlign: 'center' }}
+                            placeholder="is / are..."
+                            value={currentVal}
+                            onChange={(e) =>
+                              rev2.setValue({ ...rev2.value, [item.id]: e.target.value })
+                            }
+                            disabled={isReadOnly}
+                          />
+                          {isReview && verify?.hasKey && verify.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
+                        </div>
                         <span>{item.suffix}</span>
-                        {rev2.isReview && <TeacherAnswerBadge result={verify} />}
+                        {isReview && verify && !verify.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={verify} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -1390,6 +1504,8 @@ export default function Lesson3DContent({
                 <div className={styles.gappedList}>
                   {CORRECTION_ITEMS.map((item) => {
                     const verify = getFieldVerify('review_3_corrections', item.id);
+                    const currentVal = rev3.value[item.id] || '';
+                    const isItemDiff = isDiff(origRev3[item.id], currentVal);
                     return (
                       <div key={item.id} className={styles.gappedItem} style={{ flexDirection: 'column', alignItems: 'stretch' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -1398,21 +1514,28 @@ export default function Lesson3DContent({
                             {item.incorrect}
                           </span>
                         </div>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%' }}>
                           <input
                             type="text"
-                            className={`${styles.inputField} ${styles.inputFieldFull} ${getInputClass(
-                              verify?.status
-                            )}`}
+                            className={`${styles.inputField} ${styles.inputFieldFull} ${getInputClass(verify)} ${
+                              isItemDiff ? styles.diffHighlight : ''
+                            }`}
                             placeholder="Write correct sentence..."
-                            value={rev3.value[item.id] || ''}
+                            value={currentVal}
                             onChange={(e) =>
                               rev3.setValue({ ...rev3.value, [item.id]: e.target.value })
                             }
                             disabled={isReadOnly}
                           />
-                          {rev3.isReview && <TeacherAnswerBadge result={verify} />}
+                          {isReview && verify?.hasKey && verify.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
                         </div>
+                        {isReview && verify && !verify.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={verify} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -1432,11 +1555,12 @@ export default function Lesson3DContent({
                   {ALTERNATIVE_ITEMS.map((item) => {
                     const currentVal = rev4.value[item.id];
                     const verify = getFieldVerify('review_4_alternatives', item.id);
+                    const isItemDiff = isDiff(origRev4[item.id], currentVal);
                     return (
                       <div key={item.id} className={styles.gappedItem}>
                         <span className={styles.gappedItemNum}>{item.id}.</span>
                         <span>{item.prefix}</span>
-                        <div className={styles.choicePills}>
+                        <div className={`${styles.choicePills} ${isItemDiff ? styles.diffHighlight : ''}`}>
                           <button
                             type="button"
                             className={`${styles.choicePillBtn} ${
@@ -1458,7 +1582,14 @@ export default function Lesson3DContent({
                           </button>
                         </div>
                         <span>{item.suffix}</span>
-                        {rev4.isReview && <TeacherAnswerBadge result={verify} />}
+                        {isReview && verify?.hasKey && verify.isCorrect && (
+                          <span className={styles.correctBadge} title="Correct">✓</span>
+                        )}
+                        {isReview && verify && !verify.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={verify} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -1476,7 +1607,7 @@ export default function Lesson3DContent({
                   <span className={styles.exNumber}>5</span>
                   <span className={styles.exLetter}>a</span>
                   <span className={styles.instruction}>
-                    Complete the questions about your classroom with the words in the box. You will need to use the words more than once.
+                    Complete the questions about your classroom with the words in the box.
                   </span>
                 </div>
 
@@ -1499,60 +1630,85 @@ export default function Lesson3DContent({
                     if (item.fieldA && item.fieldB) {
                       const verifyA = getFieldVerify('review_5a_classroom', item.fieldA);
                       const verifyB = getFieldVerify('review_5a_classroom', item.fieldB);
+                      const valA = rev5a.value[item.fieldA] || '';
+                      const valB = rev5a.value[item.fieldB] || '';
+                      const isDiffA = isDiff(origRev5a[item.fieldA], valA);
+                      const isDiffB = isDiff(origRev5a[item.fieldB], valB);
                       return (
                         <div key={item.id} className={styles.gappedItem}>
                           <span className={styles.gappedItemNum}>{item.id}.</span>
-                          <input
-                            type="text"
-                            className={`${styles.inputField} ${getInputClass(verifyA?.status)}`}
-                            style={{ width: '100px' }}
-                            placeholder={item.placeholderA}
-                            value={rev5a.value[item.fieldA] || ''}
-                            onChange={(e) =>
-                              rev5a.setValue({ ...rev5a.value, [item.fieldA as string]: e.target.value })
-                            }
-                            disabled={isReadOnly}
-                          />
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                            <input
+                              type="text"
+                              className={`${styles.inputField} ${getInputClass(verifyA)} ${isDiffA ? styles.diffHighlight : ''}`}
+                              style={{ width: '100px' }}
+                              placeholder={item.placeholderA}
+                              value={valA}
+                              onChange={(e) =>
+                                rev5a.setValue({ ...rev5a.value, [item.fieldA as string]: e.target.value })
+                              }
+                              disabled={isReadOnly}
+                            />
+                            {isReview && verifyA?.hasKey && verifyA.isCorrect && (
+                              <span className={styles.correctBadge} title="Correct">✓</span>
+                            )}
+                          </div>
                           <span>{item.promptMid}</span>
-                          <input
-                            type="text"
-                            className={`${styles.inputField} ${getInputClass(verifyB?.status)}`}
-                            style={{ width: '90px' }}
-                            placeholder={item.placeholderB}
-                            value={rev5a.value[item.fieldB] || ''}
-                            onChange={(e) =>
-                              rev5a.setValue({ ...rev5a.value, [item.fieldB as string]: e.target.value })
-                            }
-                            disabled={isReadOnly}
-                          />
+                          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                            <input
+                              type="text"
+                              className={`${styles.inputField} ${getInputClass(verifyB)} ${isDiffB ? styles.diffHighlight : ''}`}
+                              style={{ width: '90px' }}
+                              placeholder={item.placeholderB}
+                              value={valB}
+                              onChange={(e) =>
+                                rev5a.setValue({ ...rev5a.value, [item.fieldB as string]: e.target.value })
+                              }
+                              disabled={isReadOnly}
+                            />
+                            {isReview && verifyB?.hasKey && verifyB.isCorrect && (
+                              <span className={styles.correctBadge} title="Correct">✓</span>
+                            )}
+                          </div>
                           <span>{item.promptAfter}</span>
-                          {rev5a.isReview && (
-                            <>
-                              <TeacherAnswerBadge result={verifyA} />
-                              <TeacherAnswerBadge result={verifyB} />
-                            </>
+                          {isReview && ((verifyA && !verifyA.isCorrect) || (verifyB && !verifyB.isCorrect)) && (
+                            <div className={styles.feedbackRow}>
+                              {verifyA && !verifyA.isCorrect && <TeacherAnswerBadge result={verifyA} />}
+                              {verifyB && !verifyB.isCorrect && <TeacherAnswerBadge result={verifyB} />}
+                            </div>
                           )}
                         </div>
                       );
                     }
 
                     const verify = getFieldVerify('review_5a_classroom', item.field || '');
+                    const currentVal = rev5a.value[item.field || ''] || '';
+                    const isItemDiff = isDiff(origRev5a[item.field || ''], currentVal);
                     return (
                       <div key={item.id} className={styles.gappedItem}>
                         <span className={styles.gappedItemNum}>{item.id}.</span>
-                        <input
-                          type="text"
-                          className={`${styles.inputField} ${getInputClass(verify?.status)}`}
-                          style={{ width: '125px' }}
-                          placeholder={item.placeholder}
-                          value={rev5a.value[item.field || ''] || ''}
-                          onChange={(e) =>
-                            rev5a.setValue({ ...rev5a.value, [item.field as string]: e.target.value })
-                          }
-                          disabled={isReadOnly}
-                        />
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}>
+                          <input
+                            type="text"
+                            className={`${styles.inputField} ${getInputClass(verify)} ${isItemDiff ? styles.diffHighlight : ''}`}
+                            style={{ width: '125px' }}
+                            placeholder={item.placeholder}
+                            value={currentVal}
+                            onChange={(e) =>
+                              rev5a.setValue({ ...rev5a.value, [item.field as string]: e.target.value })
+                            }
+                            disabled={isReadOnly}
+                          />
+                          {isReview && verify?.hasKey && verify.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
+                        </div>
                         <span>{item.promptAfter}</span>
-                        {rev5a.isReview && <TeacherAnswerBadge result={verify} />}
+                        {isReview && verify && !verify.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={verify} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -1575,7 +1731,9 @@ export default function Lesson3DContent({
                 <input
                   type="text"
                   style={{ marginTop: '0.5rem' }}
-                  className={`${styles.inputField} ${styles.inputFieldFull}`}
+                  className={`${styles.inputField} ${styles.inputFieldFull} ${
+                    isDiff(origRev5b, rev5b.value) ? styles.diffHighlight : ''
+                  }`}
                   placeholder="Practise asking and answering questions..."
                   value={rev5b.value || ''}
                   onChange={(e) => rev5b.setValue(e.target.value)}
@@ -1603,23 +1761,36 @@ export default function Lesson3DContent({
                       );
                     }
                     const verify = getFieldVerify('review_6_adjectives', item.id);
+                    const currentVal = rev6.value[item.id] || '';
+                    const isItemDiff = isDiff(origRev6[item.id], currentVal);
                     return (
                       <div key={item.id} className={styles.gappedItem}>
                         <span className={styles.gappedItemNum}>{item.id}.</span>
                         <span>{item.before}</span>
-                        <input
-                          type="text"
-                          className={`${styles.inputField} ${getInputClass(verify?.status)}`}
-                          style={{ width: '90px', textAlign: 'center' }}
-                          placeholder={item.prompt}
-                          value={rev6.value[item.id] || ''}
-                          onChange={(e) =>
-                            rev6.setValue({ ...rev6.value, [item.id]: e.target.value })
-                          }
-                          disabled={isReadOnly}
-                        />
+                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                          <input
+                            type="text"
+                            className={`${styles.inputField} ${getInputClass(verify)} ${
+                              isItemDiff ? styles.diffHighlight : ''
+                            }`}
+                            style={{ width: '90px', textAlign: 'center' }}
+                            placeholder={item.prompt}
+                            value={currentVal}
+                            onChange={(e) =>
+                              rev6.setValue({ ...rev6.value, [item.id]: e.target.value })
+                            }
+                            disabled={isReadOnly}
+                          />
+                          {isReview && verify?.hasKey && verify.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
+                        </div>
                         <span>{item.suffix}</span>
-                        {rev6.isReview && <TeacherAnswerBadge result={verify} />}
+                        {isReview && verify && !verify.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={verify} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -1646,26 +1817,35 @@ export default function Lesson3DContent({
                       );
                     }
                     const verify = getFieldVerify('review_7_rewrite', item.id);
+                    const currentVal = rev7.value[item.id] || '';
+                    const isItemDiff = isDiff(origRev7[item.id], currentVal);
                     return (
                       <div key={item.id} className={styles.gappedItem} style={{ flexDirection: 'column', alignItems: 'stretch' }}>
                         <span style={{ color: '#64748b', fontSize: '0.8rem' }}>{item.id}. {item.original}</span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', width: '100%' }}>
                           <span>{item.before}</span>
                           <input
                             type="text"
-                            className={`${styles.inputField} ${styles.inputFieldFull} ${getInputClass(
-                              verify?.status
-                            )}`}
+                            className={`${styles.inputField} ${styles.inputFieldFull} ${getInputClass(verify)} ${
+                              isItemDiff ? styles.diffHighlight : ''
+                            }`}
                             placeholder="complete sentence..."
-                            value={rev7.value[item.id] || ''}
+                            value={currentVal}
                             onChange={(e) =>
                               rev7.setValue({ ...rev7.value, [item.id]: e.target.value })
                             }
                             disabled={isReadOnly}
                           />
                           <span>{item.suffix}</span>
-                          {rev7.isReview && <TeacherAnswerBadge result={verify} />}
+                          {isReview && verify?.hasKey && verify.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
                         </div>
+                        {isReview && verify && !verify.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={verify} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -1697,26 +1877,35 @@ export default function Lesson3DContent({
                       );
                     }
                     const verify = getFieldVerify('review_8a_order', item.id);
+                    const currentVal = rev8a.value[item.id] || '';
+                    const isItemDiff = isDiff(origRev8a[item.id], currentVal);
                     return (
                       <div key={item.id} className={styles.gappedItem} style={{ flexDirection: 'column', alignItems: 'stretch' }}>
                         <span style={{ fontFamily: 'monospace', color: '#64748b', fontSize: '0.8rem' }}>
                           {item.id}. {item.prompt}
                         </span>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', width: '100%' }}>
                           <input
                             type="text"
-                            className={`${styles.inputField} ${styles.inputFieldFull} ${getInputClass(
-                              verify?.status
-                            )}`}
+                            className={`${styles.inputField} ${styles.inputFieldFull} ${getInputClass(verify)} ${
+                              isItemDiff ? styles.diffHighlight : ''
+                            }`}
                             placeholder="Write ordered question..."
-                            value={rev8a.value[item.id] || ''}
+                            value={currentVal}
                             onChange={(e) =>
                               rev8a.setValue({ ...rev8a.value, [item.id]: e.target.value })
                             }
                             disabled={isReadOnly}
                           />
-                          {rev8a.isReview && <TeacherAnswerBadge result={verify} />}
+                          {isReview && verify?.hasKey && verify.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
                         </div>
+                        {isReview && verify && !verify.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={verify} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -1739,7 +1928,9 @@ export default function Lesson3DContent({
                 <input
                   type="text"
                   style={{ marginTop: '0.5rem' }}
-                  className={`${styles.inputField} ${styles.inputFieldFull}`}
+                  className={`${styles.inputField} ${styles.inputFieldFull} ${
+                    isDiff(origRev8b, rev8b.value) ? styles.diffHighlight : ''
+                  }`}
                   placeholder="Record your pair dialogue..."
                   value={rev8b.value || ''}
                   onChange={(e) => rev8b.setValue(e.target.value)}

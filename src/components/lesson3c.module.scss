@@ -10,6 +10,14 @@
   margin: 0 auto;
   min-width: 0;
   box-sizing: border-box;
+
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
 }
 
 // Карточка урока
@@ -22,11 +30,13 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-// Header Banner 3C (Тематический градиент Roadmap Red / Orange)
+// Header Banner 3C
 .headerBanner {
-  background: linear-gradient(135deg, #c02624 0%, #dc2626 50%, #ea580c 100%);
+  background: linear-gradient(135deg, #c02624 0%, $color-danger-dark 50%, #ea580c 100%);
   color: $color-white;
   padding: clamp(1.25rem, 3.5vw, 2.25rem);
   display: flex;
@@ -38,6 +48,7 @@
   display: flex;
   align-items: center;
   gap: clamp(0.75rem, 2vw, 1.25rem);
+  flex-wrap: wrap;
 }
 
 .badge3C {
@@ -45,7 +56,7 @@
   align-items: baseline;
   justify-content: center;
   background: $color-white;
-  color: #dc2626;
+  color: $color-danger-dark;
   font-weight: 900;
   font-size: clamp(1.5rem, 4vw, 2.25rem);
   padding: 0.25rem 0.85rem;
@@ -63,6 +74,8 @@
   display: flex;
   flex-direction: column;
   gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
 }
 
 .unitTag {
@@ -70,7 +83,7 @@
   font-weight: $font-weight-bold;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: #fef08a;
+  color: $color-warning-light;
 }
 
 .titleHeading {
@@ -100,7 +113,7 @@
     line-height: 1.35;
 
     strong {
-      color: #fef08a;
+      color: $color-warning-light;
       font-weight: $font-weight-bold;
     }
   }
@@ -114,13 +127,13 @@
   gap: clamp(1.5rem, 3vw, 2.25rem);
 }
 
-// Сетка колонок (2 колонки на десктопе)
+// Сетка колонок
 .twoColLayout {
   display: grid;
   grid-template-columns: 1fr;
   gap: clamp(1.25rem, 3vw, 2rem);
 
-  @media (min-width: 900px) {
+  @include respond-to(lg) {
     grid-template-columns: 1fr 1fr;
   }
 }
@@ -136,7 +149,7 @@
 .sectionTitle {
   font-size: clamp(1.2rem, 2.5vw, 1.45rem);
   font-weight: 800;
-  color: #0f172a;
+  color: $color-gray-900;
   margin: 0 0 $spacing-sm 0;
   display: flex;
   align-items: center;
@@ -145,14 +158,15 @@
 
 // Блок упражнения
 .exerciseBlock {
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
   border-radius: $border-radius-lg;
   padding: clamp(0.85rem, 2vw, 1.25rem);
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
   box-sizing: border-box;
+  min-width: 0;
 }
 
 .exerciseHeader {
@@ -164,7 +178,7 @@
 
 .exNumber {
   background: #fee2e2;
-  color: #dc2626;
+  color: $color-danger-dark;
   font-weight: 800;
   font-size: 0.85rem;
   min-width: 1.6rem;
@@ -178,7 +192,7 @@
 
 .exLetter {
   font-weight: 800;
-  color: #dc2626;
+  color: $color-danger-dark;
   margin-right: 0.2rem;
 }
 
@@ -188,7 +202,7 @@
   line-height: 1.4;
 }
 
-// Аудио полоса (СТАНДАРТ: Единый красный стиль #d02a27)
+// Аудио полоса
 .audioActionRow {
   display: flex;
   align-items: center;
@@ -201,8 +215,8 @@
 }
 
 .audioBtn {
-  background: #d02a27;
-  color: #ffffff;
+  background: $color-danger-dark;
+  color: $color-white;
   border: none;
   padding: 0.35rem 0.85rem;
   border-radius: 4px;
@@ -239,22 +253,6 @@
   box-shadow: 0 0 0 2px rgba(27, 76, 91, 0.25);
 }
 
-.audioMeta {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.775rem;
-  color: #64748b;
-  min-width: 0;
-  flex: 1;
-}
-
-.audioTrackName {
-  font-weight: 600;
-  color: #334155;
-  white-space: nowrap;
-}
-
 .equalizer {
   display: inline-flex;
   align-items: flex-end;
@@ -264,7 +262,7 @@
 
 .bar {
   width: 2px;
-  background: #ffffff;
+  background: $color-white;
   border-radius: 1px;
   animation: eqAnimation 0.8s ease-in-out infinite alternate;
 
@@ -278,21 +276,8 @@
   100% { height: 12px; }
 }
 
-.exampleBox {
-  background: #fff7ed;
-  border: 1px dashed #fdba74;
-  border-radius: $border-radius-md;
-  padding: 0.65rem 0.85rem;
-  font-size: 0.85rem;
-  color: #9a3412;
-  line-height: 1.45;
-}
-
-.vocabModelNote {
-  background: #fef2f2;
-  border-left: 3px solid #dc2626;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.825rem;
+.audioHint {
+  font-size: 0.8rem;
   color: #991b1b;
   font-weight: 500;
 }
@@ -302,8 +287,8 @@
   width: 100%;
   border-radius: $border-radius-lg;
   overflow: hidden;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
+  border: 1px solid $color-gray-200;
+  background: $color-white;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -319,13 +304,13 @@
 // Places chips with Milo PronounceButton
 .chipsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 0.5rem;
 }
 
 .wordChip {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
   border-radius: $border-radius-md;
   padding: 0.35rem 0.6rem;
   display: flex;
@@ -334,12 +319,12 @@
   gap: 0.4rem;
   font-size: 0.825rem;
   font-weight: 600;
-  color: #334155;
+  color: $color-gray-700;
   transition: all 0.15s ease;
 
   &:hover {
-    border-color: #cbd5e1;
-    background: #f1f5f9;
+    border-color: $color-gray-300;
+    background: $color-gray-100;
   }
 }
 
@@ -356,65 +341,55 @@
   flex-wrap: wrap;
   gap: 0.4rem;
   font-size: clamp(0.85rem, 1.8vw, 0.925rem);
-  color: #1e293b;
+  color: $color-gray-800;
   line-height: 1.5;
 }
 
 // Inputs
 .inlineInput {
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid $color-gray-300;
   border-radius: $border-radius-sm;
   padding: 0.25rem 0.55rem;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #0f172a;
-  background: #ffffff;
+  color: $color-gray-900;
+  background: $color-white;
   transition: all 0.15s ease;
+  max-width: 100%;
 
   &:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: $color-primary;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
   }
-}
-
-.inputValid {
-  border-color: #16a34a !important;
-  background-color: #f0fdf4 !important;
-  color: #15803d !important;
-}
-
-.inputInvalid {
-  border-color: #dc2626 !important;
-  background-color: #fef2f2 !important;
-  color: #b91c1c !important;
 }
 
 .notesTextarea {
   width: 100%;
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid $color-gray-300;
   border-radius: $border-radius-md;
   padding: 0.6rem 0.8rem;
   font-size: 0.875rem;
   font-family: inherit;
-  color: #0f172a;
+  color: $color-gray-900;
   resize: vertical;
-  background: #ffffff;
+  background: $color-white;
+  box-sizing: border-box;
 
   &:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: $color-primary;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
   }
 }
 
-// Reading Materials Grid (North Norfolk brochure + Photos A, B, C)
+// Reading Materials Grid
 .readingMaterialsGrid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 0.85rem;
 
-  @media (min-width: 600px) {
+  @include respond-to(sm) {
     grid-template-columns: 1.15fr 0.85fr;
   }
 }
@@ -423,8 +398,8 @@
   position: relative;
   border-radius: $border-radius-lg;
   overflow: hidden;
-  border: 1.5px solid #cbd5e1;
-  background: #ffffff;
+  border: 1.5px solid $color-gray-300;
+  background: $color-white;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
@@ -459,7 +434,7 @@
 
 .cardTopLabel {
   background: #0284c7;
-  color: #ffffff;
+  color: $color-white;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.35rem 0.65rem;
@@ -471,8 +446,8 @@
 }
 
 .photosTopLabel {
-  background: #0f172a;
-  color: #ffffff;
+  background: $color-gray-900;
+  color: $color-white;
   font-size: 0.75rem;
   font-weight: 700;
   padding: 0.35rem 0.65rem;
@@ -485,7 +460,7 @@
 
 // Reading section (North Norfolk)
 .norfolkCard {
-  background: #ffffff;
+  background: $color-white;
   border: 1.5px solid #bae6fd;
   border-radius: $border-radius-lg;
   overflow: hidden;
@@ -495,7 +470,7 @@
 
 .norfolkHeader {
   background: #0284c7;
-  color: #ffffff;
+  color: $color-white;
   padding: 0.6rem 1rem;
   font-weight: 800;
   font-size: 1rem;
@@ -512,7 +487,7 @@
 }
 
 .townItem {
-  background: #f0f9ff;
+  background: $color-primary-50;
   border-left: 3px solid #0284c7;
   padding: 0.6rem 0.75rem;
   border-radius: 0 $border-radius-md $border-radius-md 0;
@@ -528,36 +503,42 @@
     margin: 0;
     font-size: 0.825rem;
     line-height: 1.4;
-    color: #334155;
+    color: $color-gray-700;
   }
 }
 
 // Matching selects
 .matchGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-template-columns: 1fr;
   gap: 0.65rem;
   margin-top: 0.5rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
 }
 
 .matchRow {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #ffffff;
+  background: $color-white;
   padding: 0.4rem 0.65rem;
   border-radius: $border-radius-md;
-  border: 1px solid #e2e8f0;
+  border: 1px solid $color-gray-200;
+  flex-wrap: wrap;
 }
 
 .selectInput {
   flex: 1;
-  border: 1.5px solid #cbd5e1;
+  min-width: 120px;
+  border: 1.5px solid $color-gray-300;
   border-radius: $border-radius-sm;
   padding: 0.25rem 0.4rem;
   font-size: 0.825rem;
   font-weight: 600;
-  background: #ffffff;
+  background: $color-white;
 }
 
 // Section Divider
@@ -570,13 +551,13 @@
   .partDividerLine {
     flex: 1;
     height: 1px;
-    background: #e2e8f0;
+    background: $color-gray-200;
   }
 
   .partDividerBadge {
     font-size: clamp(0.75rem, 1.6vw, 0.85rem);
     font-weight: 700;
-    color: #dc2626;
+    color: $color-danger-dark;
     background: #fee2e2;
     border: 1px solid #fecaca;
     padding: 0.35rem 0.9rem;
@@ -598,28 +579,31 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  background: #ffffff;
+  background: $color-white;
   padding: 0.5rem 0.75rem;
-  border: 1px solid #e2e8f0;
+  border: 1px solid $color-gray-200;
   border-radius: $border-radius-md;
+  flex-wrap: wrap;
 }
 
 .tfSentence {
   font-size: 0.875rem;
   font-weight: 500;
-  color: #1e293b;
+  color: $color-gray-800;
   flex: 1;
+  min-width: 160px;
 }
 
 .tfButtons {
   display: flex;
   gap: 0.35rem;
+  align-items: center;
 }
 
 .tfBtn {
-  border: 1.5px solid #cbd5e1;
-  background: #ffffff;
-  color: #64748b;
+  border: 1.5px solid $color-gray-300;
+  background: $color-white;
+  color: $color-gray-500;
   font-weight: 800;
   font-size: 0.825rem;
   padding: 0.25rem 0.65rem;
@@ -628,15 +612,15 @@
   transition: all 0.15s ease;
 
   &:hover {
-    border-color: #94a3b8;
-    background: #f8fafc;
+    border-color: $color-gray-400;
+    background: $color-gray-50;
   }
 }
 
 .tfBtnSelected {
   background: #0284c7 !important;
   border-color: #0284c7 !important;
-  color: #ffffff !important;
+  color: $color-white !important;
 }
 
 // Grammar Box
@@ -658,7 +642,7 @@
 }
 
 .grammarExampleGroup {
-  background: #ffffff;
+  background: $color-white;
   padding: 0.65rem 0.85rem;
   border-radius: $border-radius-md;
   border: 1px solid #dcfce7;
@@ -673,7 +657,7 @@
   p {
     margin: 0.15rem 0;
     font-size: 0.85rem;
-    color: #334155;
+    color: $color-gray-700;
   }
 }
 
@@ -686,14 +670,19 @@
 
 .stressItem {
   font-size: 0.875rem;
-  color: #1e293b;
-  background: #ffffff;
+  color: $color-gray-800;
+  background: $color-white;
   padding: 0.45rem 0.75rem;
   border-radius: $border-radius-md;
-  border: 1px solid #e2e8f0;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 
   strong {
-    color: #dc2626;
+    color: $color-danger-dark;
     text-decoration: underline;
   }
 }
@@ -709,33 +698,33 @@
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
-  background: #ffffff;
+  background: $color-white;
   padding: 0.65rem 0.85rem;
   border-radius: $border-radius-md;
-  border: 1px solid #e2e8f0;
+  border: 1px solid $color-gray-200;
 }
 
 .scrambledWords {
   font-size: 0.825rem;
   font-weight: 700;
-  color: #64748b;
+  color: $color-gray-500;
   font-style: italic;
 }
 
 .orderInput {
-  border: 1.5px solid #cbd5e1;
+  border: 1.5px solid $color-gray-300;
   border-radius: $border-radius-sm;
   padding: 0.4rem 0.65rem;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #0f172a;
-  background: #ffffff;
+  color: $color-gray-900;
+  background: $color-white;
   width: 100%;
   box-sizing: border-box;
 
   &:focus {
     outline: none;
-    border-color: #3b82f6;
+    border-color: $color-primary;
     box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
   }
 }
@@ -795,6 +784,50 @@
   z-index: 10;
 
   &:hover {
-    background: #dc2626;
+    background: $color-danger-dark;
   }
+}
+
+// Verification and Review styles
+.feedbackRow {
+  margin-top: $spacing-xs;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: $spacing-xs;
+  width: 100%;
+}
+
+.correctBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  background: $color-success;
+  color: $color-white;
+  border-radius: $border-radius-full;
+  font-size: 0.75rem;
+  font-weight: $font-weight-bold;
+  margin-left: $spacing-xs;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.diffHighlight {
+  outline: 2px dashed $color-warning !important;
+  outline-offset: 1px;
+  background-color: rgba(251, 191, 36, 0.12) !important;
+}
+
+.inputValid {
+  border-color: $color-success-dark !important;
+  background-color: rgba(34, 197, 94, 0.08) !important;
+  color: $color-success-dark !important;
+}
+
+.inputInvalid {
+  border-color: $color-danger-dark !important;
+  background-color: rgba(239, 68, 68, 0.08) !important;
+  color: $color-danger-dark !important;
 }

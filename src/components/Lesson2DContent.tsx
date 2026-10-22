@@ -227,6 +227,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
     onEx8aQuestionsChange,
     onEx8bPairNotesChange,
     onReflectScoresChange,
+    originalAnswers,
   } = props;
 
   const activeAnswerKey: LessonAnswerKey | null =
@@ -242,6 +243,21 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
   const ex7aMathKeys = getExerciseKey(activeAnswerKey, 'exercise_7a_math');
   const ex7bAgesKeys = getExerciseKey(activeAnswerKey, 'exercise_7b_ages');
   const ex8aQuestionsKeys = getExerciseKey(activeAnswerKey, 'exercise_8a_questions');
+
+  const origEx1Objects = typeof originalAnswers?.exercise_1_objects === 'string' ? originalAnswers.exercise_1_objects : undefined;
+  const origEx2aBought = typeof originalAnswers?.exercise_2a_bought === 'string' ? originalAnswers.exercise_2a_bought : undefined;
+  const origEx3aDialogue = originalAnswers?.exercise_3a_dialogue as Record<string, string> | undefined;
+  const origEx4Notes = typeof originalAnswers?.exercise_4_notes === 'string' ? originalAnswers.exercise_4_notes : undefined;
+  const origEx1Family = originalAnswers?.exercise_1_family as Record<string, string> | undefined;
+  const origEx2Possessive = originalAnswers?.exercise_2_possessive as Record<string, string> | undefined;
+  const origEx3Alternatives = originalAnswers?.exercise_3_alternatives as Record<string, string> | undefined;
+  const origEx4Mistakes = originalAnswers?.exercise_4_mistakes as Record<string, string> | undefined;
+  const origEx5Anagrams = originalAnswers?.exercise_5_anagrams as Record<string, string> | undefined;
+  const origEx6Demonstratives = originalAnswers?.exercise_6_demonstratives as Record<string, string> | undefined;
+  const origEx7aMath = originalAnswers?.exercise_7a_math as Record<string, string> | undefined;
+  const origEx7bAges = originalAnswers?.exercise_7b_ages as Record<string, string> | undefined;
+  const origEx8aQuestions = originalAnswers?.exercise_8a_questions as Record<string, string> | undefined;
+  const origEx8bPairNotes = typeof originalAnswers?.exercise_8b_pair_notes === 'string' ? originalAnswers.exercise_8b_pair_notes : undefined;
 
   const [modalImage, setModalImage] = useState<string | null>(null);
 
@@ -323,6 +339,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                 disabled={readOnly}
                 placeholder="List objects you see in the picture..."
                 rows={3}
+                className={origEx1Objects !== undefined && origEx1Objects !== ex1Objects ? styles.diffHighlight : ''}
                 style={{
                   width: '100%',
                   border: '1px solid #cbd5e1',
@@ -372,7 +389,9 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                 onChange={(e) => onEx2aBoughtChange?.(e.target.value)}
                 disabled={readOnly}
                 placeholder=""
-                className={styles.underlinedInput}
+                className={`${styles.underlinedInput} ${
+                  origEx2aBought !== undefined && origEx2aBought !== ex2aBought ? styles.diffHighlight : ''
+                }`}
                 style={{ width: '100%' }}
               />
             </div>
@@ -483,9 +502,10 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                   <span>Excuse me.</span>
                   <span className={styles.gapIndex}>1</span>
                   {(() => {
+                    const isChanged = origEx3aDialogue && origEx3aDialogue['1'] !== undefined && origEx3aDialogue['1'] !== (ex3aDialogue['1'] || '');
                     const vRes = isReview && ex3aDialogueKeys ? verifyAnswer(ex3aDialogue['1'], ex3aDialogueKeys['1']) : null;
                     return (
-                      <>
+                      <span className={styles.feedbackRow}>
                         <input
                           type="text"
                           value={ex3aDialogue['1'] || ''}
@@ -494,10 +514,14 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                           placeholder="..."
                           className={`${styles.dialogueInput} ${
                             vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                          }`}
+                          } ${isChanged ? styles.diffHighlight : ''}`}
                         />
-                        {vRes && <TeacherAnswerBadge result={vRes} />}
-                      </>
+                        {vRes && (vRes.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={vRes} />
+                        ))}
+                      </span>
                     );
                   })()}
                   <span>that chair?</span>
@@ -507,9 +531,10 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                   <span className={styles.speaker}>Assistant:</span>
                   <span className={styles.gapIndex}>2</span>
                   {(() => {
+                    const isChanged = origEx3aDialogue && origEx3aDialogue['2'] !== undefined && origEx3aDialogue['2'] !== (ex3aDialogue['2'] || '');
                     const vRes = isReview && ex3aDialogueKeys ? verifyAnswer(ex3aDialogue['2'], ex3aDialogueKeys['2']) : null;
                     return (
-                      <>
+                      <span className={styles.feedbackRow}>
                         <input
                           type="text"
                           value={ex3aDialogue['2'] || ''}
@@ -518,10 +543,14 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                           placeholder="..."
                           className={`${styles.dialogueInput} ${
                             vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                          }`}
+                          } ${isChanged ? styles.diffHighlight : ''}`}
                         />
-                        {vRes && <TeacherAnswerBadge result={vRes} />}
-                      </>
+                        {vRes && (vRes.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={vRes} />
+                        ))}
+                      </span>
                     );
                   })()}
                   <span>£45.</span>
@@ -532,9 +561,10 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                   <span>And</span>
                   <span className={styles.gapIndex}>3</span>
                   {(() => {
+                    const isChanged = origEx3aDialogue && origEx3aDialogue['3'] !== undefined && origEx3aDialogue['3'] !== (ex3aDialogue['3'] || '');
                     const vRes = isReview && ex3aDialogueKeys ? verifyAnswer(ex3aDialogue['3'], ex3aDialogueKeys['3']) : null;
                     return (
-                      <>
+                      <span className={styles.feedbackRow}>
                         <input
                           type="text"
                           value={ex3aDialogue['3'] || ''}
@@ -543,10 +573,14 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                           placeholder="..."
                           className={`${styles.dialogueInput} ${
                             vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                          }`}
+                          } ${isChanged ? styles.diffHighlight : ''}`}
                         />
-                        {vRes && <TeacherAnswerBadge result={vRes} />}
-                      </>
+                        {vRes && (vRes.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={vRes} />
+                        ))}
+                      </span>
                     );
                   })()}
                   <span>this box?</span>
@@ -562,9 +596,10 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                   <span>OK.</span>
                   <span className={styles.gapIndex}>4</span>
                   {(() => {
+                    const isChanged = origEx3aDialogue && origEx3aDialogue['4'] !== undefined && origEx3aDialogue['4'] !== (ex3aDialogue['4'] || '');
                     const vRes = isReview && ex3aDialogueKeys ? verifyAnswer(ex3aDialogue['4'], ex3aDialogueKeys['4']) : null;
                     return (
-                      <>
+                      <span className={styles.feedbackRow}>
                         <input
                           type="text"
                           value={ex3aDialogue['4'] || ''}
@@ -573,10 +608,14 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                           placeholder="..."
                           className={`${styles.dialogueInput} ${
                             vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                          }`}
+                          } ${isChanged ? styles.diffHighlight : ''}`}
                         />
-                        {vRes && <TeacherAnswerBadge result={vRes} />}
-                      </>
+                        {vRes && (vRes.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={vRes} />
+                        ))}
+                      </span>
                     );
                   })()}
                   <span>these cups?</span>
@@ -596,9 +635,10 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                   <span className={styles.speaker}>Assistant:</span>
                   <span className={styles.gapIndex}>5</span>
                   {(() => {
+                    const isChanged = origEx3aDialogue && origEx3aDialogue['5'] !== undefined && origEx3aDialogue['5'] !== (ex3aDialogue['5'] || '');
                     const vRes = isReview && ex3aDialogueKeys ? verifyAnswer(ex3aDialogue['5'], ex3aDialogueKeys['5']) : null;
                     return (
-                      <>
+                      <span className={styles.feedbackRow}>
                         <input
                           type="text"
                           value={ex3aDialogue['5'] || ''}
@@ -607,18 +647,23 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                           placeholder="..."
                           className={`${styles.dialogueInput} ${
                             vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                          }`}
+                          } ${isChanged ? styles.diffHighlight : ''}`}
                         />
-                        {vRes && <TeacherAnswerBadge result={vRes} />}
-                      </>
+                        {vRes && (vRes.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={vRes} />
+                        ))}
+                      </span>
                     );
                   })()}
                   <span>£6, please.</span>
                   <span className={styles.gapIndex}>6</span>
                   {(() => {
+                    const isChanged = origEx3aDialogue && origEx3aDialogue['6'] !== undefined && origEx3aDialogue['6'] !== (ex3aDialogue['6'] || '');
                     const vRes = isReview && ex3aDialogueKeys ? verifyAnswer(ex3aDialogue['6'], ex3aDialogueKeys['6']) : null;
                     return (
-                      <>
+                      <span className={styles.feedbackRow}>
                         <input
                           type="text"
                           value={ex3aDialogue['6'] || ''}
@@ -627,10 +672,14 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                           placeholder="..."
                           className={`${styles.dialogueInput} ${
                             vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                          }`}
+                          } ${isChanged ? styles.diffHighlight : ''}`}
                         />
-                        {vRes && <TeacherAnswerBadge result={vRes} />}
-                      </>
+                        {vRes && (vRes.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={vRes} />
+                        ))}
+                      </span>
                     );
                   })()}
                   <span>?</span>
@@ -641,9 +690,10 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                   <span>Card, please.</span>
                   <span className={styles.gapIndex}>7</span>
                   {(() => {
+                    const isChanged = origEx3aDialogue && origEx3aDialogue['7'] !== undefined && origEx3aDialogue['7'] !== (ex3aDialogue['7'] || '');
                     const vRes = isReview && ex3aDialogueKeys ? verifyAnswer(ex3aDialogue['7'], ex3aDialogueKeys['7']) : null;
                     return (
-                      <>
+                      <span className={styles.feedbackRow}>
                         <input
                           type="text"
                           value={ex3aDialogue['7'] || ''}
@@ -652,10 +702,14 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                           placeholder="..."
                           className={`${styles.dialogueInput} ${
                             vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                          }`}
+                          } ${isChanged ? styles.diffHighlight : ''}`}
                         />
-                        {vRes && <TeacherAnswerBadge result={vRes} />}
-                      </>
+                        {vRes && (vRes.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={vRes} />
+                        ))}
+                      </span>
                     );
                   })()}
                   <span>.</span>
@@ -666,9 +720,10 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                   <span>Thank you.</span>
                   <span className={styles.gapIndex}>8</span>
                   {(() => {
+                    const isChanged = origEx3aDialogue && origEx3aDialogue['8'] !== undefined && origEx3aDialogue['8'] !== (ex3aDialogue['8'] || '');
                     const vRes = isReview && ex3aDialogueKeys ? verifyAnswer(ex3aDialogue['8'], ex3aDialogueKeys['8']) : null;
                     return (
-                      <>
+                      <span className={styles.feedbackRow}>
                         <input
                           type="text"
                           value={ex3aDialogue['8'] || ''}
@@ -677,10 +732,14 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                           placeholder="..."
                           className={`${styles.dialogueInput} ${
                             vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                          }`}
+                          } ${isChanged ? styles.diffHighlight : ''}`}
                         />
-                        {vRes && <TeacherAnswerBadge result={vRes} />}
-                      </>
+                        {vRes && (vRes.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={vRes} />
+                        ))}
+                      </span>
                     );
                   })()}
                   <span>.</span>
@@ -732,6 +791,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                   disabled={readOnly}
                   placeholder="Notes from your conversation (e.g. A: How much is the red phone? B: It's £52.)..."
                   rows={3}
+                  className={origEx4Notes !== undefined && origEx4Notes !== ex4Notes ? styles.diffHighlight : ''}
                   style={{
                     width: '100%',
                     border: '1px solid #cbd5e1',
@@ -787,6 +847,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
               </div>
               <div className={styles.itemsList}>
                 {EX1_FAMILY_ITEMS.map((item) => {
+                  const isChanged = origEx1Family && origEx1Family[item.id] !== undefined && origEx1Family[item.id] !== (ex1Family[item.id] || '');
                   const vRes = isReview && ex1FamilyKeys ? verifyAnswer(ex1Family[item.id], ex1FamilyKeys[item.id]) : null;
                   return (
                     <div key={item.id} className={styles.itemRow}>
@@ -795,7 +856,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                       {item.isExample ? (
                         <span className={styles.exampleBlue}>{item.answer}.</span>
                       ) : (
-                        <>
+                        <span className={styles.feedbackRow}>
                           <input
                             type="text"
                             value={ex1Family[item.id] || ''}
@@ -804,11 +865,15 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                             placeholder={item.placeholder}
                             className={`${styles.underlinedInput} ${
                               vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                            }`}
+                            } ${isChanged ? styles.diffHighlight : ''}`}
                           />
                           <span>.</span>
-                          {vRes && <TeacherAnswerBadge result={vRes} />}
-                        </>
+                          {vRes && (vRes.isCorrect ? (
+                            <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                          ) : (
+                            <TeacherAnswerBadge result={vRes} />
+                          ))}
+                        </span>
                       )}
                     </div>
                   );
@@ -824,6 +889,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
               </div>
               <div className={styles.itemsList}>
                 {EX2_POSSESSIVE_ITEMS.map((item) => {
+                  const isChanged = origEx2Possessive && origEx2Possessive[item.id] !== undefined && origEx2Possessive[item.id] !== (ex2Possessive[item.id] || '');
                   const vRes = isReview && ex2PossessiveKeys ? verifyAnswer(ex2Possessive[item.id], ex2PossessiveKeys[item.id]) : null;
                   return (
                     <div key={item.id} className={styles.itemRow}>
@@ -833,7 +899,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                       {item.isExample ? (
                         <span className={styles.exampleBlue}>{item.answer}</span>
                       ) : (
-                        <>
+                        <span className={styles.feedbackRow}>
                           <input
                             type="text"
                             value={ex2Possessive[item.id] || ''}
@@ -842,11 +908,15 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                             placeholder={item.placeholder}
                             className={`${styles.underlinedInput} ${
                               vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                            }`}
+                            } ${isChanged ? styles.diffHighlight : ''}`}
                             style={{ minWidth: '150px' }}
                           />
-                          {vRes && <TeacherAnswerBadge result={vRes} />}
-                        </>
+                          {vRes && (vRes.isCorrect ? (
+                            <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                          ) : (
+                            <TeacherAnswerBadge result={vRes} />
+                          ))}
+                        </span>
                       )}
                     </div>
                   );
@@ -862,87 +932,101 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
               </div>
               <div className={styles.itemsList}>
                 {EX3_ALTERNATIVES_ITEMS.map((item) => {
+                  const isChangedA = origEx3Alternatives && origEx3Alternatives[item.id] !== undefined && origEx3Alternatives[item.id] !== (ex3Alternatives[item.id] || '');
+                  const isChangedB = origEx3Alternatives && origEx3Alternatives[`${item.id}_b`] !== undefined && origEx3Alternatives[`${item.id}_b`] !== (ex3Alternatives[`${item.id}_b`] || '');
                   const vResA = isReview && ex3AlternativesKeys ? verifyAnswer(ex3Alternatives[item.id], ex3AlternativesKeys[item.id]) : null;
                   const vResB = isReview && ex3AlternativesKeys ? verifyAnswer(ex3Alternatives[`${item.id}_b`], ex3AlternativesKeys[`${item.id}_b`]) : null;
                   return (
                     <div key={item.id} className={styles.itemRow}>
                       <span className={styles.itemIndex}>{item.id}</span>
                       <span>{item.before}</span>
-                      <span className={styles.choicePills}>
-                        <button
-                          type="button"
-                          className={`${styles.choiceBtn} ${
-                            ex3Alternatives[item.id] === item.opt1 ? styles.choiceSelected : ''
-                          } ${
-                            vResA?.hasKey
-                              ? (ex3Alternatives[item.id] === item.opt1
-                                  ? (vResA.isCorrect ? styles.choiceValid : styles.choiceInvalid)
-                                  : '')
-                              : ''
-                          }`}
-                          onClick={() => !readOnly && onEx3AlternativesChange?.(item.id, item.opt1)}
-                          disabled={readOnly}
-                        >
-                          {item.opt1}
-                        </button>
-                        <span>/</span>
-                        <button
-                          type="button"
-                          className={`${styles.choiceBtn} ${
-                            ex3Alternatives[item.id] === item.opt2 ? styles.choiceSelected : ''
-                          } ${
-                            vResA?.hasKey
-                              ? (ex3Alternatives[item.id] === item.opt2
-                                  ? (vResA.isCorrect ? styles.choiceValid : styles.choiceInvalid)
-                                  : '')
-                              : ''
-                          }`}
-                          onClick={() => !readOnly && onEx3AlternativesChange?.(item.id, item.opt2)}
-                          disabled={readOnly}
-                        >
-                          {item.opt2}
-                        </button>
+                      <span className={`${styles.feedbackRow} ${isChangedA ? styles.diffHighlight : ''}`}>
+                        <span className={styles.choicePills}>
+                          <button
+                            type="button"
+                            className={`${styles.choiceBtn} ${
+                              ex3Alternatives[item.id] === item.opt1 ? styles.choiceSelected : ''
+                            } ${
+                              vResA?.hasKey
+                                ? (ex3Alternatives[item.id] === item.opt1
+                                    ? (vResA.isCorrect ? styles.choiceValid : styles.choiceInvalid)
+                                    : '')
+                                : ''
+                            }`}
+                            onClick={() => !readOnly && onEx3AlternativesChange?.(item.id, item.opt1)}
+                            disabled={readOnly}
+                          >
+                            {item.opt1}
+                          </button>
+                          <span>/</span>
+                          <button
+                            type="button"
+                            className={`${styles.choiceBtn} ${
+                              ex3Alternatives[item.id] === item.opt2 ? styles.choiceSelected : ''
+                            } ${
+                              vResA?.hasKey
+                                ? (ex3Alternatives[item.id] === item.opt2
+                                    ? (vResA.isCorrect ? styles.choiceValid : styles.choiceInvalid)
+                                    : '')
+                                : ''
+                            }`}
+                            onClick={() => !readOnly && onEx3AlternativesChange?.(item.id, item.opt2)}
+                            disabled={readOnly}
+                          >
+                            {item.opt2}
+                          </button>
+                        </span>
+                        {vResA && (vResA.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={vResA} />
+                        ))}
                       </span>
-                      {vResA && <TeacherAnswerBadge result={vResA} />}
                       {item.mid && <span>{item.mid}</span>}
                       {item.opt3 && item.opt4 && (
                         <>
-                          <span className={styles.choicePills}>
-                            <button
-                              type="button"
-                              className={`${styles.choiceBtn} ${
-                                ex3Alternatives[`${item.id}_b`] === item.opt3 ? styles.choiceSelected : ''
-                              } ${
-                                vResB?.hasKey
-                                  ? (ex3Alternatives[`${item.id}_b`] === item.opt3
-                                      ? (vResB.isCorrect ? styles.choiceValid : styles.choiceInvalid)
-                                      : '')
-                                  : ''
-                              }`}
-                              onClick={() => !readOnly && onEx3AlternativesChange?.(`${item.id}_b`, item.opt3)}
-                              disabled={readOnly}
-                            >
-                              {item.opt3}
-                            </button>
-                            <span>/</span>
-                            <button
-                              type="button"
-                              className={`${styles.choiceBtn} ${
-                                ex3Alternatives[`${item.id}_b`] === item.opt4 ? styles.choiceSelected : ''
-                              } ${
-                                vResB?.hasKey
-                                  ? (ex3Alternatives[`${item.id}_b`] === item.opt4
-                                      ? (vResB.isCorrect ? styles.choiceValid : styles.choiceInvalid)
-                                      : '')
-                                  : ''
-                              }`}
-                              onClick={() => !readOnly && onEx3AlternativesChange?.(`${item.id}_b`, item.opt4)}
-                              disabled={readOnly}
-                            >
-                              {item.opt4}
-                            </button>
+                          <span className={`${styles.feedbackRow} ${isChangedB ? styles.diffHighlight : ''}`}>
+                            <span className={styles.choicePills}>
+                              <button
+                                type="button"
+                                className={`${styles.choiceBtn} ${
+                                  ex3Alternatives[`${item.id}_b`] === item.opt3 ? styles.choiceSelected : ''
+                                } ${
+                                  vResB?.hasKey
+                                    ? (ex3Alternatives[`${item.id}_b`] === item.opt3
+                                        ? (vResB.isCorrect ? styles.choiceValid : styles.choiceInvalid)
+                                        : '')
+                                    : ''
+                                }`}
+                                onClick={() => !readOnly && onEx3AlternativesChange?.(`${item.id}_b`, item.opt3)}
+                                disabled={readOnly}
+                              >
+                                {item.opt3}
+                              </button>
+                              <span>/</span>
+                              <button
+                                type="button"
+                                className={`${styles.choiceBtn} ${
+                                  ex3Alternatives[`${item.id}_b`] === item.opt4 ? styles.choiceSelected : ''
+                                } ${
+                                  vResB?.hasKey
+                                    ? (ex3Alternatives[`${item.id}_b`] === item.opt4
+                                        ? (vResB.isCorrect ? styles.choiceValid : styles.choiceInvalid)
+                                        : '')
+                                    : ''
+                                }`}
+                                onClick={() => !readOnly && onEx3AlternativesChange?.(`${item.id}_b`, item.opt4)}
+                                disabled={readOnly}
+                              >
+                                {item.opt4}
+                              </button>
+                            </span>
+                            {vResB && (vResB.isCorrect ? (
+                              <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                            ) : (
+                              <TeacherAnswerBadge result={vResB} />
+                            ))}
                           </span>
-                          {vResB && <TeacherAnswerBadge result={vResB} />}
                         </>
                       )}
                       <span>{item.after}</span>
@@ -959,25 +1043,28 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                 <span className={styles.instruction}>Correct the mistakes in the sentences.</span>
               </div>
               <div className={styles.itemsList}>
-                {EX4_MISTAKES_ITEMS.map((item) => (
-                  <div key={item.id} style={{ marginBottom: '0.4rem' }}>
-                    <div className={styles.itemRow}>
-                      <span className={styles.itemIndex}>{item.id}</span>
-                      <span style={{ color: '#475569' }}>{item.wrong}</span>
+                {EX4_MISTAKES_ITEMS.map((item) => {
+                  const isChanged = origEx4Mistakes && origEx4Mistakes[item.id] !== undefined && origEx4Mistakes[item.id] !== (ex4Mistakes[item.id] || '');
+                  return (
+                    <div key={item.id} style={{ marginBottom: '0.4rem' }}>
+                      <div className={styles.itemRow}>
+                        <span className={styles.itemIndex}>{item.id}</span>
+                        <span style={{ color: '#475569' }}>{item.wrong}</span>
+                      </div>
+                      <div style={{ paddingLeft: '18px', marginTop: '3px' }}>
+                        <input
+                          type="text"
+                          value={ex4Mistakes[item.id] || ''}
+                          onChange={(e) => onEx4MistakesChange?.(item.id, e.target.value)}
+                          disabled={readOnly}
+                          placeholder={item.placeholder}
+                          className={`${styles.underlinedInput} ${isChanged ? styles.diffHighlight : ''}`}
+                          style={{ width: '100%' }}
+                        />
+                      </div>
                     </div>
-                    <div style={{ paddingLeft: '18px', marginTop: '3px' }}>
-                      <input
-                        type="text"
-                        value={ex4Mistakes[item.id] || ''}
-                        onChange={(e) => onEx4MistakesChange?.(item.id, e.target.value)}
-                        disabled={readOnly}
-                        placeholder={item.placeholder}
-                        className={styles.underlinedInput}
-                        style={{ width: '100%' }}
-                      />
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
 
@@ -991,6 +1078,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
               </div>
               <div className={styles.anagramGrid}>
                 {EX5_ANAGRAMS_ITEMS.map((item) => {
+                  const isChanged = origEx5Anagrams && origEx5Anagrams[item.id] !== undefined && origEx5Anagrams[item.id] !== (ex5Anagrams[item.id] || '');
                   const vRes = isReview && ex5AnagramsKeys ? verifyAnswer(ex5Anagrams[item.id], ex5AnagramsKeys[item.id]) : null;
                   return (
                     <div key={item.id} className={styles.anagramRow}>
@@ -1000,7 +1088,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                       {item.isExample ? (
                         <span className={styles.exampleBlue}>{item.answer}</span>
                       ) : (
-                        <>
+                        <span className={styles.feedbackRow}>
                           <input
                             type="text"
                             value={ex5Anagrams[item.id] || ''}
@@ -1009,11 +1097,15 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                             placeholder={item.placeholder}
                             className={`${styles.underlinedInput} ${
                               vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                            }`}
+                            } ${isChanged ? styles.diffHighlight : ''}`}
                             style={{ minWidth: '70px' }}
                           />
-                          {vRes && <TeacherAnswerBadge result={vRes} />}
-                        </>
+                          {vRes && (vRes.isCorrect ? (
+                            <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                          ) : (
+                            <TeacherAnswerBadge result={vRes} />
+                          ))}
+                        </span>
                       )}
                     </div>
                   );
@@ -1032,47 +1124,54 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
               </div>
               <div className={styles.itemsList}>
                 {EX6_DEMONSTRATIVE_ITEMS.map((item) => {
+                  const isChanged = origEx6Demonstratives && origEx6Demonstratives[item.id] !== undefined && origEx6Demonstratives[item.id] !== (ex6Demonstratives[item.id] || '');
                   const vRes = isReview && ex6DemonstrativesKeys ? verifyAnswer(ex6Demonstratives[item.id], ex6DemonstrativesKeys[item.id]) : null;
                   return (
                     <div key={item.id} className={styles.itemRow}>
                       <span className={styles.itemIndex}>{item.id}</span>
                       {item.promptBefore && <span>{item.promptBefore}</span>}
-                      <span className={styles.choicePills}>
-                        <button
-                          type="button"
-                          className={`${styles.choiceBtn} ${
-                            ex6Demonstratives[item.id] === item.opt1 ? styles.choiceSelected : ''
-                          } ${
-                            vRes?.hasKey
-                              ? (ex6Demonstratives[item.id] === item.opt1
-                                  ? (vRes.isCorrect ? styles.choiceValid : styles.choiceInvalid)
-                                  : '')
-                              : ''
-                          }`}
-                          onClick={() => !readOnly && onEx6DemonstrativesChange?.(item.id, item.opt1)}
-                          disabled={readOnly}
-                        >
-                          {item.opt1}
-                        </button>
-                        <span>/</span>
-                        <button
-                          type="button"
-                          className={`${styles.choiceBtn} ${
-                            ex6Demonstratives[item.id] === item.opt2 ? styles.choiceSelected : ''
-                          } ${
-                            vRes?.hasKey
-                              ? (ex6Demonstratives[item.id] === item.opt2
-                                  ? (vRes.isCorrect ? styles.choiceValid : styles.choiceInvalid)
-                                  : '')
-                              : ''
-                          }`}
-                          onClick={() => !readOnly && onEx6DemonstrativesChange?.(item.id, item.opt2)}
-                          disabled={readOnly}
-                        >
-                          {item.opt2}
-                        </button>
+                      <span className={`${styles.feedbackRow} ${isChanged ? styles.diffHighlight : ''}`}>
+                        <span className={styles.choicePills}>
+                          <button
+                            type="button"
+                            className={`${styles.choiceBtn} ${
+                              ex6Demonstratives[item.id] === item.opt1 ? styles.choiceSelected : ''
+                            } ${
+                              vRes?.hasKey
+                                ? (ex6Demonstratives[item.id] === item.opt1
+                                    ? (vRes.isCorrect ? styles.choiceValid : styles.choiceInvalid)
+                                    : '')
+                                : ''
+                            }`}
+                            onClick={() => !readOnly && onEx6DemonstrativesChange?.(item.id, item.opt1)}
+                            disabled={readOnly}
+                          >
+                            {item.opt1}
+                          </button>
+                          <span>/</span>
+                          <button
+                            type="button"
+                            className={`${styles.choiceBtn} ${
+                              ex6Demonstratives[item.id] === item.opt2 ? styles.choiceSelected : ''
+                            } ${
+                              vRes?.hasKey
+                                ? (ex6Demonstratives[item.id] === item.opt2
+                                    ? (vRes.isCorrect ? styles.choiceValid : styles.choiceInvalid)
+                                    : '')
+                                : ''
+                            }`}
+                            onClick={() => !readOnly && onEx6DemonstrativesChange?.(item.id, item.opt2)}
+                            disabled={readOnly}
+                          >
+                            {item.opt2}
+                          </button>
+                        </span>
+                        {vRes && (vRes.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={vRes} />
+                        ))}
                       </span>
-                      {vRes && <TeacherAnswerBadge result={vRes} />}
                       <span>{item.promptAfter}</span>
                     </div>
                   );
@@ -1089,6 +1188,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
               </div>
               <div className={styles.mathGrid}>
                 {EX7A_MATH_ITEMS.map((item) => {
+                  const isChanged = origEx7aMath && origEx7aMath[item.id] !== undefined && origEx7aMath[item.id] !== (ex7aMath[item.id] || '');
                   const vRes = isReview && ex7aMathKeys ? verifyAnswer(ex7aMath[item.id], ex7aMathKeys[item.id]) : null;
                   return (
                     <div key={item.id} className={styles.mathRow}>
@@ -1097,7 +1197,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                       {item.isExample ? (
                         <span className={styles.exampleBlue}>{item.answer}</span>
                       ) : (
-                        <>
+                        <span className={styles.feedbackRow}>
                           <input
                             type="text"
                             value={ex7aMath[item.id] || ''}
@@ -1106,11 +1206,15 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                             placeholder={item.placeholder}
                             className={`${styles.underlinedInput} ${
                               vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                            }`}
+                            } ${isChanged ? styles.diffHighlight : ''}`}
                             style={{ minWidth: '95px' }}
                           />
-                          {vRes && <TeacherAnswerBadge result={vRes} />}
-                        </>
+                          {vRes && (vRes.isCorrect ? (
+                            <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                          ) : (
+                            <TeacherAnswerBadge result={vRes} />
+                          ))}
+                        </span>
                       )}
                     </div>
                   );
@@ -1126,6 +1230,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
               </div>
               <div className={styles.itemsList}>
                 {EX7B_AGES_ITEMS.map((item) => {
+                  const isChanged = origEx7bAges && origEx7bAges[item.id] !== undefined && origEx7bAges[item.id] !== (ex7bAges[item.id] || '');
                   const vRes = isReview && ex7bAgesKeys ? verifyAnswer(ex7bAges[item.id], ex7bAgesKeys[item.id]) : null;
                   return (
                     <div key={item.id} className={styles.itemRow}>
@@ -1135,7 +1240,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                       {item.isExample ? (
                         <span className={styles.exampleBlue}>{item.answer}{item.secondEnd}</span>
                       ) : (
-                        <>
+                        <span className={styles.feedbackRow}>
                           <input
                             type="text"
                             value={ex7bAges[item.id] || ''}
@@ -1144,12 +1249,16 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                             placeholder={item.placeholder}
                             className={`${styles.underlinedInput} ${
                               vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                            }`}
+                            } ${isChanged ? styles.diffHighlight : ''}`}
                             style={{ minWidth: '130px' }}
                           />
                           <span>{item.secondEnd}</span>
-                          {vRes && <TeacherAnswerBadge result={vRes} />}
-                        </>
+                          {vRes && (vRes.isCorrect ? (
+                            <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                          ) : (
+                            <TeacherAnswerBadge result={vRes} />
+                          ))}
+                        </span>
                       )}
                     </div>
                   );
@@ -1168,6 +1277,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
               </div>
               <div className={styles.itemsList}>
                 {EX8A_QUESTIONS_ITEMS.map((item) => {
+                  const isChanged = origEx8aQuestions && origEx8aQuestions[item.id] !== undefined && origEx8aQuestions[item.id] !== (ex8aQuestions[item.id] || '');
                   const vRes = isReview && ex8aQuestionsKeys ? verifyAnswer(ex8aQuestions[item.id], ex8aQuestionsKeys[item.id]) : null;
                   return (
                     <div key={item.id} style={{ marginBottom: '0.45rem' }}>
@@ -1175,7 +1285,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                         <span className={styles.itemIndex}>{item.id}</span>
                         <span className={styles.scrambledWords}>{item.words}</span>
                       </div>
-                      <div style={{ paddingLeft: '18px', marginTop: '2px' }}>
+                      <div style={{ paddingLeft: '18px', marginTop: '2px' }} className={styles.feedbackRow}>
                         <input
                           type="text"
                           value={ex8aQuestions[item.id] || ''}
@@ -1184,10 +1294,14 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                           placeholder={item.placeholder}
                           className={`${styles.underlinedInput} ${
                             vRes?.hasKey ? (vRes.isCorrect ? styles.inputValid : styles.inputInvalid) : ''
-                          }`}
+                          } ${isChanged ? styles.diffHighlight : ''}`}
                           style={{ width: '100%' }}
                         />
-                        {vRes && <TeacherAnswerBadge result={vRes} />}
+                        {vRes && (vRes.isCorrect ? (
+                          <span className={styles.correctBadge} aria-label="Correct">✓</span>
+                        ) : (
+                          <TeacherAnswerBadge result={vRes} />
+                        ))}
                       </div>
                     </div>
                   );
@@ -1207,6 +1321,7 @@ export default function Lesson2DContent(props: Lesson2DContentProps) {
                 disabled={readOnly}
                 placeholder="Partner's answers and notes..."
                 rows={2}
+                className={origEx8bPairNotes !== undefined && origEx8bPairNotes !== ex8bPairNotes ? styles.diffHighlight : ''}
                 style={{
                   width: 'calc(100% - 1.25rem)',
                   marginLeft: '1.25rem',

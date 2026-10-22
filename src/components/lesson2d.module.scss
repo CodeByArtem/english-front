@@ -1,36 +1,50 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
 .pageContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
+  @include flex-column;
+  gap: $spacing-xl;
   font-family: inherit;
-  color: #222222;
+  color: $color-gray-800;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* ========================================================================= */
 /* ================= PAGE 20: 2D ENGLISH IN ACTION ========================= */
 /* ========================================================================= */
-.textbookPage20 {
+.textbookPage20,
+.textbookPage21 {
   max-width: 900px;
+  width: 100%;
   margin: 0 auto;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  background: $color-white;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-base;
+  border: 1px solid $color-gray-200;
   position: relative;
   overflow: hidden;
-  padding-bottom: 2.5rem;
+  padding-bottom: $spacing-2xl;
   box-sizing: border-box;
 }
 
 .headerBanner20 {
   position: relative;
-  height: 126px;
+  min-height: 80px;
   width: 100%;
   overflow: hidden;
   background: linear-gradient(90deg, #ffffff 0%, #f5f8fa 38%, #dce5ea 100%);
   display: flex;
   align-items: center;
   user-select: none;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid $color-gray-200;
+
+  @include respond-to(sm) {
+    height: 126px;
+    padding: 0;
+  }
 }
 
 .headerContent20 {
@@ -39,36 +53,50 @@
   height: 100%;
   display: flex;
   align-items: center;
+  gap: 1rem;
 }
 
 .chevronsSvg {
-  height: 100%;
-  width: clamp(240px, 75vw, 430px);
-  max-width: 100%;
-  flex-shrink: 1;
-  display: block;
+  display: none;
+
+  @include respond-to(sm) {
+    display: block;
+    height: 100%;
+    width: clamp(240px, 75vw, 430px);
+    max-width: 100%;
+    flex-shrink: 1;
+  }
 }
 
 .badge2D {
-  position: absolute;
-  left: 84px;
-  top: 38px;
-  display: flex;
+  display: inline-flex;
   align-items: baseline;
   line-height: 1;
   font-family: 'Merriweather Sans', sans-serif;
+  background: $color-danger-dark;
+  padding: 0.45rem 0.75rem;
+  border-radius: 8px;
+  flex-shrink: 0;
+
+  @include respond-to(sm) {
+    position: absolute;
+    left: 84px;
+    top: 38px;
+    background: transparent;
+    padding: 0;
+  }
 
   .num2 {
     color: #ffffff;
     font-weight: 800;
-    font-size: 54px;
+    font-size: clamp(30px, 5.5vw, 54px);
     letter-spacing: -0.02em;
   }
 
   .letterD {
     color: #ee8d83;
     font-weight: 800;
-    font-size: 40px;
+    font-size: clamp(24px, 4.5vw, 40px);
     margin-left: 2px;
   }
 }
@@ -77,12 +105,19 @@
   font-family: 'Merriweather Sans', sans-serif;
   color: #1d4e66;
   font-weight: 800;
-  font-size: 33px;
-  position: absolute;
-  left: 220px;
-  top: 53px;
-  line-height: 1;
+  font-size: 1.5rem;
+  position: static;
+  margin: 0;
+  line-height: 1.2;
   letter-spacing: -0.02em;
+
+  @include respond-to(sm) {
+    position: absolute;
+    left: 220px;
+    top: 53px;
+    font-size: 33px;
+    line-height: 1;
+  }
 }
 
 .goalBanner20 {
@@ -93,11 +128,13 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  margin-left: 2.5rem;
-  margin-top: 0.5rem;
-  margin-bottom: 1rem;
+  margin: 0.5rem 1rem 1rem 1rem;
   width: fit-content;
   border-radius: 2px;
+
+  @include respond-to(md) {
+    margin-left: 2.5rem;
+  }
 
   strong {
     font-weight: 700;
@@ -106,7 +143,7 @@
 
 /* Shop illustration */
 .shopIllustrationWrapper {
-  margin: 0 2.5rem 1.5rem 2.5rem;
+  margin: 0 1rem 1.5rem 1rem;
   background: #f8fafc;
   border: 1px solid #e2e8f0;
   border-radius: 6px;
@@ -115,6 +152,10 @@
   cursor: pointer;
   position: relative;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  @include respond-to(md) {
+    margin: 0 2.5rem 1.5rem 2.5rem;
+  }
 
   &:hover {
     transform: scale(1.005);
@@ -145,15 +186,15 @@
 /* Page 20 two-column layout */
 .grid20 {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2rem;
-  padding: 0 2.5rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 0 1rem;
   box-sizing: border-box;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: 0 1rem;
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+    padding: 0 2.5rem;
   }
 }
 
@@ -432,10 +473,10 @@
 .textbookPage21 {
   max-width: 900px;
   margin: 0 auto;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  background: var(--color-bg-card, #ffffff);
+  border-radius: var(--border-radius-lg, 8px);
+  box-shadow: var(--shadow-md, 0 10px 30px rgba(0, 0, 0, 0.08));
+  border: 1px solid var(--color-border-light, #e2e8f0);
   position: relative;
   overflow: hidden;
   padding-bottom: 2.5rem;
@@ -443,29 +484,37 @@
 }
 
 .header21 {
-  padding: 2rem 2.5rem 1rem 2.5rem;
+  padding: 1.5rem 1rem 0.75rem 1rem;
+
+  @include respond-to(md) {
+    padding: 2rem 2.5rem 1rem 2.5rem;
+  }
 
   h1 {
     font-family: 'Merriweather Sans', sans-serif;
     color: #1d4e66;
     font-weight: 800;
-    font-size: 32px;
+    font-size: 1.75rem;
     margin: 0;
     letter-spacing: -0.02em;
+
+    @include respond-to(md) {
+      font-size: 2rem;
+    }
   }
 }
 
 .grid21 {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 2rem;
-  padding: 0 2.5rem;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+  padding: 0 1rem;
   box-sizing: border-box;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    gap: 1.5rem;
-    padding: 0 1rem;
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2rem;
+    padding: 0 2.5rem;
   }
 }
 
@@ -474,9 +523,14 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  padding-left: 1.25rem;
-  width: calc(100% - 1.25rem);
+  padding-left: 0;
+  width: 100%;
   box-sizing: border-box;
+
+  @include respond-to(sm) {
+    padding-left: 1.25rem;
+    width: calc(100% - 1.25rem);
+  }
 }
 
 .itemRow {
@@ -506,7 +560,8 @@
   color: #1e7898;
   font-weight: 600;
   outline: none;
-  min-width: 100px;
+  min-width: 90px;
+  max-width: 100%;
   transition: border-color 0.15s ease;
 
   &:focus {
@@ -527,6 +582,7 @@
 /* Radio / alternative choice buttons */
 .choicePills {
   display: inline-flex;
+  align-items: center;
   gap: 4px;
   margin: 0 4px;
 }
@@ -560,14 +616,16 @@
 /* Anagrams Ex 5 */
 .anagramGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 6px 12px;
-  padding-left: 1.25rem;
-  width: calc(100% - 1.25rem);
+  padding-left: 0;
+  width: 100%;
   box-sizing: border-box;
 
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
+  @include respond-to(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-left: 1.25rem;
+    width: calc(100% - 1.25rem);
   }
 }
 
@@ -576,6 +634,7 @@
   align-items: baseline;
   gap: 6px;
   font-size: 0.875rem;
+  flex-wrap: wrap;
 
   .anagramNum {
     font-weight: 800;
@@ -600,14 +659,16 @@
 /* Math equations grid Ex 7a */
 .mathGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 6px 12px;
-  padding-left: 1.25rem;
-  width: calc(100% - 1.25rem);
+  padding-left: 0;
+  width: 100%;
   box-sizing: border-box;
 
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
+  @include respond-to(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding-left: 1.25rem;
+    width: calc(100% - 1.25rem);
   }
 }
 
@@ -616,6 +677,7 @@
   align-items: baseline;
   gap: 6px;
   font-size: 0.875rem;
+  flex-wrap: wrap;
 
   .mathNum {
     font-weight: 800;
@@ -679,6 +741,7 @@
     gap: 0.75rem;
     font-size: 0.85rem;
     color: #1f2937;
+    flex-wrap: wrap;
   }
 
   select {
@@ -803,4 +866,45 @@
   outline: 2px solid #dc2626 !important;
   background-color: #fee2e2 !important;
   color: #b91c1c !important;
+}
+
+/* Revision Diff & Review Badges */
+.diffHighlight {
+  outline: 2px solid #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+}
+
+.feedbackRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  vertical-align: middle;
+}
+
+.correctBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  background-color: #22c55e;
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* Scoped 16px font-size on mobile devices to prevent iOS auto-zoom */
+.pageContainer {
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
 }

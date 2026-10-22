@@ -1,9 +1,14 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
 .pageContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 2.5rem;
+  @include flex-column;
+  gap: $spacing-xl;
   font-family: inherit;
-  color: #1f2937;
+  color: $color-gray-800;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 /* Textbook Page Container */
@@ -11,31 +16,31 @@
   max-width: 900px;
   width: 100%;
   margin: 0 auto;
-  background: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-  border: 1px solid #e2e8f0;
+  background: $color-white;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-base;
+  border: 1px solid $color-gray-200;
   position: relative;
   overflow: hidden;
-  padding-bottom: 3.5rem;
+  padding-bottom: $spacing-2xl;
 }
 
 /* ========================================================================= */
 /* ===================== PAGE 18: BANNER & COLLAGE ========================= */
 /* ========================================================================= */
 .topSection {
-  background: #ffffff;
-  border-bottom: 2px solid #f1f5f9;
+  background: $color-white;
+  border-bottom: 2px solid $color-gray-100;
 }
 
 .topGrid {
   display: grid;
-  grid-template-columns: 1.15fr 0.95fr 1fr;
+  grid-template-columns: 1fr;
   gap: 4px;
-  background: #ffffff;
+  background: $color-white;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
+  @include respond-to(md) {
+    grid-template-columns: 1.15fr 0.95fr 1fr;
   }
 }
 
@@ -44,10 +49,10 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  padding: 8px 6px 4px 12px;
+  padding: 12px;
 
-  @media (max-width: 768px) {
-    padding: 12px;
+  @include respond-to(md) {
+    padding: 8px 6px 4px 12px;
   }
 }
 
@@ -229,19 +234,19 @@
 /* ========================================================================= */
 .topGrid19Wrap {
   position: relative;
-  border-bottom: 2px solid #f1f5f9;
-  background: #ffffff;
+  border-bottom: 2px solid $color-gray-100;
+  background: $color-white;
 }
 
 .topGrid19 {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   gap: 4px;
-  padding: 8px 12px;
+  padding: 8px;
 
-  @media (max-width: 768px) {
-    grid-template-columns: 1fr;
-    padding: 8px;
+  @include respond-to(md) {
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 8px 12px;
   }
 }
 
@@ -274,8 +279,8 @@
   position: absolute;
   top: 14px;
   right: 0;
-  background: #d32027;
-  color: #ffffff;
+  background: $color-danger-dark;
+  color: $color-white;
   padding: 6px 10px;
   border-radius: 4px 0 0 4px;
   font-size: 11.5px;
@@ -286,12 +291,12 @@
   letter-spacing: 0.05em;
   box-shadow: -2px 2px 6px rgba(211, 32, 39, 0.3);
   z-index: 10;
-  display: flex;
+  display: none;
   align-items: center;
   gap: 4px;
 
-  @media (max-width: 768px) {
-    display: none;
+  @include respond-to(md) {
+    display: flex;
   }
 }
 
@@ -300,15 +305,15 @@
 /* ========================================================================= */
 .pageGrid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 2rem;
-  padding: 1.5rem 1.75rem 1rem 1.75rem;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem;
+  padding: 1.25rem 1rem;
   box-sizing: border-box;
 
-  @media (max-width: 768px) {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 1.75rem;
-    padding: 1.25rem 1rem;
+  @include respond-to(md) {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 2rem;
+    padding: 1.5rem 1.75rem 1rem 1.75rem;
   }
 }
 
@@ -396,14 +401,14 @@
 /* Ex 1a Matching Table / Rows */
 .matchGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 6px 10px;
   margin-left: 1.25rem;
   width: calc(100% - 1.25rem);
   box-sizing: border-box;
 
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
+  @include respond-to(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -440,6 +445,10 @@
     outline: none;
     box-sizing: border-box;
     text-overflow: ellipsis;
+
+    @include respond-to-max(md) {
+      font-size: 16px;
+    }
 
     &:focus {
       border-color: #0288d1;
@@ -517,14 +526,14 @@
 .pillsGridTeal,
 .pillsGridMagenta {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 6px;
   margin: 0.4rem 0 0.75rem 1.25rem;
   width: calc(100% - 1.25rem);
   box-sizing: border-box;
 
-  @media (max-width: 480px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  @include respond-to(sm) {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
 
@@ -576,10 +585,10 @@
   }
 
   &.fullWidthPill {
-    grid-column: span 3;
+    grid-column: span 2;
 
-    @media (max-width: 480px) {
-      grid-column: span 2;
+    @include respond-to(sm) {
+      grid-column: span 3;
     }
   }
 }
@@ -587,15 +596,15 @@
 /* Exercise 2: Listen and Choose (13/30, 14/40...) */
 .choicePairsGrid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: 1fr;
   gap: 8px 16px;
   margin-left: 1.25rem;
   margin-top: 0.4rem;
   width: calc(100% - 1.25rem);
   box-sizing: border-box;
 
-  @media (max-width: 480px) {
-    grid-template-columns: 1fr;
+  @include respond-to(sm) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -982,15 +991,16 @@
 /* Exercise 8: Family names and dialogue */
 .familyInputsRow {
   display: flex;
-  gap: 8px;
+  flex-direction: column;
+  gap: 6px;
   margin-left: 1.25rem;
   margin-top: 0.35rem;
   width: calc(100% - 1.25rem);
   box-sizing: border-box;
 
-  @media (max-width: 520px) {
-    flex-direction: column;
-    gap: 6px;
+  @include respond-to(sm) {
+    flex-direction: row;
+    gap: 8px;
   }
 }
 
@@ -1292,26 +1302,81 @@
   }
 }
 
+.feedbackRow {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 3px;
+  border-top: 1px dashed $color-gray-200;
+  width: 100%;
+}
+
+.teacherBadge {
+  margin-left: 0 !important;
+  display: inline-flex !important;
+  flex-wrap: wrap !important;
+  max-width: 100% !important;
+  word-break: break-word !important;
+  padding: 2px 7px !important;
+  font-size: 0.75rem !important;
+  line-height: 1.3 !important;
+  border-radius: $border-radius-md !important;
+}
+
+.correctBadge {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.diffHighlight {
+  border-color: $color-warning !important;
+  background-color: #fef3c7 !important;
+}
+
 .inputValid {
-  border-color: #10b981 !important;
+  border-color: $color-secondary !important;
   background-color: #f0fdf4 !important;
 }
 
 .inputInvalid {
-  border-color: #ef4444 !important;
+  border-color: $color-danger !important;
   background-color: #fef2f2 !important;
 }
 
 .choiceValid {
-  border-color: #10b981 !important;
+  border-color: $color-secondary !important;
   background-color: #dcfce7 !important;
   color: #15803d !important;
-  font-weight: 600;
+  font-weight: $font-weight-bold;
 }
 
 .choiceInvalid {
-  border-color: #ef4444 !important;
+  border-color: $color-danger !important;
   background-color: #fee2e2 !important;
   color: #b91c1c !important;
+  font-weight: $font-weight-bold;
+}
+
+.diffHighlight.inputValid,
+.diffHighlight.choiceValid {
+  border-color: $color-secondary !important;
+  background-color: #f0fdf4 !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.4) !important;
+}
+
+.diffHighlight.inputInvalid,
+.diffHighlight.choiceInvalid {
+  border-color: $color-danger !important;
+  background-color: #fef2f2 !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.4) !important;
+}
+
+.pageContainer {
+  input, select, textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
 }
 

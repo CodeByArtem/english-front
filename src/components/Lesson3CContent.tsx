@@ -3,15 +3,21 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { useLessonContext, useExerciseAnswer } from '@/context/LessonContext';
+import { useLessonContext, useExerciseAnswer, LessonContextModel } from '@/context/LessonContext';
 import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
 import PronounceButton from '@/components/PronounceButton';
 import { LessonAnswerKey, verifyAnswer, getExerciseKey, VerificationResult } from '@/lib/answerVerification';
 import styles from './lesson3c.module.scss';
 
 export interface Lesson3CContentProps {
+  lesson?: LessonContextModel | null;
+  user?: Record<string, unknown> | null;
+  isTeacherReview?: boolean;
+  readOnly?: boolean;
+  answerKey?: LessonAnswerKey | null;
   playAudio?: (track: string) => void;
   playingAudio?: string | null;
+  originalAnswers?: Record<string, unknown>;
 }
 
 // Захардкоженный fallbackAnswerKey для полной автономности и мгновенной проверки
@@ -102,14 +108,25 @@ const WORD_ORDER_ITEMS_3C = [
 ];
 
 export default function Lesson3CContent({
+  isTeacherReview,
+  readOnly: propReadOnly,
+  answerKey: propAnswerKey,
   playAudio: propPlayAudio,
   playingAudio: propPlayingAudio,
+  originalAnswers,
 }: Lesson3CContentProps) {
   const context = useLessonContext();
   const playAudio = propPlayAudio || context.playAudio;
   const playingAudio = propPlayingAudio ?? context.playingAudio;
-  const isReadOnly = context.isReadOnly;
+  const isTeacher = isTeacherReview ?? context.isTeacher;
+  const isReadOnly = propReadOnly ?? context.isReadOnly;
+  const effectiveAnswerKey = propAnswerKey ?? context.answerKey ?? FALLBACK_ANSWER_KEY_3C;
+  const isReview = Boolean(isTeacher || (effectiveAnswerKey && isReadOnly));
   const [previewImage, setPreviewImage] = useState<{ src: string; alt: string } | null>(null);
+
+  const orig = originalAnswers ?? (context.answers as Record<string, unknown> | undefined);
+  const isDiff = (origVal: unknown, currentVal: unknown) =>
+    orig !== undefined && origVal !== undefined && origVal !== currentVal;
 
   // Упражнения через контекст
   const ex3 = useExerciseAnswer<Record<string, string>>('exercise_3_opposites', {});
@@ -120,17 +137,11 @@ export default function Lesson3CContent({
   const ex10 = useExerciseAnswer<Record<string, string>>('exercise_10_town_questions', {});
   const ex11 = useExerciseAnswer<string>('exercise_11_speaking_notes', '');
 
-  const getInputClass = (status?: string) => {
-    if (status === 'correct') return styles.inputValid;
-    if (status === 'incorrect') return styles.inputInvalid;
-    return '';
-  };
-
   const getFieldVerify = (exerciseKey: string, fieldKey: string): VerificationResult | null => {
     const fromCtx = context.getVerification(exerciseKey, fieldKey);
     if (fromCtx) return fromCtx;
 
-    const exKey = getExerciseKey(FALLBACK_ANSWER_KEY_3C, exerciseKey);
+    const exKey = getExerciseKey(effectiveAnswerKey, exerciseKey);
     if (!exKey) return null;
 
     const studentEx = context.getAnswer(exerciseKey);
@@ -141,6 +152,19 @@ export default function Lesson3CContent({
     const expected = exKey[fieldKey];
     return verifyAnswer(studentVal, expected);
   };
+
+  const getInputClass = (ver?: VerificationResult | null) => {
+    if (!isReview || !ver || !ver.hasKey) return '';
+    return ver.isCorrect ? styles.inputValid : styles.inputInvalid;
+  };
+
+  const origEx3 = (orig?.exercise_3_opposites as Record<string, string> | undefined) || {};
+  const origEx4 = typeof orig?.exercise_4_sentences === 'string' ? orig.exercise_4_sentences : undefined;
+  const origEx5 = (orig?.exercise_5_places_matching as Record<string, string> | undefined) || {};
+  const origEx6 = (orig?.exercise_6_true_false as Record<string, string> | undefined) || {};
+  const origEx9 = (orig?.exercise_9_word_order as Record<string, string> | undefined) || {};
+  const origEx10 = (orig?.exercise_10_town_questions as Record<string, string> | undefined) || {};
+  const origEx11 = typeof orig?.exercise_11_speaking_notes === 'string' ? orig.exercise_11_speaking_notes : undefined;
 
   return (
     <div className={styles.pageContainer}>
@@ -264,75 +288,39 @@ export default function Lesson3CContent({
                 </div>
 
                 <div className={styles.fillList}>
-                  <div className={styles.fillItem}>
-                    <span>1. This supermarket isn&apos;t good. It&apos;s</span>
-                    <input
-                      type="text"
-                      placeholder="bad"
-                      value={ex3.value['1'] || ''}
-                      onChange={(e) => ex3.setField('1', e.target.value)}
-                      disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_3_opposites', '1')?.status)}`}
-                      style={{ width: '5.5rem' }}
-                    />.
-                    {ex3.isReview && <TeacherAnswerBadge result={getFieldVerify('exercise_3_opposites', '1')} />}
-                  </div>
-
-                  <div className={styles.fillItem}>
-                    <span>2. This bank isn&apos;t small. It&apos;s</span>
-                    <input
-                      type="text"
-                      placeholder="big"
-                      value={ex3.value['2'] || ''}
-                      onChange={(e) => ex3.setField('2', e.target.value)}
-                      disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_3_opposites', '2')?.status)}`}
-                      style={{ width: '5.5rem' }}
-                    />.
-                    {ex3.isReview && <TeacherAnswerBadge result={getFieldVerify('exercise_3_opposites', '2')} />}
-                  </div>
-
-                  <div className={styles.fillItem}>
-                    <span>3. This park isn&apos;t new. It&apos;s</span>
-                    <input
-                      type="text"
-                      placeholder="old"
-                      value={ex3.value['3'] || ''}
-                      onChange={(e) => ex3.setField('3', e.target.value)}
-                      disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_3_opposites', '3')?.status)}`}
-                      style={{ width: '5.5rem' }}
-                    />.
-                    {ex3.isReview && <TeacherAnswerBadge result={getFieldVerify('exercise_3_opposites', '3')} />}
-                  </div>
-
-                  <div className={styles.fillItem}>
-                    <span>4. This hotel isn&apos;t cheap. It&apos;s</span>
-                    <input
-                      type="text"
-                      placeholder="expensive"
-                      value={ex3.value['4'] || ''}
-                      onChange={(e) => ex3.setField('4', e.target.value)}
-                      disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_3_opposites', '4')?.status)}`}
-                      style={{ width: '7rem' }}
-                    />.
-                    {ex3.isReview && <TeacherAnswerBadge result={getFieldVerify('exercise_3_opposites', '4')} />}
-                  </div>
-
-                  <div className={styles.fillItem}>
-                    <span>5. This café isn&apos;t busy. It&apos;s</span>
-                    <input
-                      type="text"
-                      placeholder="quiet"
-                      value={ex3.value['5'] || ''}
-                      onChange={(e) => ex3.setField('5', e.target.value)}
-                      disabled={isReadOnly}
-                      className={`${styles.inlineInput} ${getInputClass(getFieldVerify('exercise_3_opposites', '5')?.status)}`}
-                      style={{ width: '5.5rem' }}
-                    />.
-                    {ex3.isReview && <TeacherAnswerBadge result={getFieldVerify('exercise_3_opposites', '5')} />}
-                  </div>
+                  {[
+                    { id: '1', prompt: "1. This supermarket isn't good. It's", placeholder: 'bad', w: '5.5rem' },
+                    { id: '2', prompt: "2. This bank isn't small. It's", placeholder: 'big', w: '5.5rem' },
+                    { id: '3', prompt: "3. This park isn't new. It's", placeholder: 'old', w: '5.5rem' },
+                    { id: '4', prompt: "4. This hotel isn't cheap. It's", placeholder: 'expensive', w: '7rem' },
+                    { id: '5', prompt: "5. This café isn't busy. It's", placeholder: 'quiet', w: '5.5rem' },
+                  ].map((item) => {
+                    const ver = getFieldVerify('exercise_3_opposites', item.id);
+                    const currentVal = ex3.value[item.id] || '';
+                    const isItemDiff = isDiff(origEx3[item.id], currentVal);
+                    return (
+                      <div key={item.id} className={styles.fillItem}>
+                        <span>{item.prompt}</span>
+                        <input
+                          type="text"
+                          placeholder={item.placeholder}
+                          value={currentVal}
+                          onChange={(e) => ex3.setField(item.id, e.target.value)}
+                          disabled={isReadOnly}
+                          className={`${styles.inlineInput} ${getInputClass(ver)} ${isItemDiff ? styles.diffHighlight : ''}`}
+                          style={{ width: item.w }}
+                        />.
+                        {isReview && ver?.hasKey && ver.isCorrect && (
+                          <span className={styles.correctBadge} title="Correct">✓</span>
+                        )}
+                        {isReview && ver && !ver.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={ver} />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -348,7 +336,7 @@ export default function Lesson3CContent({
                   Examples: <em>There&apos;s a big train station in my city.</em> • <em>The café in my town is expensive.</em>
                 </div>
                 <textarea
-                  className={styles.notesTextarea}
+                  className={`${styles.notesTextarea} ${isDiff(origEx4, ex4.value) ? styles.diffHighlight : ''}`}
                   placeholder="Write your sentences here..."
                   value={ex4.value}
                   onChange={(e) => ex4.setValue(e.target.value)}
@@ -371,7 +359,7 @@ export default function Lesson3CContent({
                   </span>
                 </div>
 
-                {/* Authentic Textbook Reading Material: North Norfolk Travel Guide */}
+                {/* Authentic Textbook Reading Material */}
                 <div
                   className={styles.readingCardWrap}
                   onClick={() =>
@@ -430,9 +418,9 @@ export default function Lesson3CContent({
                   </div>
                 </details>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '0.5rem', flexWrap: 'wrap', gap: '0.4rem' }}>
                   <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#334155' }}>
-                    Match places 1–3 to Photos A–C (see photos below in Ex 7):
+                    Match places 1–3 to Photos A–C:
                   </span>
                   <button
                     type="button"
@@ -442,7 +430,7 @@ export default function Lesson3CContent({
                         alt: 'Photos A (railway station), B (hotel), C (clock tower)',
                       })
                     }
-                    className={styles.teacherBadgeBtn}
+                    className={styles.tfBtn}
                     style={{ fontSize: '0.775rem', padding: '0.25rem 0.6rem', color: '#0369a1', borderColor: '#7dd3fc' }}
                   >
                     🖼️ View Photos A, B, C
@@ -453,14 +441,16 @@ export default function Lesson3CContent({
                 <div className={styles.matchGrid}>
                   {PLACES_MATCHING_ITEMS.map((item) => {
                     const ver = getFieldVerify('exercise_5_places_matching', item.key);
+                    const currentVal = ex5.value[item.key] || '';
+                    const isFieldDiff = isDiff(origEx5[item.key], currentVal);
                     return (
                       <div key={item.key} className={styles.matchRow}>
                         <span style={{ fontWeight: 800, color: '#0369a1' }}>{item.key}:</span>
                         <select
-                          value={ex5.value[item.key] || ''}
+                          value={currentVal}
                           onChange={(e) => ex5.setField(item.key, e.target.value)}
                           disabled={isReadOnly}
-                          className={`${styles.selectInput} ${getInputClass(ver?.status)}`}
+                          className={`${styles.selectInput} ${getInputClass(ver)} ${isFieldDiff ? styles.diffHighlight : ''}`}
                         >
                           <option value="">– match place –</option>
                           {TOWNS_OPTIONS.map((t) => (
@@ -469,7 +459,14 @@ export default function Lesson3CContent({
                             </option>
                           ))}
                         </select>
-                        {ex5.isReview && <TeacherAnswerBadge result={ver} />}
+                        {isReview && ver?.hasKey && ver.isCorrect && (
+                          <span className={styles.correctBadge} title="Correct">✓</span>
+                        )}
+                        {isReview && ver && !ver.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={ver} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -504,6 +501,7 @@ export default function Lesson3CContent({
                   {TF_ITEMS.map((item) => {
                     const val = ex6.value[item.id] || '';
                     const ver = getFieldVerify('exercise_6_true_false', item.id);
+                    const isItemDiff = isDiff(origEx6[item.id], val);
                     return (
                       <div key={item.id} className={styles.tfItem}>
                         <span className={styles.tfSentence}>{item.text}</span>
@@ -511,19 +509,30 @@ export default function Lesson3CContent({
                           <button
                             type="button"
                             onClick={() => !isReadOnly && ex6.setField(item.id, 'T')}
-                            className={`${styles.tfBtn} ${val === 'T' ? styles.tfBtnSelected : ''} ${val === 'T' ? getInputClass(ver?.status) : ''}`}
+                            className={`${styles.tfBtn} ${val === 'T' ? styles.tfBtnSelected : ''} ${
+                              isItemDiff && val === 'T' ? styles.diffHighlight : ''
+                            }`}
                           >
                             T
                           </button>
                           <button
                             type="button"
                             onClick={() => !isReadOnly && ex6.setField(item.id, 'F')}
-                            className={`${styles.tfBtn} ${val === 'F' ? styles.tfBtnSelected : ''} ${val === 'F' ? getInputClass(ver?.status) : ''}`}
+                            className={`${styles.tfBtn} ${val === 'F' ? styles.tfBtnSelected : ''} ${
+                              isItemDiff && val === 'F' ? styles.diffHighlight : ''
+                            }`}
                           >
                             F
                           </button>
+                          {isReview && val && ver?.hasKey && ver.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
                         </div>
-                        {ex6.isReview && <TeacherAnswerBadge result={ver} />}
+                        {isReview && val && ver && !ver.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={ver} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -561,7 +570,7 @@ export default function Lesson3CContent({
                   </div>
                 </div>
 
-                {/* Photos A, B, C from textbook Page 27 (placed right under Position of adjectives) */}
+                {/* Photos A, B, C from textbook Page 27 */}
                 <div
                   className={styles.readingCardWrap}
                   onClick={() =>
@@ -636,16 +645,18 @@ export default function Lesson3CContent({
                 <div className={styles.stressList}>
                   {STRESSED_ITEMS.map((item) => (
                     <div key={item.id} className={styles.stressItem}>
-                      {item.id}.{' '}
-                      {item.text.split(' ').map((word, wIdx) => {
-                        const cleanWord = word.replace(/[.,]/g, '');
-                        const isStressed = item.stressed.includes(cleanWord);
-                        return isStressed ? (
-                          <strong key={wIdx}>{word} </strong>
-                        ) : (
-                          <span key={wIdx}>{word} </span>
-                        );
-                      })}
+                      <span>
+                        {item.id}.{' '}
+                        {item.text.split(' ').map((word, wIdx) => {
+                          const cleanWord = word.replace(/[.,]/g, '');
+                          const isStressed = item.stressed.includes(cleanWord);
+                          return isStressed ? (
+                            <strong key={wIdx}>{word} </strong>
+                          ) : (
+                            <span key={wIdx}>{word} </span>
+                          );
+                        })}
+                      </span>
                       <PronounceButton word={item.text} size="small" />
                     </div>
                   ))}
@@ -669,18 +680,31 @@ export default function Lesson3CContent({
                 <div className={styles.orderList}>
                   {WORD_ORDER_ITEMS_3C.map((item) => {
                     const ver = getFieldVerify('exercise_9_word_order', item.id);
+                    const currentVal = ex9.value[item.id] || '';
+                    const isItemDiff = isDiff(origEx9[item.id], currentVal);
                     return (
                       <div key={item.id} className={styles.orderItem}>
                         <span className={styles.scrambledWords}>{item.id}. {item.words}</span>
-                        <input
-                          type="text"
-                          placeholder="Type the correct sentence..."
-                          value={ex9.value[item.id] || ''}
-                          onChange={(e) => ex9.setField(item.id, e.target.value)}
-                          disabled={isReadOnly}
-                          className={`${styles.orderInput} ${getInputClass(ver?.status)}`}
-                        />
-                        {ex9.isReview && <TeacherAnswerBadge result={ver} />}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', width: '100%' }}>
+                          <input
+                            type="text"
+                            placeholder="Type the correct sentence..."
+                            value={currentVal}
+                            onChange={(e) => ex9.setField(item.id, e.target.value)}
+                            disabled={isReadOnly}
+                            className={`${styles.orderInput} ${getInputClass(ver)} ${
+                              isItemDiff ? styles.diffHighlight : ''
+                            }`}
+                          />
+                          {isReview && ver?.hasKey && ver.isCorrect && (
+                            <span className={styles.correctBadge} title="Correct">✓</span>
+                          )}
+                        </div>
+                        {isReview && ver && !ver.isCorrect && (
+                          <div className={styles.feedbackRow}>
+                            <TeacherAnswerBadge result={ver} />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -697,66 +721,27 @@ export default function Lesson3CContent({
                 </div>
 
                 <div className={styles.fillList}>
-                  <div className={styles.fillItem}>
-                    <span>1. Is there a</span>
-                    <input
-                      type="text"
-                      placeholder="e.g. big park"
-                      value={ex10.value['1'] || ''}
-                      onChange={(e) => ex10.setField('1', e.target.value)}
-                      disabled={isReadOnly}
-                      className={styles.inlineInput}
-                      style={{ width: '9rem' }}
-                    />?
-                  </div>
-                  <div className={styles.fillItem}>
-                    <span>2. Is the</span>
-                    <input
-                      type="text"
-                      placeholder="e.g. train station busy"
-                      value={ex10.value['2'] || ''}
-                      onChange={(e) => ex10.setField('2', e.target.value)}
-                      disabled={isReadOnly}
-                      className={styles.inlineInput}
-                      style={{ width: '11rem' }}
-                    />?
-                  </div>
-                  <div className={styles.fillItem}>
-                    <span>3. Is there a</span>
-                    <input
-                      type="text"
-                      placeholder="e.g. good cinema"
-                      value={ex10.value['3'] || ''}
-                      onChange={(e) => ex10.setField('3', e.target.value)}
-                      disabled={isReadOnly}
-                      className={styles.inlineInput}
-                      style={{ width: '9rem' }}
-                    />?
-                  </div>
-                  <div className={styles.fillItem}>
-                    <span>4. Are there any</span>
-                    <input
-                      type="text"
-                      placeholder="e.g. cheap restaurants"
-                      value={ex10.value['4'] || ''}
-                      onChange={(e) => ex10.setField('4', e.target.value)}
-                      disabled={isReadOnly}
-                      className={styles.inlineInput}
-                      style={{ width: '11rem' }}
-                    /> in your town?
-                  </div>
-                  <div className={styles.fillItem}>
-                    <span>5. Is your town&apos;s</span>
-                    <input
-                      type="text"
-                      placeholder="e.g. centre old"
-                      value={ex10.value['5'] || ''}
-                      onChange={(e) => ex10.setField('5', e.target.value)}
-                      disabled={isReadOnly}
-                      className={styles.inlineInput}
-                      style={{ width: '9rem' }}
-                    />?
-                  </div>
+                  {[
+                    { id: '1', pre: '1. Is there a', ph: 'e.g. big park', post: '?', w: '9rem' },
+                    { id: '2', pre: '2. Is the', ph: 'e.g. train station busy', post: '?', w: '11rem' },
+                    { id: '3', pre: '3. Is there a', ph: 'e.g. good cinema', post: '?', w: '9rem' },
+                    { id: '4', pre: '4. Are there any', ph: 'e.g. cheap restaurants', post: ' in your town?', w: '11rem' },
+                    { id: '5', pre: "5. Is your town's", ph: 'e.g. centre old', post: '?', w: '9rem' },
+                  ].map((f) => (
+                    <div key={f.id} className={styles.fillItem}>
+                      <span>{f.pre}</span>
+                      <input
+                        type="text"
+                        placeholder={f.ph}
+                        value={ex10.value[f.id] || ''}
+                        onChange={(e) => ex10.setField(f.id, e.target.value)}
+                        disabled={isReadOnly}
+                        className={`${styles.inlineInput} ${isDiff(origEx10[f.id], ex10.value[f.id]) ? styles.diffHighlight : ''}`}
+                        style={{ width: f.w }}
+                      />
+                      <span>{f.post}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
 
@@ -770,7 +755,7 @@ export default function Lesson3CContent({
                 </div>
 
                 <textarea
-                  className={styles.notesTextarea}
+                  className={`${styles.notesTextarea} ${isDiff(origEx11, ex11.value) ? styles.diffHighlight : ''}`}
                   placeholder="e.g. Town 1: London - busy, big, good museums, expensive hotels..."
                   value={ex11.value}
                   onChange={(e) => ex11.setValue(e.target.value)}
