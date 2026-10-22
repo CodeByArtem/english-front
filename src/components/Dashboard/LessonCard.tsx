@@ -23,6 +23,7 @@ export interface LessonCardProps {
   submission?: DashboardSubmissionStatus | null;
   index?: number;
   unitTitle?: string;
+  unitId?: string;
 }
 
 interface StatusMeta {
@@ -77,6 +78,7 @@ export default function LessonCard({
   submission,
   index = 0,
   unitTitle,
+  unitId,
 }: LessonCardProps) {
   const statusMeta = getStatusMeta(submission);
 
@@ -87,6 +89,15 @@ export default function LessonCard({
       : lesson.order === 3 || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a44'
       ? '1C Nationalities'
       : lesson.title;
+
+  const handleLessonNavigate = () => {
+    if (typeof window !== 'undefined') {
+      if (unitId) {
+        localStorage.setItem('last_active_unit_id', unitId);
+      }
+      localStorage.setItem('last_active_lesson_id', lesson.id);
+    }
+  };
 
   return (
     <motion.article
@@ -121,6 +132,7 @@ export default function LessonCard({
       <div className={styles.cardFooter}>
         <Link
           href={`/lessons/${lesson.id}`}
+          onClick={handleLessonNavigate}
           className={styles.actionBtn}
           data-variant={statusMeta.variant}
           aria-label={`${statusMeta.actionText}: ${displayTitle}`}

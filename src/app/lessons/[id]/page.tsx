@@ -87,6 +87,12 @@ const LessonPage = () => {
 
         const res = await api.get(`/content/lessons/${targetId}`);
         setLesson(res.data);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('last_active_lesson_id', targetId);
+          if (res.data?.unit?.id) {
+            localStorage.setItem('last_active_unit_id', res.data.unit.id);
+          }
+        }
 
         // Проверяем существующую сдачу дз для текущего студента
         try {
@@ -266,7 +272,12 @@ const LessonPage = () => {
       <Navbar user={user} showBackToDashboard={true} />
       <div className={styles.container}>
         <button
-          onClick={() => router.push('/dashboard')}
+          onClick={() => {
+            const savedUnit =
+              (lesson as { unit?: { id?: string } })?.unit?.id ||
+              (typeof window !== 'undefined' ? localStorage.getItem('last_active_unit_id') : null);
+            router.push(savedUnit ? `/dashboard?unit=${encodeURIComponent(savedUnit)}` : '/dashboard');
+          }}
           className={styles.backButton}
         >
           ← Back to Dashboard

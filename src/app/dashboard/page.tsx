@@ -84,11 +84,49 @@ export default function DashboardPage() {
         const tbData: Textbook[] = textbooksResponse.data || [];
         setTextbooks(tbData);
 
-        // По умолчанию раскрываем первый учебник и его первый юнит для мгновенного доступа к урокам
+        // Восстанавливаем открытый юнит (из query param, localStorage или по последнему уроку)
         if (tbData.length > 0) {
           setExpandedTextbook(tbData[0].id);
-          if (tbData[0].units && tbData[0].units.length > 0) {
-            setExpandedUnit(tbData[0].units[0].id);
+
+          const allUnits = tbData.flatMap((tb) => tb.units || []);
+
+          let targetUnitId: string | null = null;
+          if (typeof window !== 'undefined') {
+            const searchParams = new URLSearchParams(window.location.search);
+            const queryUnitId = searchParams.get('unit');
+            if (queryUnitId && allUnits.some((u) => u.id === queryUnitId)) {
+              targetUnitId = queryUnitId;
+            }
+
+            if (!targetUnitId) {
+              const savedUnitId = localStorage.getItem('last_active_unit_id');
+              if (savedUnitId && allUnits.some((u) => u.id === savedUnitId)) {
+                targetUnitId = savedUnitId;
+              }
+            }
+
+            if (!targetUnitId) {
+              const savedLessonId = localStorage.getItem('last_active_lesson_id');
+              if (savedLessonId) {
+                const foundUnit = allUnits.find((u) =>
+                  u.lessons?.some((l) => l.id === savedLessonId),
+                );
+                if (foundUnit) {
+                  targetUnitId = foundUnit.id;
+                }
+              }
+            }
+          }
+
+          if (!targetUnitId && tbData[0].units && tbData[0].units.length > 0) {
+            targetUnitId = tbData[0].units[0].id;
+          }
+
+          if (targetUnitId) {
+            setExpandedUnit(targetUnitId);
+            if (typeof window !== 'undefined') {
+              localStorage.setItem('last_active_unit_id', targetUnitId);
+            }
           }
         }
 
@@ -120,8 +158,34 @@ export default function DashboardPage() {
   };
 
   const toggleUnit = (id: string) => {
-    setExpandedUnit((prev) => (prev === id ? null : id));
+    setExpandedUnit((prev) => {
+      const next = prev === id ? null : id;
+      if (typeof window !== 'undefined') {
+        if (next) {
+          localStorage.setItem('last_active_unit_id', next);
+        } else {
+          localStorage.removeItem('last_active_unit_id');
+        }
+      }
+      return next;
+    });
   };
+
+  // Мягко фокусируем открытый юнит при загрузке или смене, если он вне экрана
+  useEffect(() => {
+    if (expandedUnit && !loading) {
+      const timer = setTimeout(() => {
+        const el = document.getElementById(`unit-${expandedUnit}`);
+        if (el) {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < 60 || rect.bottom > window.innerHeight) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [expandedUnit, loading]);
 
   const handleLogout = async () => {
     setLoggingOut(true); // подавляет редиректы на /login во время выхода
@@ -322,7 +386,7 @@ export default function DashboardPage() {
                             {textbook.units.map((unit) => {
                               const isUnitExpanded = expandedUnit === unit.id;
                               return (
-                                <div key={unit.id} className={styles.unitItem}>
+                                <div key={unit.id} id={`unit-${unit.id}`} className={styles.unitItem}>
                                   <button
                                     type="button"
                                     className={styles.unitHeader}
@@ -365,6 +429,7 @@ export default function DashboardPage() {
                                                 submission={sub}
                                                 index={lIdx}
                                                 unitTitle={unit.title}
+                                                unitId={unit.id}
                                               />
                                             );
                                           })}

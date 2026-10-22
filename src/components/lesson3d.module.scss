@@ -1,0 +1,919 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+// Карточка урока
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-2xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+// Header Banner 3D (Тематический градиент Roadmap Red / Crimson)
+.headerBanner {
+  background: linear-gradient(135deg, #be123c 0%, #dc2626 50%, #b91c1c 100%);
+  color: $color-white;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+.badge3D {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  background: $color-white;
+  color: #dc2626;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  padding: 0.25rem 0.85rem;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  line-height: 1;
+
+  .letterD {
+    color: #be123c;
+    margin-left: 1px;
+  }
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.unitTag {
+  font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+  font-weight: $font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fef08a;
+}
+
+.titleHeading {
+  font-size: clamp(1.4rem, 3.5vw, 2.1rem);
+  font-weight: 900;
+  margin: 0;
+  color: $color-white;
+  line-height: 1.15;
+  word-break: break-word;
+}
+
+// Goals Card
+.goalsCard {
+  background: rgba(136, 19, 55, 0.65);
+  backdrop-filter: blur(8px);
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(0.85rem, 2vw, 1.25rem);
+  border-radius: $border-radius-md;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  p {
+    margin: 0;
+    font-size: clamp(0.8rem, 1.8vw, 0.925rem);
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.35;
+
+    strong {
+      color: #fef08a;
+      font-weight: $font-weight-bold;
+    }
+  }
+}
+
+// Разделитель между разделами
+.partDivider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: clamp(0.75rem, 2vw, 1.5rem) 0;
+
+  .partDividerLine {
+    flex: 1;
+    height: 1px;
+    background: #e2e8f0;
+  }
+
+  .partDividerBadge {
+    font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+    font-weight: 700;
+    color: #be123c;
+    background: #ffe4e6;
+    border: 1px solid #fecdd3;
+    padding: 0.35rem 0.9rem;
+    border-radius: $border-radius-full;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+}
+
+// Основной контент урока
+.contentBody {
+  padding: clamp(1rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+// Сетка колонок
+.twoColLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.25rem, 3vw, 2rem);
+
+  @media (min-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  min-width: 0;
+}
+
+// Заголовок секции
+.sectionTitle {
+  font-size: clamp(1.2rem, 2.5vw, 1.45rem);
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 $spacing-sm 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// Блок упражнения
+.exerciseBlock {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-lg;
+  padding: clamp(0.85rem, 2vw, 1.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  box-sizing: border-box;
+}
+
+.exerciseHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: clamp(0.875rem, 1.8vw, 0.95rem);
+}
+
+.exNumber {
+  background: #ffe4e6;
+  color: #be123c;
+  font-weight: 800;
+  font-size: 0.85rem;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.exLetter {
+  font-weight: 800;
+  color: #be123c;
+  margin-right: 0.2rem;
+}
+
+.instruction {
+  font-weight: $font-weight-semibold;
+  color: $color-gray-900;
+  line-height: 1.4;
+}
+
+// Аудио полоса (СТАНДАРТ: Единый красный стиль #d02a27)
+.audioActionRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  padding: 0.5rem 0.85rem;
+  border-radius: $border-radius-md;
+  flex-wrap: wrap;
+}
+
+.audioBtn {
+  background: #d02a27;
+  color: #ffffff;
+  border: none;
+  padding: 0.35rem 0.85rem;
+  border-radius: 4px;
+  font-size: 0.825rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+  min-width: 95px;
+  justify-content: center;
+  user-select: none;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    opacity: 0.92;
+    background: #b91c1c;
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.audioBtnActive {
+  background: #1b4c5b !important;
+  box-shadow: 0 0 0 2px rgba(27, 76, 91, 0.25);
+}
+
+.audioBtnIcon {
+  font-size: 0.85rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.audioMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.775rem;
+  color: #64748b;
+  min-width: 0;
+  flex: 1;
+}
+
+.audioTrackName {
+  font-weight: 600;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.audioStatus {
+  color: #be123c;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.equalizer {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.bar,
+.eqBar {
+  width: 2px;
+  background: #ffffff;
+  border-radius: 1px;
+  animation: eqAnimation 0.8s ease-in-out infinite alternate;
+
+  &:nth-child(1) { height: 4px; animation-delay: 0s; }
+  &:nth-child(2) { height: 11px; animation-delay: 0.2s; }
+  &:nth-child(3) { height: 7px; animation-delay: 0.4s; }
+}
+
+@keyframes eqAnimation {
+  0% { height: 3px; }
+  100% { height: 12px; }
+}
+
+// Таун-карта (Town Map)
+.mapShowcase {
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid #cbd5e1;
+  background: #f1f5f9;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .zoomOverlay {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(15, 23, 42, 0.75);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+  }
+}
+
+// Список мест на карте
+.mapPlacesGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.4rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-md;
+  padding: 0.65rem;
+}
+
+.mapPlaceItem {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.825rem;
+  color: #334155;
+
+  .placeNum {
+    background: #f1f5f9;
+    color: #475569;
+    font-weight: 700;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+  }
+}
+
+// Диаграммы направлений
+.diagramsShowcase {
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+// Сетка соответствий направлений
+.directionMatchGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.5rem;
+
+  @media (min-width: 600px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.directionMatchRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.85rem;
+
+  .dirText {
+    flex: 1;
+    color: #1e293b;
+    font-weight: 500;
+  }
+}
+
+// Полезные фразы таблица
+.usefulPhrasesCard {
+  background: #fff;
+  border: 1px solid #fecdd3;
+  border-radius: $border-radius-md;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+// Список нумерации фраз для Ex 3
+.phrasesOrderingList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.phraseOrderItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.85rem;
+
+  .phraseText {
+    flex: 1;
+    color: #1e293b;
+    font-weight: 500;
+  }
+}
+
+.exampleBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 28px;
+  background: #e0e7ff;
+  color: #3730a3;
+  font-weight: 700;
+  font-size: 0.85rem;
+  border-radius: 4px;
+}
+
+// Выбор альтернатив (Ex 4 Check & reflect)
+.choicePills {
+  display: inline-flex;
+  gap: 0.35rem;
+  background: #f1f5f9;
+  padding: 2px 4px;
+  border-radius: 6px;
+}
+
+.choicePillBtn {
+  background: transparent;
+  border: none;
+  border-radius: 4px;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.825rem;
+  font-weight: 500;
+  cursor: pointer;
+  color: #475569;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #e2e8f0;
+    color: #1e293b;
+  }
+
+  &.choiceSelected {
+    background: #be123c;
+    color: #ffffff;
+    font-weight: 600;
+  }
+}
+
+// Блок маршрута (Ex 2c)
+.routeBox {
+  background: #fff1f2;
+  border: 1px dashed #fda4af;
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #881337;
+}
+
+.usefulPhrasesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+
+  @media (min-width: 640px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.phraseCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+
+  h5 {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #be123c;
+    border-bottom: 2px solid #ffe4e6;
+    padding-bottom: 0.25rem;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.2rem;
+    font-size: 0.825rem;
+    color: #334155;
+    line-height: 1.5;
+
+    li {
+      margin-bottom: 0.2rem;
+    }
+  }
+}
+
+// Диалоги (Conversations)
+.conversationBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.75rem 0.9rem;
+}
+
+.convoTitle {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #be123c;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0;
+}
+
+.convoLine {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: #1e293b;
+
+  .speaker {
+    font-weight: 700;
+    color: #475569;
+    min-width: 1.2rem;
+  }
+}
+
+// Интерактивные инпуты
+.inputField {
+  border: 1.5px solid #cbd5e1;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.85rem;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+  font-family: inherit;
+  transition: all 0.15s ease;
+
+  &:focus {
+    border-color: #be123c;
+    box-shadow: 0 0 0 2px rgba(190, 18, 60, 0.15);
+  }
+
+  &:disabled {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+}
+
+.inputFieldWide {
+  width: 100%;
+  max-width: 320px;
+}
+
+.inputFieldFull {
+  width: 100%;
+}
+
+.inputValid {
+  border-color: #16a34a !important;
+  background-color: #f0fdf4 !important;
+  color: #166534 !important;
+}
+
+.inputInvalid {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+  color: #991b1b !important;
+}
+
+// Список с пробелами (Gapped List)
+.gappedList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.gappedItem {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.5rem;
+  font-size: 0.875rem;
+  color: #1e293b;
+  line-height: 1.5;
+  background: #ffffff;
+  border: 1px solid #f1f5f9;
+  padding: 0.4rem 0.65rem;
+  border-radius: 6px;
+}
+
+.gappedItemNum {
+  font-weight: 700;
+  color: #64748b;
+  min-width: 1.25rem;
+}
+
+// Список слов с пропущенными буквами (Review 1a)
+.wordGapsGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.wordGapCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.4rem 0.65rem;
+  min-width: 0;
+  transition: all 0.15s ease;
+
+  &:focus-within {
+    border-color: #be123c;
+    box-shadow: 0 0 0 2px rgba(190, 18, 60, 0.08);
+  }
+}
+
+.wordGapLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  min-width: 0;
+}
+
+.letterTokensContainer {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.wordChunk {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.fixedChar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #1e293b;
+  min-width: 12px;
+  height: 28px;
+  padding: 0 1px;
+  user-select: none;
+}
+
+.gapInput {
+  width: 22px;
+  height: 28px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 4px;
+  background: #f8fafc;
+  color: #0f172a;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-align: center;
+  text-transform: lowercase;
+  outline: none;
+  font-family: inherit;
+  padding: 0;
+  transition: all 0.12s ease;
+
+  &:focus {
+    border-color: #be123c;
+    background: #ffffff;
+    box-shadow: 0 0 0 2px rgba(190, 18, 60, 0.2);
+  }
+
+  &.gapInputValid {
+    border-color: #16a34a !important;
+    background-color: #f0fdf4 !important;
+    color: #166534 !important;
+  }
+
+  &.gapInputInvalid {
+    border-color: #dc2626 !important;
+    background-color: #fef2f2 !important;
+    color: #991b1b !important;
+  }
+
+  &:disabled {
+    background: #f1f5f9;
+    color: #64748b;
+  }
+}
+
+.wordSpacer {
+  display: inline-block;
+  width: 10px;
+}
+
+// Кнопка показа правильного ответа (Teacher Badge)
+.answerCheckRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.teacherBadgeBtn {
+  background: transparent;
+  border: 1px dashed #cbd5e1;
+  color: #64748b;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-size: 0.725rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #f1f5f9;
+    color: #334155;
+    border-color: #94a3b8;
+  }
+}
+
+.teacherAnswerRevealed {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #166534;
+  background: #dcfce7;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+}
+
+// Карточка самооценки (Check and Reflect)
+.reflectChecklist {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-lg;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reflectItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.4rem 0;
+  border-bottom: 1px dashed #f1f5f9;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .reflectText {
+    font-size: 0.875rem;
+    color: #334155;
+    font-weight: 500;
+  }
+}
+
+.starRating {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.starBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.1rem;
+  color: #cbd5e1;
+  transition: color 0.15s ease;
+  padding: 0;
+
+  &:hover,
+  &.starActive {
+    color: #eab308;
+  }
+}
+
+// Полноэкранный просмотр карты (Modal)
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modalContent {
+  position: relative;
+  max-width: 95vw;
+  max-height: 90vh;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+
+  img {
+    max-width: 100%;
+    max-height: calc(90vh - 50px);
+    object-fit: contain;
+    display: block;
+  }
+}
+
+.modalCloseBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #dc2626;
+  }
+}

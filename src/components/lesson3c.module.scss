@@ -1,0 +1,800 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+// Карточка урока
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-2xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+// Header Banner 3C (Тематический градиент Roadmap Red / Orange)
+.headerBanner {
+  background: linear-gradient(135deg, #c02624 0%, #dc2626 50%, #ea580c 100%);
+  color: $color-white;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+}
+
+.badge3C {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  background: $color-white;
+  color: #dc2626;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  padding: 0.25rem 0.85rem;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  line-height: 1;
+
+  .letterC {
+    color: #ea580c;
+    margin-left: 1px;
+  }
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.unitTag {
+  font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+  font-weight: $font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #fef08a;
+}
+
+.titleHeading {
+  font-size: clamp(1.4rem, 3.5vw, 2.1rem);
+  font-weight: 900;
+  margin: 0;
+  color: $color-white;
+  line-height: 1.15;
+  word-break: break-word;
+}
+
+// Goals Card
+.goalsCard {
+  background: rgba(153, 27, 27, 0.65);
+  backdrop-filter: blur(8px);
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(0.85rem, 2vw, 1.25rem);
+  border-radius: $border-radius-md;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  p {
+    margin: 0;
+    font-size: clamp(0.8rem, 1.8vw, 0.925rem);
+    color: rgba(255, 255, 255, 0.95);
+    line-height: 1.35;
+
+    strong {
+      color: #fef08a;
+      font-weight: $font-weight-bold;
+    }
+  }
+}
+
+// Основной контент урока
+.contentBody {
+  padding: clamp(1rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+// Сетка колонок (2 колонки на десктопе)
+.twoColLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1.25rem, 3vw, 2rem);
+
+  @media (min-width: 900px) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 2.5vw, 1.75rem);
+  min-width: 0;
+}
+
+// Заголовок секции
+.sectionTitle {
+  font-size: clamp(1.2rem, 2.5vw, 1.45rem);
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 $spacing-sm 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// Блок упражнения
+.exerciseBlock {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-lg;
+  padding: clamp(0.85rem, 2vw, 1.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  box-sizing: border-box;
+}
+
+.exerciseHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  font-size: clamp(0.875rem, 1.8vw, 0.95rem);
+}
+
+.exNumber {
+  background: #fee2e2;
+  color: #dc2626;
+  font-weight: 800;
+  font-size: 0.85rem;
+  min-width: 1.6rem;
+  height: 1.6rem;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.exLetter {
+  font-weight: 800;
+  color: #dc2626;
+  margin-right: 0.2rem;
+}
+
+.instruction {
+  font-weight: $font-weight-semibold;
+  color: $color-gray-900;
+  line-height: 1.4;
+}
+
+// Аудио полоса (СТАНДАРТ: Единый красный стиль #d02a27)
+.audioActionRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  padding: 0.5rem 0.85rem;
+  border-radius: $border-radius-md;
+  flex-wrap: wrap;
+}
+
+.audioBtn {
+  background: #d02a27;
+  color: #ffffff;
+  border: none;
+  padding: 0.35rem 0.85rem;
+  border-radius: 4px;
+  font-size: 0.825rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  transition: all 0.2s ease;
+  min-width: 95px;
+  justify-content: center;
+  user-select: none;
+  flex-shrink: 0;
+
+  &:hover:not(:disabled) {
+    opacity: 0.92;
+    background: #b91c1c;
+    transform: translateY(-1px);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.audioBtnActive {
+  background: #1b4c5b !important;
+  box-shadow: 0 0 0 2px rgba(27, 76, 91, 0.25);
+}
+
+.audioMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.775rem;
+  color: #64748b;
+  min-width: 0;
+  flex: 1;
+}
+
+.audioTrackName {
+  font-weight: 600;
+  color: #334155;
+  white-space: nowrap;
+}
+
+.equalizer {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 12px;
+}
+
+.bar {
+  width: 2px;
+  background: #ffffff;
+  border-radius: 1px;
+  animation: eqAnimation 0.8s ease-in-out infinite alternate;
+
+  &:nth-child(1) { height: 4px; animation-delay: 0s; }
+  &:nth-child(2) { height: 11px; animation-delay: 0.2s; }
+  &:nth-child(3) { height: 7px; animation-delay: 0.4s; }
+}
+
+@keyframes eqAnimation {
+  0% { height: 3px; }
+  100% { height: 12px; }
+}
+
+.exampleBox {
+  background: #fff7ed;
+  border: 1px dashed #fdba74;
+  border-radius: $border-radius-md;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.85rem;
+  color: #9a3412;
+  line-height: 1.45;
+}
+
+.vocabModelNote {
+  background: #fef2f2;
+  border-left: 3px solid #dc2626;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.825rem;
+  color: #991b1b;
+  font-weight: 500;
+}
+
+// Image wrappers
+.imageWrap {
+  width: 100%;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+}
+
+// Places chips with Milo PronounceButton
+.chipsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.5rem;
+}
+
+.wordChip {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-md;
+  padding: 0.35rem 0.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  color: #334155;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #cbd5e1;
+    background: #f1f5f9;
+  }
+}
+
+// Fill sentence lists
+.fillList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.fillItem {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: clamp(0.85rem, 1.8vw, 0.925rem);
+  color: #1e293b;
+  line-height: 1.5;
+}
+
+// Inputs
+.inlineInput {
+  border: 1.5px solid #cbd5e1;
+  border-radius: $border-radius-sm;
+  padding: 0.25rem 0.55rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0f172a;
+  background: #ffffff;
+  transition: all 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+}
+
+.inputValid {
+  border-color: #16a34a !important;
+  background-color: #f0fdf4 !important;
+  color: #15803d !important;
+}
+
+.inputInvalid {
+  border-color: #dc2626 !important;
+  background-color: #fef2f2 !important;
+  color: #b91c1c !important;
+}
+
+.notesTextarea {
+  width: 100%;
+  border: 1.5px solid #cbd5e1;
+  border-radius: $border-radius-md;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.875rem;
+  font-family: inherit;
+  color: #0f172a;
+  resize: vertical;
+  background: #ffffff;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+}
+
+// Reading Materials Grid (North Norfolk brochure + Photos A, B, C)
+.readingMaterialsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+
+  @media (min-width: 600px) {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+}
+
+.readingCardWrap {
+  position: relative;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: contain;
+  }
+
+  .zoomOverlay {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    background: rgba(15, 23, 42, 0.8);
+    color: white;
+    font-size: 0.725rem;
+    font-weight: 600;
+    padding: 0.25rem 0.55rem;
+    border-radius: 4px;
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+  }
+}
+
+.cardTopLabel {
+  background: #0284c7;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.photosTopLabel {
+  background: #0f172a;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+// Reading section (North Norfolk)
+.norfolkCard {
+  background: #ffffff;
+  border: 1.5px solid #bae6fd;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.norfolkHeader {
+  background: #0284c7;
+  color: #ffffff;
+  padding: 0.6rem 1rem;
+  font-weight: 800;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.townsList {
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.townItem {
+  background: #f0f9ff;
+  border-left: 3px solid #0284c7;
+  padding: 0.6rem 0.75rem;
+  border-radius: 0 $border-radius-md $border-radius-md 0;
+
+  h4 {
+    margin: 0 0 0.25rem 0;
+    font-size: 0.9rem;
+    font-weight: 800;
+    color: #0369a1;
+  }
+
+  p {
+    margin: 0;
+    font-size: 0.825rem;
+    line-height: 1.4;
+    color: #334155;
+  }
+}
+
+// Matching selects
+.matchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.65rem;
+  margin-top: 0.5rem;
+}
+
+.matchRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  padding: 0.4rem 0.65rem;
+  border-radius: $border-radius-md;
+  border: 1px solid #e2e8f0;
+}
+
+.selectInput {
+  flex: 1;
+  border: 1.5px solid #cbd5e1;
+  border-radius: $border-radius-sm;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  background: #ffffff;
+}
+
+// Section Divider
+.partDivider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: clamp(0.75rem, 2vw, 1.5rem) 0;
+
+  .partDividerLine {
+    flex: 1;
+    height: 1px;
+    background: #e2e8f0;
+  }
+
+  .partDividerBadge {
+    font-size: clamp(0.75rem, 1.6vw, 0.85rem);
+    font-weight: 700;
+    color: #dc2626;
+    background: #fee2e2;
+    border: 1px solid #fecaca;
+    padding: 0.35rem 0.9rem;
+    border-radius: $border-radius-full;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+}
+
+// True / False List
+.tfList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.tfItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: #ffffff;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-md;
+}
+
+.tfSentence {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #1e293b;
+  flex: 1;
+}
+
+.tfButtons {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.tfBtn {
+  border: 1.5px solid #cbd5e1;
+  background: #ffffff;
+  color: #64748b;
+  font-weight: 800;
+  font-size: 0.825rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: $border-radius-md;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #94a3b8;
+    background: #f8fafc;
+  }
+}
+
+.tfBtnSelected {
+  background: #0284c7 !important;
+  border-color: #0284c7 !important;
+  color: #ffffff !important;
+}
+
+// Grammar Box
+.grammarBox {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  border-radius: $border-radius-lg;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+
+  h4 {
+    margin: 0;
+    color: #166534;
+    font-size: 0.95rem;
+    font-weight: 800;
+  }
+}
+
+.grammarExampleGroup {
+  background: #ffffff;
+  padding: 0.65rem 0.85rem;
+  border-radius: $border-radius-md;
+  border: 1px solid #dcfce7;
+
+  strong {
+    display: block;
+    color: #15803d;
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+  }
+
+  p {
+    margin: 0.15rem 0;
+    font-size: 0.85rem;
+    color: #334155;
+  }
+}
+
+// Stressed words list
+.stressList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.stressItem {
+  font-size: 0.875rem;
+  color: #1e293b;
+  background: #ffffff;
+  padding: 0.45rem 0.75rem;
+  border-radius: $border-radius-md;
+  border: 1px solid #e2e8f0;
+
+  strong {
+    color: #dc2626;
+    text-decoration: underline;
+  }
+}
+
+// Word Order List (Ex 9)
+.orderList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.orderItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: #ffffff;
+  padding: 0.65rem 0.85rem;
+  border-radius: $border-radius-md;
+  border: 1px solid #e2e8f0;
+}
+
+.scrambledWords {
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: #64748b;
+  font-style: italic;
+}
+
+.orderInput {
+  border: 1.5px solid #cbd5e1;
+  border-radius: $border-radius-sm;
+  padding: 0.4rem 0.65rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #0f172a;
+  background: #ffffff;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+  }
+}
+
+// Modal zoom
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modalContent {
+  position: relative;
+  max-width: 95vw;
+  max-height: 90vh;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+
+  img {
+    max-width: 100%;
+    max-height: calc(90vh - 50px);
+    object-fit: contain;
+    display: block;
+  }
+}
+
+.modalCloseBtn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+  z-index: 10;
+
+  &:hover {
+    background: #dc2626;
+  }
+}

@@ -12,6 +12,8 @@ import Lesson2CContent from './Lesson2CContent';
 import Lesson2DContent from './Lesson2DContent';
 import Lesson3AContent from './Lesson3AContent';
 import Lesson3BContent from './Lesson3BContent';
+import Lesson3CContent from './Lesson3CContent';
+import Lesson3DContent from './Lesson3DContent';
 import Lesson4AContent from './Lesson4AContent';
 
 export interface LessonContentRendererProps {
@@ -31,7 +33,9 @@ export function getLessonType(lesson?: { order?: number; title?: string; id?: st
   if (lesson.order === 8 || lesson.title?.includes('2D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a99') return '2D';
   if (lesson.order === 9 || lesson.title?.includes('3A') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380a00') return '3A';
   if (lesson.order === 10 || lesson.title?.includes('3B') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380b02') return '3B';
-  if (lesson.order === 11 || lesson.title?.includes('4A') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380c01') return '4A';
+  if (lesson.order === 11 || lesson.title?.includes('3C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380b03') return '3C';
+  if (lesson.order === 12 || lesson.title?.includes('3D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380b04') return '3D';
+  if (lesson.order === 13 || lesson.title?.includes('4A') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380c01') return '4A';
   return '1A';
 }
 
@@ -403,6 +407,14 @@ export default function LessonContentRenderer({
 
     case '3B': {
       return <Lesson3BContent playAudio={playAudio} playingAudio={playingAudio} />;
+    }
+
+    case '3C': {
+      return <Lesson3CContent playAudio={playAudio} playingAudio={playingAudio} />;
+    }
+
+    case '3D': {
+      return <Lesson3DContent playAudio={playAudio} playingAudio={playingAudio} />;
     }
 
     case '4A': {
