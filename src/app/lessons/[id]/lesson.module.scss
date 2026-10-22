@@ -24,7 +24,7 @@
   width: 100%;
   max-width: 1100px;
   box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08);
-  padding: clamp(1rem, 3.5vw, 2.5rem);
+  padding: clamp(0.85rem, 3.5vw, 2.5rem);
   border-radius: clamp(8px, 2vw, 14px);
   border: 1px solid #e2e8f0;
   box-sizing: border-box;
@@ -53,8 +53,8 @@
 .topHeaderGrid {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  margin-bottom: 2.5rem;
+  gap: clamp(1rem, 2.5vw, 2rem);
+  margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
   @media(min-width: 768px) {
     flex-direction: row;
     justify-content: space-between;
@@ -63,6 +63,7 @@
 
 .titleArea {
   flex: 1;
+  min-width: 0;
 }
 .studentGreeting {
   font-size: 0.9rem;
@@ -92,17 +93,18 @@
 }
 
 .lessonTitle {
-  font-size: 2.5rem;
+  font-size: clamp(1.75rem, 5vw, 2.5rem);
   font-weight: bold;
   color: #1b4c5b;
   margin-bottom: 1rem;
+  line-height: 1.2;
 }
 
 .goalsBox {
   background-color: #df6b66;
   color: white;
-  padding: 1rem 1.5rem;
-  border-radius: 2px;
+  padding: clamp(0.75rem, 2.5vw, 1.25rem);
+  border-radius: 4px;
   font-size: 0.9rem;
   line-height: 1.6;
   span { font-weight: bold; }
@@ -113,18 +115,21 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+  min-width: 0;
 }
 
 .photoRow {
   display: flex;
   gap: 0.5rem;
-  height: 150px;
+  height: clamp(110px, 25vw, 150px);
 }
 
 .photoCard {
   flex: 1;
+  min-width: 0;
   position: relative;
   background: #cbd5e1;
+  border-radius: 4px;
   overflow: hidden;
   img { width: 100%; height: 100%; object-fit: cover; }
 }
@@ -133,6 +138,7 @@
   position: relative;
   height: 150px;
   background: #cbd5e1;
+  border-radius: 4px;
   overflow: hidden;
   img { width: 100%; height: 100%; object-fit: cover; }
 }
@@ -141,16 +147,34 @@
   position: absolute;
   bottom: 0;
   left: 0;
-  background: #1b4c5b;
+  background: rgba(27, 76, 91, 0.95);
   color: white;
-  font-size: 0.75rem;
-  padding: 0.2rem 0.5rem;
+  font-size: clamp(0.62rem, 1.8vw, 0.75rem);
+  padding: 0.15rem 0.35rem;
+  line-height: 1.2;
+  max-width: 100%;
+  box-sizing: border-box;
+  border-top-right-radius: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  @media (max-width: 440px) {
+    white-space: normal;
+    word-break: break-word;
+    font-size: 0.6rem;
+    padding: 0.1rem 0.25rem;
+  }
 }
 
 .contentLayout {
   display: flex;
   gap: clamp(1.5rem, 3vw, 3rem);
   flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
   @media(min-width: 768px) {
     flex-wrap: nowrap;
   }
@@ -161,9 +185,12 @@
   flex: 1;
   min-width: 0;
   width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 
   @media(min-width: 768px) {
     min-width: 280px;
+    max-width: calc(50% - clamp(0.75rem, 1.5vw, 1.5rem));
   }
 }
 
@@ -189,20 +216,29 @@
 }
 
 .countriesBox {
-  background-color: #f5dad3;
-  padding: 0.75rem;
+  background-color: #fbeee9;
+  border: 1px solid #fed7aa;
+  padding: clamp(0.5rem, 2vw, 0.75rem);
   font-size: 0.85rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(clamp(85px, 20vw, 130px), 1fr));
-  gap: 0.35rem;
-  margin-bottom: 0.5rem;
-  border-radius: 4px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.5rem;
+  margin-bottom: 0.75rem;
+  border-radius: 6px;
 }
 
 .countryTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: white;
+  border: 1px solid #fdba74;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  color: #1e293b;
+  font-weight: 500;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .exampleText {
@@ -214,76 +250,120 @@
 
 .flagsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(clamp(95px, 25vw, 150px), 1fr));
-  gap: clamp(0.5rem, 2vw, 1rem);
+  grid-template-columns: repeat(2, 1fr);
+  gap: clamp(0.5rem, 2vw, 0.85rem);
+
+  @media (min-width: 520px) {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
-.flagCard { display: flex; flex-direction: column; }
+.flagCard {
+  display: flex;
+  flex-direction: column;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  padding: clamp(0.35rem, 1.5vw, 0.5rem);
+  box-sizing: border-box;
+  min-width: 0;
+}
 
 .flagImageWrap {
   position: relative;
   width: 100%;
-  height: 3.5rem;
+  aspect-ratio: 16 / 10;
+  height: auto;
+  min-height: 48px;
   border: 1px solid #cbd5e1;
-  background: #f8fafc;
-  margin-bottom: 0.25rem;
+  background: #ffffff;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 0.35rem;
 }
 
 .flagId {
   position: absolute;
   top: 0;
   left: 0;
-  background: #578a9c;
+  background: #1b4c5b;
   color: white;
   font-size: 0.7rem;
   font-weight: bold;
-  padding: 0 0.25rem;
+  padding: 0.05rem 0.35rem;
+  border-bottom-right-radius: 4px;
   z-index: 2;
 }
 
-.flagImg { width: 100%; height: 100%; object-fit: cover; }
+.flagImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
 
 .flagSelect {
   width: 100%;
-  font-size: 0.75rem;
-  border: none;
-  border-bottom: 1px solid #cbd5e1;
-  background: transparent;
-  padding: 0.15rem 0;
+  min-height: 36px;
+  font-size: 0.85rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 4px;
+  background: white;
+  padding: 0.35rem 0.4rem;
   outline: none;
-  &:focus { border-color: #d02a27; }
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #d02a27;
+    box-shadow: 0 0 0 2px rgba(208, 42, 39, 0.12);
+  }
 }
 
 .audioRow {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
   font-size: 0.9rem;
   font-weight: bold;
   margin-top: 1rem;
+  line-height: 1.4;
+
+  @media (max-width: 480px) {
+    align-items: flex-start;
+  }
 }
 
 .audioBtn {
   background: #d02a27;
   color: white;
   border: none;
-  padding: 0.25rem 0.5rem;
-  border-radius: 3px;
-  font-size: 0.8rem;
+  padding: 0.35rem 0.75rem;
+  min-height: 34px;
+  border-radius: 4px;
+  font-size: 0.82rem;
   cursor: pointer;
-  margin-right: 0.5rem;
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   transition: all 0.2s ease;
-  min-width: 85px;
+  min-width: 90px;
   justify-content: center;
+  flex-shrink: 0;
 
-  &:hover { opacity: 0.9; }
+  &:hover {
+    opacity: 0.9;
+  }
 }
 
 .audioBtnActive {
   background: #1b4c5b;
-  padding: 0.25rem 0.75rem;
+  padding: 0.35rem 0.85rem;
 }
 
 .equalizer {
@@ -312,31 +392,48 @@
   width: 100%;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
-  margin: 0.5rem 0;
+  margin: 0.75rem 0;
+  border: 1px solid #fed7aa;
+  border-radius: 6px;
 }
 
 .stressTable {
   width: 100%;
-  min-width: 280px;
-  background: #f5dad3;
+  min-width: 320px;
+  background: #fbeee9;
   border-collapse: collapse;
   text-align: center;
-  margin-top: 0.5rem;
-  th, td {
-    border: 1px solid white;
+
+  th,
+  td {
+    border: 1px solid #ffffff;
     padding: 0.5rem 0.25rem;
     font-size: 0.85rem;
   }
-  th { font-weight: bold; }
+
+  th {
+    font-weight: bold;
+    background: #f5dad3;
+    color: #1b4c5b;
+  }
+
   input {
     width: 90%;
-    max-width: 100%;
+    min-width: 45px;
     border: none;
-    border-bottom: 1px solid black;
-    background: transparent;
+    border-bottom: 1.5px solid #1b4c5b;
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 2px;
+    padding: 0.25rem 0.15rem;
     text-align: center;
     font-style: italic;
     outline: none;
+    font-size: 0.85rem;
+
+    &:focus {
+      background: white;
+      border-bottom-color: #d02a27;
+    }
   }
 }
 
@@ -348,55 +445,102 @@
   color: #1ba2b8;
   font-size: 0.9rem;
   line-height: 1.5;
+  border-radius: 0 4px 4px 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: break-word;
+
+  p {
+    margin: 0.25rem 0;
+    overflow-wrap: break-word;
+  }
 }
 
 .confImageWrap {
   width: 100%;
-  height: 180px;
+  max-width: 100%;
+  height: clamp(140px, 32vw, 220px);
   border: 1px solid #cbd5e1;
+  border-radius: 6px;
   overflow: hidden;
-  margin-bottom: 1.5rem;
-  img { width: 100%; height: 100%; object-fit: cover; }
+  margin-bottom: 1.25rem;
+  box-sizing: border-box;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
 }
 
 .dialogueContainer {
   background: #f8fafc;
   border: 1px solid #e2e8f0;
-  padding: 1.25rem;
-  border-radius: 4px;
+  padding: clamp(0.75rem, 2.5vw, 1.25rem);
+  border-radius: 6px;
   font-size: 0.9rem;
-  line-height: 1.6;
+  line-height: 1.7;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow-wrap: break-word;
+  word-break: break-word;
+
+  p {
+    margin: 0.35rem 0;
+    max-width: 100%;
+    overflow-wrap: break-word;
+  }
 }
 
 .dialogueTitle {
   font-weight: bold;
   color: #1b4c5b;
   margin-bottom: 0.5rem;
+  font-size: 1rem;
 }
 
 .lineWithInput {
-  display: flex;
-  align-items: baseline;
+  display: block;
   margin: 0.5rem 0;
+  line-height: 2.2;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 .supNum {
   font-weight: bold;
   font-size: 0.75rem;
+  color: #d02a27;
   vertical-align: super;
-  margin: 0 0.2rem;
+  margin: 0 0.15rem;
 }
 
 .lineInput {
-  width: 6rem;
+  display: inline-block;
+  vertical-align: middle;
+  width: clamp(4.2rem, 18vw, 6rem);
+  min-width: 3.8rem;
+  max-width: calc(100% - 2rem);
   border: none;
-  border-bottom: 1px solid #000;
-  background: transparent;
+  border-bottom: 1.5px solid #1e293b;
+  background: rgba(241, 245, 249, 0.7);
   text-align: center;
   outline: none;
   margin: 0 0.25rem;
+  padding: 0.15rem 0.25rem;
   font-size: 0.9rem;
-  &:focus { border-color: #d02a27; }
+  border-radius: 2px 2px 0 0;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+
+  &:focus {
+    border-bottom-color: #d02a27;
+    background: white;
+  }
 }
 
 .submitSection {
@@ -407,15 +551,20 @@
 
 .submitBtn {
   width: 100%;
+  min-height: 44px;
   background: #1b4c5b;
   color: white;
   border: none;
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   font-weight: bold;
-  border-radius: 4px;
+  font-size: 0.95rem;
+  border-radius: 6px;
   cursor: pointer;
   transition: background 0.2s;
-  &:hover { background: #143742; }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:hover:not(:disabled) { background: #143742; }
 
   &:disabled {
     background: #94a3b8;
@@ -537,15 +686,15 @@
 
 .grammarBox {
   background-color: #d2dce6;
-  border-radius: 6px;
-  padding: 1.25rem;
+  border-radius: 8px;
+  padding: clamp(0.75rem, 2.5vw, 1.25rem);
   margin-bottom: 1.5rem;
   position: relative;
   overflow: hidden;
 }
 
 .grammarBoxTitle {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: bold;
   color: #1e3a5f;
   font-style: italic;
@@ -562,12 +711,19 @@
   display: flex;
   background: #e2e8f0;
   border: 1px solid white;
+  border-radius: 4px;
+  overflow: hidden;
+
+  @media (max-width: 540px) {
+    flex-wrap: wrap;
+  }
 }
 
 .grammarSign {
   width: 1.75rem;
   background: #b8c7d6;
   font-weight: bold;
+  color: #1e3a5f;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -576,9 +732,14 @@
 
 .grammarCell {
   flex: 1;
+  min-width: 0;
   padding: 0.5rem 0.75rem;
   font-size: 0.9rem;
   p { margin: 0.2rem 0; }
+
+  @media (max-width: 540px) {
+    min-width: calc(100% - 1.75rem);
+  }
 }
 
 .grammarColRight {
@@ -587,6 +748,12 @@
   gap: 0.25rem;
   width: 9rem;
   margin-left: 0.25rem;
+
+  @media (max-width: 540px) {
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-top: 0.25rem;
+  }
 }
 
 .grammarMiniRow {
@@ -610,7 +777,12 @@
   color: #0284c7;
   font-weight: 500;
   font-size: 0.9rem;
+  gap: 0.5rem;
   span span { color: #64748b; font-style: normal; }
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
 }
 
 .shortFormsBox {
@@ -628,11 +800,14 @@
 .shortFormItem {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.25rem;
 }
 
 .staticAudioRow {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 0.5rem;
   font-size: 0.9rem;
   margin: 1rem 0;
@@ -653,10 +828,10 @@
 }
 
 .pronounceList {
-  margin: 0.5rem 0 1rem 2rem;
+  margin: 0.5rem 0 1rem clamp(0.5rem, 2vw, 2rem);
   font-size: 0.9rem;
   line-height: 1.8;
-  p { margin: 0; }
+  p { margin: 0.15rem 0; }
 }
 
 .blueHighlight {
@@ -665,17 +840,28 @@
 }
 
 .dialogue7aBlock {
-  margin: 0.5rem 0 1rem 2rem;
+  margin: 0.5rem 0 1rem clamp(0.5rem, 2vw, 1.5rem);
   font-size: 0.9rem;
-  line-height: 1.9;
-  p { margin: 0.3rem 0; }
+  line-height: 2.2;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+
+  p {
+    margin: 0.4rem 0;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
 }
 
 .roleplayGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(0.35rem, 1.5vw, 0.5rem);
   margin: 1rem 0;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .roleplayHeader {
@@ -683,27 +869,44 @@
   text-align: center;
   font-weight: 600;
   color: #1f2937;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.85rem;
+  padding: 0.35rem 0.35rem;
+  font-size: clamp(0.75rem, 2.5vw, 0.85rem);
+  border-radius: 4px;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .roleplayCard {
-  border: 3px solid #38bdf8;
+  border: 2px solid #38bdf8;
   background-color: #e0f2fe;
-  padding: 0.75rem;
+  padding: 0.6rem 1.85rem 0.6rem 0.6rem;
   border-radius: 6px;
   position: relative;
-  font-size: 0.85rem;
+  font-size: clamp(0.76rem, 2.2vw, 0.85rem);
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  box-sizing: border-box;
+
   p { margin: 0.2rem 0; }
   span { font-weight: bold; }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem 1.7rem 0.5rem 0.45rem;
+    font-size: 0.78rem;
+  }
 }
 
 .flagBadge {
   position: absolute;
-  bottom: 0.5rem;
-  right: 0.5rem;
-  width: 2rem;
-  height: 2rem;
+  top: 0.4rem;
+  right: 0.4rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
   border: 1px solid #cbd5e1;
   overflow: hidden;
@@ -711,6 +914,14 @@
   align-items: center;
   justify-content: center;
   background: white;
+  flex-shrink: 0;
+
+  @media (min-width: 480px) {
+    width: 1.75rem;
+    height: 1.75rem;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
 }
 
 .appInfoLink {
@@ -752,19 +963,21 @@
   border: 1px solid #cbd5e1;
   margin: 0.5rem 0 1.5rem;
   max-width: 420px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .confHeader {
   background-color: #798e4d;
   color: white;
-  padding: 0.75rem 1rem;
-  font-size: 1rem;
+  padding: clamp(0.5rem, 2vw, 0.75rem) clamp(0.75rem, 2.5vw, 1rem);
+  font-size: clamp(0.9rem, 2.5vw, 1rem);
   font-weight: 600;
 }
 
 .confBody {
   background-color: #a5dbd4;
-  padding: 1rem;
+  padding: clamp(0.6rem, 2vw, 1rem);
   display: flex;
   flex-direction: column;
   gap: 0.6rem;
@@ -773,28 +986,37 @@
 .confField {
   display: flex;
   align-items: center;
+  gap: 0.5rem;
+
   label {
     width: 4.5rem;
     font-size: 0.85rem;
     font-weight: 600;
     color: #374151;
+    flex-shrink: 0;
   }
+
   input {
     flex: 1;
+    min-width: 0;
     background: white;
     border: 1px solid #cbd5e1;
-    padding: 0.3rem 0.5rem;
+    padding: 0.35rem 0.5rem;
     font-size: 0.85rem;
     outline: none;
-    border-radius: 2px;
-    &:focus { border-color: #0284c7; }
+    border-radius: 4px;
+
+    &:focus {
+      border-color: #0284c7;
+      box-shadow: 0 0 0 2px rgba(2, 132, 199, 0.15);
+    }
   }
 }
 
 .confRoles {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1rem;
+  gap: 0.35rem 0.75rem;
   margin-top: 0.25rem;
 }
 
@@ -805,6 +1027,8 @@
   font-size: 0.8rem;
   color: #374151;
   cursor: pointer;
+  min-height: 28px;
+
   input { cursor: pointer; }
 }
 

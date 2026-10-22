@@ -347,65 +347,67 @@ const LessonContent: React.FC<LessonContentProps> = ({
                             ))}
                         </div>
 
-                        <table className={styles.stressTable}>
-                            <thead>
-                            <tr>
-                                <th>o</th>
-                                <th>Oo</th>
-                                <th>oO</th>
-                                <th>Ooo</th>
-                                <th>ooOo</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {/* Строка 1 */}
-                            <tr>
-                                <td>
-                                    <input type="text" value={stressTableInputs['o_1'] || ''} onChange={e => onStressChange('o_1', e.target.value)} disabled={readOnly} className={isDiff('stress', 'o_1', stressTableInputs['o_1'] || '') ? styles.diffHighlight : ''} />
-                                </td>
-                                <td style={{ textAlign: 'center', fontStyle: 'italic', color: '#666' }}>Poland</td>
-                                <td style={{ textAlign: 'center', fontStyle: 'italic', color: '#666' }}>Japan</td>
-                                <td>
-                                    <input type="text" value={stressTableInputs['Ooo_1'] || ''} onChange={e => onStressChange('Ooo_1', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Ooo_1', stressTableInputs['Ooo_1'] || '') ? styles.diffHighlight : ''} />
-                                </td>
-                                <td>
-                                    <input type="text" value={stressTableInputs['ooOo_1'] || ''} onChange={e => onStressChange('ooOo_1', e.target.value)} disabled={readOnly} className={isDiff('stress', 'ooOo_1', stressTableInputs['ooOo_1'] || '') ? styles.diffHighlight : ''} />
-                                </td>
-                            </tr>
-                            {/* Строка 2 */}
-                            <tr>
-                                <td>
-                                    <input type="text" value={stressTableInputs['o_2'] || ''} onChange={e => onStressChange('o_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'o_2', stressTableInputs['o_2'] || '') ? styles.diffHighlight : ''} />
-                                </td>
-                                <td>
-                                    <input type="text" value={stressTableInputs['Oo_2'] || ''} onChange={e => onStressChange('Oo_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Oo_2', stressTableInputs['Oo_2'] || '') ? styles.diffHighlight : ''} />
-                                </td>
-                                <td>
-                                    <input type="text" value={stressTableInputs['oO_2'] || ''} onChange={e => onStressChange('oO_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'oO_2', stressTableInputs['oO_2'] || '') ? styles.diffHighlight : ''} />
-                                </td>
-                                <td>
-                                    <input type="text" value={stressTableInputs['Ooo_2'] || ''} onChange={e => onStressChange('Ooo_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Ooo_2', stressTableInputs['Ooo_2'] || '') ? styles.diffHighlight : ''} />
-                                </td>
-                                <td>
-                                    <input type="text" value={stressTableInputs['ooOo_2'] || ''} onChange={e => onStressChange('ooOo_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'ooOo_2', stressTableInputs['ooOo_2'] || '') ? styles.diffHighlight : ''} />
-                                </td>
-                            </tr>
-                            {/* Строка 3 */}
-                            <tr>
-                                <td></td>
-                                <td>
-                                    <input type="text" value={stressTableInputs['Oo_3'] || ''} onChange={e => onStressChange('Oo_3', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Oo_3', stressTableInputs['Oo_3'] || '') ? styles.diffHighlight : ''} />
-                                </td>
-                                <td>
-                                    <input type="text" value={stressTableInputs['oO_3'] || ''} onChange={e => onStressChange('oO_3', e.target.value)} disabled={readOnly} className={isDiff('stress', 'oO_3', stressTableInputs['oO_3'] || '') ? styles.diffHighlight : ''} />
-                                </td>
-                                <td>
-                                    <input type="text" value={stressTableInputs['Ooo_3'] || ''} onChange={e => onStressChange('Ooo_3', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Ooo_3', stressTableInputs['Ooo_3'] || '') ? styles.diffHighlight : ''} />
-                                </td>
-                                <td></td>
-                            </tr>
-                            </tbody>
-                        </table>
+                        <div className={styles.tableWrapper}>
+                            <table className={styles.stressTable}>
+                                <thead>
+                                <tr>
+                                    <th>o</th>
+                                    <th>Oo</th>
+                                    <th>oO</th>
+                                    <th>Ooo</th>
+                                    <th>ooOo</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {/* Строка 1 */}
+                                <tr>
+                                    <td>
+                                        <input type="text" value={stressTableInputs['o_1'] || ''} onChange={e => onStressChange('o_1', e.target.value)} disabled={readOnly} className={isDiff('stress', 'o_1', stressTableInputs['o_1'] || '') ? styles.diffHighlight : ''} />
+                                    </td>
+                                    <td style={{ textAlign: 'center', fontStyle: 'italic', color: '#666' }}>Poland</td>
+                                    <td style={{ textAlign: 'center', fontStyle: 'italic', color: '#666' }}>Japan</td>
+                                    <td>
+                                        <input type="text" value={stressTableInputs['Ooo_1'] || ''} onChange={e => onStressChange('Ooo_1', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Ooo_1', stressTableInputs['Ooo_1'] || '') ? styles.diffHighlight : ''} />
+                                    </td>
+                                    <td>
+                                        <input type="text" value={stressTableInputs['ooOo_1'] || ''} onChange={e => onStressChange('ooOo_1', e.target.value)} disabled={readOnly} className={isDiff('stress', 'ooOo_1', stressTableInputs['ooOo_1'] || '') ? styles.diffHighlight : ''} />
+                                    </td>
+                                </tr>
+                                {/* Строка 2 */}
+                                <tr>
+                                    <td>
+                                        <input type="text" value={stressTableInputs['o_2'] || ''} onChange={e => onStressChange('o_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'o_2', stressTableInputs['o_2'] || '') ? styles.diffHighlight : ''} />
+                                    </td>
+                                    <td>
+                                        <input type="text" value={stressTableInputs['Oo_2'] || ''} onChange={e => onStressChange('Oo_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Oo_2', stressTableInputs['Oo_2'] || '') ? styles.diffHighlight : ''} />
+                                    </td>
+                                    <td>
+                                        <input type="text" value={stressTableInputs['oO_2'] || ''} onChange={e => onStressChange('oO_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'oO_2', stressTableInputs['oO_2'] || '') ? styles.diffHighlight : ''} />
+                                    </td>
+                                    <td>
+                                        <input type="text" value={stressTableInputs['Ooo_2'] || ''} onChange={e => onStressChange('Ooo_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Ooo_2', stressTableInputs['Ooo_2'] || '') ? styles.diffHighlight : ''} />
+                                    </td>
+                                    <td>
+                                        <input type="text" value={stressTableInputs['ooOo_2'] || ''} onChange={e => onStressChange('ooOo_2', e.target.value)} disabled={readOnly} className={isDiff('stress', 'ooOo_2', stressTableInputs['ooOo_2'] || '') ? styles.diffHighlight : ''} />
+                                    </td>
+                                </tr>
+                                {/* Строка 3 */}
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <input type="text" value={stressTableInputs['Oo_3'] || ''} onChange={e => onStressChange('Oo_3', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Oo_3', stressTableInputs['Oo_3'] || '') ? styles.diffHighlight : ''} />
+                                    </td>
+                                    <td>
+                                        <input type="text" value={stressTableInputs['oO_3'] || ''} onChange={e => onStressChange('oO_3', e.target.value)} disabled={readOnly} className={isDiff('stress', 'oO_3', stressTableInputs['oO_3'] || '') ? styles.diffHighlight : ''} />
+                                    </td>
+                                    <td>
+                                        <input type="text" value={stressTableInputs['Ooo_3'] || ''} onChange={e => onStressChange('Ooo_3', e.target.value)} disabled={readOnly} className={isDiff('stress', 'Ooo_3', stressTableInputs['Ooo_3'] || '') ? styles.diffHighlight : ''} />
+                                    </td>
+                                    <td></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                     {/* Exercise 2b & 2c */}

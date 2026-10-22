@@ -139,12 +139,25 @@ export default function SubmissionDetailsPage() {
 
       const payloadAnswers = currentAnswersRef.current;
 
-      const payload = {
-        grade: gradeNum,
-        tutorComment: tutorComment.trim() || null,
+      const payload: {
+        status: string;
+        tutorComment?: string | null;
+        grade?: number;
+        answers: Record<string, unknown>;
+        reviewedAnswers: Record<string, unknown>;
+      } = {
         status: targetStatus,
+        answers: payloadAnswers,
         reviewedAnswers: payloadAnswers,
       };
+
+      if (tutorComment.trim()) {
+        payload.tutorComment = tutorComment.trim();
+      }
+
+      if (gradeNum !== null) {
+        payload.grade = gradeNum;
+      }
 
       const res = await api.patch(`/submissions/${id}/review`, payload);
       setSubmission(res.data);
