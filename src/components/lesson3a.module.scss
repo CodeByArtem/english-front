@@ -43,8 +43,9 @@
 
 .chevronsSvg {
   height: 100%;
-  width: 430px;
-  flex-shrink: 0;
+  width: clamp(240px, 75vw, 430px);
+  max-width: 100%;
+  flex-shrink: 1;
   display: block;
 }
 

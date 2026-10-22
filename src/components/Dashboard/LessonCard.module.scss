@@ -1,0 +1,200 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: $color-white;
+  border-radius: $border-radius-xl;
+  border: 1px solid $color-gray-200;
+  padding: clamp(1rem, 2.5vw, 1.25rem);
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 4px 12px -2px rgba(15, 23, 42, 0.03);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.4);
+    box-shadow: 0 10px 24px -4px rgba(59, 130, 246, 0.12), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+  }
+
+  &[data-variant='revision'] {
+    border-left: 4px solid $color-warning;
+    background: #fffcf8;
+  }
+
+  &[data-variant='graded'] {
+    border-left: 4px solid $color-success;
+  }
+
+  &[data-variant='submitted'] {
+    border-left: 4px solid $color-primary;
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: $spacing-sm;
+  margin-bottom: $spacing-md;
+  flex-wrap: wrap;
+}
+
+.iconWrap {
+  width: clamp(2.25rem, 5vw, 2.75rem);
+  height: clamp(2.25rem, 5vw, 2.75rem);
+  border-radius: $border-radius-lg;
+  background: $color-primary-50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.icon {
+  font-size: clamp(1.1rem, 2vw, 1.35rem);
+  line-height: 1;
+}
+
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: clamp(0.7rem, 1.5vw, 0.775rem);
+  font-weight: $font-weight-semibold;
+  padding: 0.25rem 0.625rem;
+  border-radius: $border-radius-full;
+  border: 1px solid transparent;
+  white-space: nowrap;
+
+  &[data-variant='graded'] {
+    background: #ecfdf5;
+    color: #065f46;
+    border-color: #a7f3d0;
+
+    .statusDot {
+      background: #10b981;
+    }
+  }
+
+  &[data-variant='revision'] {
+    background: #fffbeb;
+    color: #92400e;
+    border-color: #fde68a;
+
+    .statusDot {
+      background: #f59e0b;
+    }
+  }
+
+  &[data-variant='submitted'] {
+    background: #f0f9ff;
+    color: #0369a1;
+    border-color: #bae6fd;
+
+    .statusDot {
+      background: #0284c7;
+    }
+  }
+
+  &[data-variant='available'] {
+    background: $color-gray-100;
+    color: $color-gray-700;
+    border-color: $color-gray-200;
+
+    .statusDot {
+      background: $color-gray-400;
+    }
+  }
+}
+
+.statusDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.cardBody {
+  flex-grow: 1;
+  min-width: 0;
+  margin-bottom: $spacing-md;
+}
+
+.unitMeta {
+  font-size: clamp(0.725rem, 1.4vw, 0.8rem);
+  color: $color-gray-500;
+  margin: 0 0 $spacing-xs 0;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: $font-weight-medium;
+  word-break: break-word;
+}
+
+.lessonTitle {
+  font-size: clamp(1rem, 2.2vw, 1.15rem);
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin: 0;
+  line-height: $line-height-tight;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.cardFooter {
+  padding-top: $spacing-sm;
+  border-top: 1px solid $color-gray-100;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  border-radius: $border-radius-md;
+  font-size: clamp(0.8rem, 1.6vw, 0.875rem);
+  font-weight: $font-weight-semibold;
+  text-decoration: none;
+  background: $color-primary-50;
+  color: $color-primary-dark;
+  transition: background-color 0.15s ease, color 0.15s ease, transform 0.15s ease;
+
+  .arrow {
+    font-size: 1rem;
+    line-height: 1;
+    transition: transform 0.15s ease;
+  }
+
+  &:hover {
+    background: $color-primary;
+    color: $color-white;
+
+    .arrow {
+      transform: translateX(4px);
+    }
+  }
+
+  &[data-variant='revision'] {
+    background: #ffedd5;
+    color: #c2410c;
+
+    &:hover {
+      background: #ea580c;
+      color: $color-white;
+    }
+  }
+
+  &[data-variant='graded'] {
+    background: #ecfdf5;
+    color: #047857;
+
+    &:hover {
+      background: #10b981;
+      color: $color-white;
+    }
+  }
+}

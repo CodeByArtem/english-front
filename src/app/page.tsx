@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import api from '@/lib/api';
+import Navbar from '@/components/Navbar/Navbar';
 import styles from './page.module.scss';
 
 interface Lesson {
@@ -81,89 +82,60 @@ export default function HomePage() {
 
   if (loading) {
     return (
-        <div className={styles.container}>
-          <div className={styles.loading}>Loading...</div>
-        </div>
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading...</div>
+      </div>
     );
   }
 
   return (
-      <div className={styles.container}>
-        <header className={styles.header}>
-          <div className={styles.headerContent}>
-            <h1 className={styles.logo}>English Learning</h1>
-            <nav className={styles.nav}>
-              {user ? (
-                  <div className={styles.userMenu}>
-                    <div className={styles.userInfo}>
-                      <span className={styles.userName}>{user.name || user.email}</span>
-                      <span className={styles.userRole}>{user.role}</span>
-                    </div>
-                    <Link href="/dashboard" className={styles.navLink} style={{ marginRight: '1rem' }}>
-                      Dashboard
-                    </Link>
-                    <button onClick={handleLogout} className={styles.logoutButton}>
-                      Sign Out
-                    </button>
-                  </div>
-              ) : (
-                  <>
-                    <Link href="/login" className={styles.navLink}>
-                      Sign In
-                    </Link>
-                    <Link href="/register" className={styles.navButton}>
-                      Sign Up
-                    </Link>
-                  </>
-              )}
-            </nav>
-          </div>
-        </header>
+    <div className={styles.container}>
+      <Navbar user={user} onLogout={handleLogout} />
 
-        <main className={styles.main}>
-          <div className={styles.hero}>
-            <h2 className={styles.heroTitle}>Learn English at Your Own Pace</h2>
-            <p className={styles.heroSubtitle}>
-              Interactive lessons, structured roadmaps, and personalized learning paths.
-            </p>
-            {!user && (
-                <Link
-                    href="/register"
-                    className={styles.heroButton}
-                    style={{
-                      display: 'inline-block',
-                      marginTop: '1.5rem',
-                      padding: '0.75rem 2rem',
-                      background: '#0070f3',
-                      color: 'white',
-                      borderRadius: '8px',
-                      textDecoration: 'none',
-                      fontWeight: 'bold',
-                    }}
-                >
-                  Start for Free
+      <main className={styles.main}>
+        <div className={styles.hero}>
+          <h2 className={styles.heroTitle}>Learn English at Your Own Pace</h2>
+          <p className={styles.heroSubtitle}>
+            Interactive lessons, structured roadmaps, and personalized learning paths.
+          </p>
+          {!user && (
+            <Link
+              href="/register"
+              className={styles.heroButton}
+              style={{
+                display: 'inline-block',
+                marginTop: '1.5rem',
+                padding: '0.75rem 2rem',
+                background: '#0070f3',
+                color: 'white',
+                borderRadius: '8px',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+              }}
+            >
+              Start for Free
+            </Link>
+          )}
+        </div>
+
+        <section className={styles.courses}>
+          <h3 className={styles.sectionTitle}>Available Textbooks</h3>
+          <div className={styles.grid}>
+            {textbooks.map((textbook) => (
+              <div key={textbook.id} className={styles.card}>
+                <div className={styles.cardHeader}>
+                  <span className={styles.level}>{textbook.level}</span>
+                </div>
+                <h4 className={styles.cardTitle}>{textbook.title}</h4>
+                <p className={styles.cardDescription}>{textbook.description}</p>
+                <Link href={user ? '/dashboard' : '/login'} className={styles.cardButton}>
+                  {user ? 'View Content' : 'Get Started'}
                 </Link>
-            )}
+              </div>
+            ))}
           </div>
-
-          <section className={styles.courses}>
-            <h3 className={styles.sectionTitle}>Available Textbooks</h3>
-            <div className={styles.grid}>
-              {textbooks.map((textbook) => (
-                  <div key={textbook.id} className={styles.card}>
-                    <div className={styles.cardHeader}>
-                      <span className={styles.level}>{textbook.level}</span>
-                    </div>
-                    <h4 className={styles.cardTitle}>{textbook.title}</h4>
-                    <p className={styles.cardDescription}>{textbook.description}</p>
-                    <Link href={user ? '/dashboard' : '/login'} className={styles.cardButton}>
-                      {user ? 'View Content' : 'Get Started'}
-                    </Link>
-                  </div>
-              ))}
-            </div>
-          </section>
-        </main>
-      </div>
+        </section>
+      </main>
+    </div>
   );
 }

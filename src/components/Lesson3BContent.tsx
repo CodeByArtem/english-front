@@ -247,9 +247,9 @@ export default function Lesson3BContent({ playAudio, playingAudio }: Lesson3BCon
                 <button
                   type="button"
                   className={styles.audioBtn}
-                  onClick={() => playAudio('/audio/3.4.mp3')}
+                  onClick={() => playAudio('3.4')}
                 >
-                  {playingAudio === '/audio/3.4.mp3' ? '⏸ Playing' : '▶ Audio 3.4'}
+                  {playingAudio === '3.4' || playingAudio === '/audio/3.4.mp3' ? '⏸ Playing' : '▶ Audio 3.4'}
                 </button>
               </div>
             )}

@@ -176,9 +176,9 @@ export default function Lesson4AContent({ playAudio, playingAudio }: Lesson4ACon
                 <button
                   type="button"
                   className={styles.audioBtn}
-                  onClick={() => playAudio('/audio/4.1.mp3')}
+                  onClick={() => playAudio('4.1')}
                 >
-                  {playingAudio === '/audio/4.1.mp3' ? '⏸ Playing' : '▶ Audio 4.1'}
+                  {playingAudio === '4.1' || playingAudio === '/audio/4.1.mp3' ? '⏸ Playing' : '▶ Audio 4.1'}
                 </button>
               </div>
             )}

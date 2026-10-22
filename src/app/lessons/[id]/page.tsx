@@ -9,6 +9,7 @@ import LessonContentRenderer from '@/components/LessonContentRenderer';
 import { SubmissionAudioMeta } from '@/components/AudioAnswerRecorder/SubmissionAudioPlayer';
 import { LessonAnswerKey } from '@/lib/answerVerification';
 import { useMascot } from '@/components/Mascot';
+import Navbar from '@/components/Navbar/Navbar';
 
 interface LessonModel {
   id: string;
@@ -262,6 +263,7 @@ const LessonPage = () => {
 
   return (
     <div className={styles.lessonPage}>
+      <Navbar user={user} showBackToDashboard={true} />
       <div className={styles.container}>
         <button
           onClick={() => router.push('/dashboard')}

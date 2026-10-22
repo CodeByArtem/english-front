@@ -7,6 +7,7 @@ import React, {
   useCallback,
   useRef,
   useMemo,
+  useEffect,
   type ReactNode,
 } from 'react';
 import {
@@ -51,6 +52,36 @@ export interface LessonContextValue {
 }
 
 export const LessonContext = createContext<LessonContextValue | null>(null);
+
+/**
+ * Преобразует строковый идентификатор или путь в валидный абсолютный URL к аудиофайлу.
+ * Поддерживает:
+ * - '1.1' -> '/audio/1.1.mp3'
+ * - '1.1.mp3' -> '/audio/1.1.mp3'
+ * - 'audio/1.1.mp3' -> '/audio/1.1.mp3'
+ * - '/audio/1.1.mp3' -> '/audio/1.1.mp3'
+ * - 'http://...', 'https://...', 'blob:...', 'data:...' -> без изменений
+ */
+export function resolveAudioSrc(track: string): string {
+  const trimmed = track.trim();
+  if (!trimmed) return '';
+
+  if (/^(https?:|blob:|data:)/i.test(trimmed)) {
+    return trimmed;
+  }
+
+  if (trimmed.startsWith('/')) {
+    return trimmed.endsWith('.mp3') ? trimmed : `${trimmed}.mp3`;
+  }
+
+  if (trimmed.startsWith('audio/')) {
+    const withExt = trimmed.endsWith('.mp3') ? trimmed : `${trimmed}.mp3`;
+    return `/${withExt}`;
+  }
+
+  const withExt = trimmed.endsWith('.mp3') ? trimmed : `${trimmed}.mp3`;
+  return `/audio/${withExt}`;
+}
 
 export interface LessonProviderProps {
   children: ReactNode;
@@ -157,8 +188,21 @@ export function LessonProvider({
     [effectiveAnswerKey, answers],
   );
 
+  // Очистка воспроизведения при размонтировании контекста урока
+  useEffect(() => {
+    return () => {
+      if (currentAudioRef.current) {
+        currentAudioRef.current.pause();
+        currentAudioRef.current = null;
+      }
+    };
+  }, []);
+
   const playAudio = useCallback(
     (track: string) => {
+      if (!track) return;
+
+      // Повторный клик по активному треку останавливает воспроизведение
       if (playingAudio === track && currentAudioRef.current) {
         currentAudioRef.current.pause();
         currentAudioRef.current = null;
@@ -166,12 +210,19 @@ export function LessonProvider({
         return;
       }
 
+      // Останавливаем предыдущее воспроизведение перед запуском нового
       if (currentAudioRef.current) {
         currentAudioRef.current.pause();
         currentAudioRef.current = null;
       }
 
-      const audio = new Audio(track);
+      const src = resolveAudioSrc(track);
+      if (!src) {
+        setPlayingAudio(null);
+        return;
+      }
+
+      const audio = new Audio(src);
       audio.onended = () => {
         setPlayingAudio(null);
         currentAudioRef.current = null;
@@ -181,7 +232,7 @@ export function LessonProvider({
       currentAudioRef.current = audio;
 
       audio.play().catch((err: unknown) => {
-        console.error('Audio playback failed:', err);
+        console.error(`Audio playback failed for track "${track}" (resolved src: "${src}"):`, err);
         setPlayingAudio(null);
         currentAudioRef.current = null;
       });

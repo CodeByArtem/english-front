@@ -3,163 +3,230 @@
 
 .container {
   min-height: 100vh;
-  background: linear-gradient(135deg, $color-gray-50 0%, $color-gray-100 100%);
+  background: linear-gradient(135deg, $color-gray-50 0%, #f1f5f9 100%);
+  overflow-x: hidden;
 }
 
-.header {
-  background: $color-white;
-  box-shadow: $shadow-sm;
-  position: sticky;
-  top: 0;
-  z-index: $z-index-sticky;
-}
-
-.headerContent {
-  @include container;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: $spacing-lg;
-  padding-bottom: $spacing-lg;
-}
-
-.logo {
-  font-size: $font-size-2xl;
-  font-weight: $font-weight-bold;
-  color: $color-primary;
-  @include transition(color);
-
-  &:hover {
-    color: $color-primary-dark;
-  }
-}
-
-.userSection {
-  display: flex;
-  align-items: center;
-  gap: $spacing-lg;
-}
-
-.userInfo {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: $spacing-xs;
-}
-
-.userName {
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  color: $color-gray-900;
-}
-
-.userRole {
-  font-size: $font-size-xs;
-  color: $color-gray-500;
-  text-transform: capitalize;
-}
-
-.logoutButton {
-  @include button-reset;
-  padding: $spacing-sm $spacing-lg;
-  background: $color-gray-200;
-  color: $color-gray-700;
-  font-weight: $font-weight-medium;
-  border-radius: $border-radius-md;
-  @include transition(background, color);
-
-  &:hover {
-    background: $color-gray-300;
-    color: $color-gray-900;
-  }
-}
-
-.loading {
+// Loading & Error States
+.loadingWrapper {
   @include flex-center;
-  min-height: 50vh;
-  font-size: $font-size-lg;
-  color: $color-gray-600;
-}
-
-.main {
-  @include container;
-  padding-top: $spacing-2xl;
-  padding-bottom: $spacing-2xl;
-  display: grid;
-  gap: $spacing-2xl;
-}
-
-.welcome {
+  flex-direction: column;
+  min-height: 60vh;
+  gap: $spacing-md;
+  padding: $spacing-xl;
   text-align: center;
-  padding: $spacing-2xl 0;
 }
 
-.welcomeTitle {
-  font-size: $font-size-4xl;
-  font-weight: $font-weight-bold;
-  color: $color-gray-900;
-  margin-bottom: $spacing-md;
+.spinner {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 3px solid $color-gray-200;
+  border-top-color: $color-primary;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
 }
 
-.welcomeSubtitle {
-  font-size: $font-size-lg;
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.loadingText {
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
   color: $color-gray-600;
   margin: 0;
 }
 
+.errorWrapper {
+  @include flex-center;
+  flex-direction: column;
+  min-height: 60vh;
+  gap: $spacing-md;
+  padding: $spacing-xl;
+  text-align: center;
+  max-width: 480px;
+  margin: 0 auto;
+
+  h2 {
+    font-size: 1.4rem;
+    color: $color-gray-900;
+    margin: 0;
+  }
+
+  p {
+    color: $color-gray-600;
+    margin: 0;
+  }
+}
+
+.errorIcon {
+  font-size: 2.5rem;
+}
+
+.retryBtn {
+  @include button-reset;
+  padding: 0.6rem 1.25rem;
+  background: $color-primary;
+  color: $color-white;
+  font-weight: $font-weight-semibold;
+  border-radius: $border-radius-md;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background: $color-primary-dark;
+  }
+}
+
+// Main Content
+.main {
+  @include container;
+  padding-top: clamp(1.25rem, 3vw, 2.25rem);
+  padding-bottom: clamp(2rem, 5vw, 3.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3.5vw, 2.5rem);
+}
+
+// Welcome Section
+.welcome {
+  text-align: center;
+  padding: clamp(0.75rem, 2vw, 1.5rem) 0;
+}
+
+.welcomeTitle {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  margin: 0 0 $spacing-xs 0;
+  line-height: $line-height-tight;
+  word-break: break-word;
+}
+
+.welcomeSubtitle {
+  font-size: clamp(0.925rem, 2vw, 1.1rem);
+  color: $color-gray-600;
+  margin: 0;
+  line-height: $line-height-relaxed;
+}
+
 .teacherActions {
-  margin-top: $spacing-xl;
+  margin-top: clamp(1rem, 2.5vw, 1.5rem);
   display: flex;
   justify-content: center;
 }
 
 .teacherLink {
-  display: inline-block;
-  padding: $spacing-sm $spacing-xl;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: clamp(0.6rem, 1.8vw, 0.75rem) clamp(1rem, 3vw, 1.5rem);
   background: $color-primary;
   color: $color-white;
+  font-size: clamp(0.85rem, 1.8vw, 0.95rem);
   font-weight: $font-weight-bold;
   border-radius: $border-radius-lg;
   text-decoration: none;
-  @include transition(background, transform);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+  transition: background-color 0.15s ease, transform 0.15s ease;
+
+  .teacherArrow {
+    transition: transform 0.15s ease;
+  }
 
   &:hover {
     background: $color-primary-dark;
     transform: translateY(-2px);
+
+    .teacherArrow {
+      transform: translateX(3px);
+    }
   }
 }
 
-.courses {
-  @include card($spacing-2xl, $border-radius-xl, $shadow-md);
+// Section Common
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.85rem, 2vw, 1.25rem);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .sectionTitle {
-  font-size: $font-size-2xl;
+  font-size: clamp(1.2rem, 3vw, 1.55rem);
   font-weight: $font-weight-bold;
   color: $color-gray-900;
-  margin-bottom: $spacing-xl;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  flex-wrap: wrap;
+}
+
+.sectionBadge {
+  font-size: 0.75rem;
+  font-weight: $font-weight-bold;
+  padding: 0.15rem 0.55rem;
+  border-radius: $border-radius-full;
+  background: $color-primary-50;
+  color: $color-primary-dark;
+  border: 1px solid $color-primary-100;
+}
+
+// Submissions Grid
+.submissionGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(clamp(260px, 30vw, 360px), 1fr));
+  gap: clamp(0.85rem, 2vw, 1.25rem);
+}
+
+// Textbooks Section
+.courses {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-2xl;
+  padding: clamp(1rem, 3vw, 1.75rem);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.04);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
 }
 
 .textbookList {
   display: flex;
   flex-direction: column;
-  gap: $spacing-md;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
 }
 
 .textbookItem {
-  @include card(0, $border-radius-lg, $shadow-sm);
-  overflow: hidden;
+  background: $color-white;
   border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+  &:hover {
+    border-color: rgba(59, 130, 246, 0.35);
+  }
 }
 
 .textbookHeader {
-  padding: $spacing-lg $spacing-xl;
+  @include button-reset;
+  width: 100%;
+  padding: clamp(1rem, 2.5vw, 1.35rem);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  cursor: pointer;
+  gap: $spacing-md;
   background: $color-white;
-  @include transition(background);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease;
 
   &:hover {
     background: $color-gray-50;
@@ -168,303 +235,158 @@
 
 .textbookInfo {
   display: flex;
-  align-items: center;
-  gap: $spacing-md;
+  align-items: flex-start;
+  gap: clamp(0.75rem, 2vw, 1rem);
+  min-width: 0;
+  flex: 1;
+}
+
+.levelBadge {
+  padding: 0.25rem 0.6rem;
+  background: $color-primary;
+  color: $color-white;
+  font-size: clamp(0.7rem, 1.5vw, 0.775rem);
+  font-weight: $font-weight-bold;
+  border-radius: $border-radius-md;
+  letter-spacing: 0.04em;
+  flex-shrink: 0;
 }
 
 .textbookTitle {
-  font-size: $font-size-lg;
+  font-size: clamp(1.05rem, 2.4vw, 1.25rem);
   font-weight: $font-weight-bold;
   color: $color-gray-900;
   margin: 0;
+  line-height: $line-height-tight;
+  word-break: break-word;
 }
 
-.level {
-  padding: $spacing-xs $spacing-sm;
-  background: $color-primary;
-  color: $color-white;
-  font-size: $font-size-xs;
-  font-weight: $font-weight-semibold;
-  border-radius: $border-radius-sm;
+.textbookDesc {
+  font-size: clamp(0.8rem, 1.6vw, 0.875rem);
+  color: $color-gray-500;
+  margin: 0.25rem 0 0 0;
+  line-height: $line-height-normal;
+  word-break: break-word;
+}
+
+.chevronWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
 }
 
 .chevron {
-  font-size: $font-size-xs;
+  font-size: 0.75rem;
   color: $color-gray-400;
 }
 
+.chevronSmall {
+  font-size: 0.65rem;
+  color: $color-gray-400;
+}
+
+.unitListWrapper {
+  overflow: hidden;
+}
+
 .unitList {
-  background: $color-gray-50;
+  background: #f8fafc;
   border-top: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
 }
 
 .unitItem {
   border-bottom: 1px solid $color-gray-200;
+
   &:last-child {
     border-bottom: none;
   }
 }
 
 .unitHeader {
-  padding: $spacing-md $spacing-xl;
-  padding-left: $spacing-2xl;
+  @include button-reset;
+  width: 100%;
+  padding: clamp(0.75rem, 2vw, 1rem) clamp(1rem, 2.5vw, 1.5rem);
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: $spacing-md;
   cursor: pointer;
-  @include transition(background);
+  background: transparent;
+  text-align: left;
+  transition: background-color 0.15s ease;
 
   &:hover {
-    background: $color-gray-100;
+    background: #f1f5f9;
   }
+}
+
+.unitInfo {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.5rem, 1.8vw, 0.75rem);
+  min-width: 0;
+  flex: 1;
+  flex-wrap: wrap;
+}
+
+.unitIcon {
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
 .unitTitle {
-  font-size: $font-size-base;
+  font-size: clamp(0.9rem, 2vw, 1.05rem);
   font-weight: $font-weight-semibold;
   color: $color-gray-800;
   margin: 0;
+  word-break: break-word;
 }
 
-.lessonList {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  background: $color-white;
-}
-
-.lessonItem {
-  border-bottom: 1px solid $color-gray-100;
-  &:last-child {
-    border-bottom: none;
-  }
-}
-
-.lessonLink {
-  display: flex;
-  align-items: center;
-  gap: $spacing-sm;
-  padding: $spacing-sm $spacing-xl;
-  padding-left: $spacing-3xl;
-  color: $color-gray-700;
-  text-decoration: none;
-  font-size: $font-size-sm;
-  @include transition(background, color);
-
-  &:hover {
-    background: $color-primary-50;
-    color: $color-primary;
-  }
-}
-
-.lessonIcon {
-  font-size: $font-size-base;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: $spacing-xl;
-}
-
-.card {
-  @include card($spacing-xl, $border-radius-xl, $shadow-md);
-  @include hover-lift;
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-md;
-}
-
-.cardHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: $spacing-sm;
-}
-
-.level {
-  padding: $spacing-xs $spacing-sm;
-  background: $color-primary;
-  color: $color-white;
-  font-size: $font-size-sm;
-  font-weight: $font-weight-semibold;
-  border-radius: $border-radius-sm;
-}
-
-.lessons {
-  font-size: $font-size-sm;
-  color: $color-gray-600;
-}
-
-.cardTitle {
-  font-size: $font-size-xl;
-  font-weight: $font-weight-bold;
-  color: $color-gray-900;
-  margin: 0;
-}
-
-.cardDescription {
-  font-size: $font-size-base;
-  color: $color-gray-600;
-  line-height: $line-height-relaxed;
-  margin: 0;
-  flex-grow: 1;
-}
-
-.progressSection {
-  display: flex;
-  flex-direction: column;
-  gap: $spacing-xs;
-}
-
-.progressBar {
-  width: 100%;
-  height: 8px;
-  background: $color-gray-200;
-  border-radius: $border-radius-full;
-  overflow: hidden;
-}
-
-.progressFill {
-  height: 100%;
-  background: $color-primary;
-  @include transition(width);
-}
-
-.progressText {
-  font-size: $font-size-xs;
-  color: $color-gray-600;
-}
-
-.cardButton {
-  @include button-reset;
-  padding: $spacing-md;
-  background: $color-primary;
-  color: $color-white;
-  font-size: $font-size-base;
-  font-weight: $font-weight-semibold;
-  border-radius: $border-radius-md;
-  @include transition(background, transform);
-  cursor: pointer;
-  text-align: center;
-
-  &:hover {
-    background: $color-primary-dark;
-    transform: translateY(-1px);
-  }
-
-  &:active {
-    transform: translateY(0);
-  }
-}
-
-@include respond-to(sm) {
-  .main {
-    padding-top: $spacing-lg;
-    padding-bottom: $spacing-lg;
-  }
-
-  .welcomeTitle {
-    font-size: $font-size-3xl;
-  }
-
-  .sectionTitle {
-    font-size: $font-size-xl;
-  }
-
-  .userSection {
-    flex-direction: column;
-    align-items: flex-end;
-    gap: $spacing-sm;
-  }
-}
-
-.submissionsSection {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.submissionGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.25rem;
-}
-
-.subCard {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-}
-
-.subCardRevision {
-  border-left: 4px solid #f97316;
-  background: #fffbf5;
-}
-
-.subCardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 0.5rem;
-}
-
-.subLessonTitle {
-  font-size: 1.05rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0;
-}
-
-.subStatusBadge {
+.unitCount {
   font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  color: $color-gray-500;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  padding: 0.15rem 0.5rem;
+  border-radius: $border-radius-full;
+  font-weight: $font-weight-medium;
   white-space: nowrap;
 }
 
-.badgeGraded { background: #dcfce7; color: #166534; }
-.badgeRevision { background: #fef3c7; color: #b45309; }
-.badgeSubmitted { background: #e0f2fe; color: #0369a1; }
+.lessonGridWrapper {
+  overflow: hidden;
+}
 
-.tutorComment {
-  font-size: 0.85rem;
-  color: #9a3412;
-  background: #ffedd5;
-  padding: 0.5rem 0.75rem;
-  border-radius: 4px;
+.lessonGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(clamp(250px, 28vw, 320px), 1fr));
+  gap: clamp(0.75rem, 2vw, 1.15rem);
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  background: $color-white;
+  border-top: 1px solid $color-gray-200;
+}
+
+// Empty State
+.emptyState {
+  @include flex-center;
+  flex-direction: column;
+  padding: clamp(2rem, 5vw, 3rem) $spacing-md;
+  text-align: center;
+  gap: $spacing-sm;
+}
+
+.emptyIcon {
+  font-size: 2.5rem;
+  line-height: 1;
+}
+
+.emptyText {
+  font-size: clamp(0.9rem, 1.8vw, 1rem);
+  color: $color-gray-500;
   margin: 0;
-}
-
-.subCardFooter {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: auto;
-  padding-top: 0.5rem;
-  border-top: 1px solid #f1f5f9;
-}
-
-.subDate { font-size: 0.75rem; color: #64748b; }
-
-.actionBtnView, .actionBtnRevision {
-  font-size: 0.8rem;
-  font-weight: 600;
-  text-decoration: none;
-}
-.actionBtnView { color: #1b4c5b; &:hover { text-decoration: underline; } }
-.actionBtnRevision { color: #ea580c; &:hover { text-decoration: underline; } }
-
-.inlineBadge {
-  margin-left: auto;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
 }

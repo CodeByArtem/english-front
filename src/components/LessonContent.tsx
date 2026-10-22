@@ -480,6 +480,8 @@ const LessonContent: React.FC<LessonContentProps> = ({
                             height={450}
                             style={{ width: '100%', height: 'auto', display: 'block' }}
                             unoptimized
+                            loading="eager"
+                            priority
                         />
                     </div>
 
