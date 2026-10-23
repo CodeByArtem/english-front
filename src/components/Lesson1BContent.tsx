@@ -504,7 +504,7 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
                   <div className={styles.miniProfileCard}>
                     <div className={styles.miniPhotoWrap}>
                       <Image
-                        src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?auto=format&fit=crop&w=300&q=80"
+                        src="/images/lesson1b/img_9.png"
                         alt="Lidia Nowak"
                         fill
                         sizes="(max-width: 768px) 50vw, 200px"
@@ -521,7 +521,7 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
                           type="text"
                           value={currentVal}
                           onChange={(e) => onPage9ProfileChange('lidia', e.target.value)}
-                          placeholder="e.g. pilot..."
+                          placeholder="Type job..."
                           disabled={readOnly}
                           className={`${styles.miniInput} ${isChanged ? styles.diffHighlight : ''} ${
                             v?.status === 'correct'
@@ -550,7 +550,7 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
                   <div className={styles.miniProfileCard}>
                     <div className={styles.miniPhotoWrap}>
                       <Image
-                        src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=300&q=80"
+                        src="/images/lesson1b/img_10.png"
                         alt="Sakura Sato"
                         fill
                         sizes="(max-width: 768px) 50vw, 200px"
@@ -567,7 +567,7 @@ export default function Lesson1BContent(props: Lesson1BContentProps) {
                           type="text"
                           value={currentVal}
                           onChange={(e) => onPage9ProfileChange('sakura', e.target.value)}
-                          placeholder="e.g. architect..."
+                          placeholder="Type job..."
                           disabled={readOnly}
                           className={`${styles.miniInput} ${isChanged ? styles.diffHighlight : ''} ${
                             v?.status === 'correct'

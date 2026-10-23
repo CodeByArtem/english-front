@@ -1,0 +1,562 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-2xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Header Banner 4B (Pearson Ruby/Rose Theme)
+.headerBanner {
+  background: linear-gradient(135deg, #9f1239 0%, #be123c 50%, #e11d48 100%);
+  color: $color-white;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  flex-wrap: wrap;
+}
+
+.badge4B {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  background: $color-white;
+  color: #9f1239;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  padding: 0.25rem 0.85rem;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  line-height: 1;
+
+  .letterB {
+    color: #e11d48;
+    margin-left: 1px;
+  }
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.titleHeading {
+  font-size: clamp(1.35rem, 3.2vw, 2rem);
+  font-weight: 800;
+  margin: 0;
+  color: $color-white;
+  line-height: 1.2;
+}
+
+.lessonMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pillGoal {
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 0.2rem 0.65rem;
+  border-radius: $border-radius-xl;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-white;
+  backdrop-filter: blur(4px);
+}
+
+// Content Body
+.contentBody {
+  padding: clamp(1rem, 2.5vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  box-sizing: border-box;
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid $color-gray-100;
+  padding-bottom: 0.5rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+  font-weight: 700;
+  color: $color-gray-800;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+
+  .sectionIcon {
+    color: #be123c;
+  }
+}
+
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #ffe4e6;
+    border-color: #fda4af;
+  }
+}
+
+// Exercise Card
+.exerciseCard {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.exInstruction {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: $font-size-base;
+  color: $color-gray-700;
+  margin: 0;
+  line-height: $line-height-relaxed;
+  flex-wrap: wrap;
+
+  strong {
+    color: $color-gray-900;
+  }
+}
+
+.exBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  width: auto;
+  height: 28px;
+  padding: 0 0.45rem;
+  background: #be123c;
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  border-radius: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+// 12 Everyday Objects Grid
+.objectsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.objectCard {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+
+.objectImageWrap {
+  position: relative;
+  width: 100%;
+  height: 120px;
+  background: $color-gray-50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.objectNumberBadge {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  background: rgba(0, 0, 0, 0.75);
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: 800;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.objectInputWrap {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+// Word Box
+.wordBox {
+  background: #ffe4e6;
+  border: 1px dashed #f43f5e;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.wordItem {
+  background: $color-white;
+  color: #9f1239;
+  padding: 0.25rem 0.6rem;
+  border-radius: $border-radius-base;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+// Input styles
+.textInput {
+  width: 100%;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  color: $color-gray-900;
+  background: $color-white;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: #be123c;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+  }
+
+  &:disabled {
+    background: $color-gray-100;
+    color: $color-gray-500;
+    cursor: not-allowed;
+  }
+}
+
+.inputValid {
+  border-color: $color-success !important;
+  background-color: #f0fdf4 !important;
+}
+
+.inputInvalid {
+  border-color: $color-danger !important;
+  background-color: #fef2f2 !important;
+}
+
+.diffHighlight {
+  box-shadow: 0 0 0 2px #f59e0b !important;
+}
+
+.selectInput {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  background: $color-white;
+  color: $color-gray-900;
+  min-width: 90px;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: #be123c;
+  }
+}
+
+.feedbackRow {
+  display: flex;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.correctBadge {
+  color: $color-success;
+  font-weight: 800;
+  font-size: $font-size-base;
+  margin-left: 0.4rem;
+}
+
+// Gallery A–D for activities
+.activitiesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.activityPhotoCard {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.activityPhotoWrap {
+  position: relative;
+  width: 100%;
+  height: 150px;
+  background: $color-gray-100;
+}
+
+.photoLetterBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  color: $color-white;
+  font-size: $font-size-sm;
+  font-weight: 800;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+// Activities list matching
+.matchList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.matchRow {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-md;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.matchText {
+  font-size: $font-size-sm;
+  color: $color-gray-800;
+  flex: 1;
+  min-width: 200px;
+}
+
+// Notepad checklist (Sam's luggage)
+.notepadBox {
+  background: #fefce8;
+  border: 2px solid #fef08a;
+  border-radius: $border-radius-lg;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  font-family: inherit;
+}
+
+.notepadTitle {
+  font-size: $font-size-base;
+  font-weight: 700;
+  color: #854d0e;
+  border-bottom: 1px dashed #ca8a04;
+  padding-bottom: 0.4rem;
+  margin: 0;
+}
+
+.checkItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: $font-size-base;
+  color: #713f12;
+  cursor: pointer;
+
+  input[type='checkbox'] {
+    width: 20px;
+    height: 20px;
+    accent-color: #be123c;
+    cursor: pointer;
+  }
+}
+
+// Dialogue script card
+.dialogueBox {
+  background: #fff1f2;
+  border-left: 4px solid #be123c;
+  border-radius: $border-radius-md;
+  padding: 1rem 1.25rem;
+  font-size: $font-size-base;
+  color: $color-gray-800;
+  line-height: $line-height-relaxed;
+}
+
+// Grammar Table
+.grammarBox {
+  background: $color-white;
+  border: 1px solid #fbcfe8;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+}
+
+.grammarHeader {
+  background: #fdf2f8;
+  color: #831843;
+  font-weight: 700;
+  font-size: $font-size-base;
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid #fbcfe8;
+}
+
+.grammarTable {
+  width: 100%;
+  border-collapse: collapse;
+
+  td, th {
+    padding: 0.65rem 0.85rem;
+    border-bottom: 1px solid $color-gray-100;
+    font-size: $font-size-sm;
+    vertical-align: middle;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+// Conversation Order Rows
+.orderRow {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-md;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.orderNumBadge {
+  background: #be123c;
+  color: $color-white;
+  font-weight: 700;
+  font-size: $font-size-sm;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+// Speaking Backpack Card
+.backpackCard {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.backpackImageWrap {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  height: 220px;
+  margin: 0 auto;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+}

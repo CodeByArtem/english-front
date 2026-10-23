@@ -15,6 +15,9 @@ import Lesson3BContent from './Lesson3BContent';
 import Lesson3CContent from './Lesson3CContent';
 import Lesson3DContent from './Lesson3DContent';
 import Lesson4AContent from './Lesson4AContent';
+import Lesson4BContent from './Lesson4BContent';
+import Lesson4CContent from './Lesson4CContent';
+import Lesson4DContent from './Lesson4DContent';
 
 export interface LessonContentRendererProps {
   user?: Record<string, unknown> | null;
@@ -36,6 +39,9 @@ export function getLessonType(lesson?: { order?: number; title?: string; id?: st
   if (lesson.order === 11 || lesson.title?.includes('3C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380b03') return '3C';
   if (lesson.order === 12 || lesson.title?.includes('3D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380b04') return '3D';
   if (lesson.order === 13 || lesson.title?.includes('4A') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380c01') return '4A';
+  if (lesson.order === 14 || lesson.title?.includes('4B') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380c02') return '4B';
+  if (lesson.order === 15 || lesson.title?.includes('4C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380c03') return '4C';
+  if (lesson.order === 16 || lesson.title?.includes('4D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380c04') return '4D';
   return '1A';
 }
 
@@ -459,7 +465,63 @@ export default function LessonContentRenderer({
     }
 
     case '4A': {
-      return <Lesson4AContent playAudio={playAudio} playingAudio={playingAudio} />;
+      return (
+        <Lesson4AContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+        />
+      );
+    }
+
+    case '4B': {
+      return (
+        <Lesson4BContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+        />
+      );
+    }
+
+    case '4C': {
+      return (
+        <Lesson4CContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+        />
+      );
+    }
+
+    case '4D': {
+      return (
+        <Lesson4DContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+        />
+      );
     }
 
     default: {

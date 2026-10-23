@@ -1,0 +1,588 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  width: 100%;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  box-sizing: border-box;
+  overflow-x: hidden;
+}
+
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid $color-gray-200;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+// Header Banner Pearson Ruby
+.headerBanner {
+  background: linear-gradient(135deg, #9f1239 0%, #be123c 60%, #e11d48 100%);
+  color: $color-white;
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+  position: relative;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.badge4C {
+  background: $color-white;
+  color: #9f1239;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  padding: 0.25rem 0.85rem;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  line-height: 1;
+
+  .letterC {
+    color: #e11d48;
+    margin-left: 1px;
+  }
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.titleHeading {
+  font-size: clamp(1.35rem, 3.2vw, 2rem);
+  font-weight: 800;
+  margin: 0;
+  color: $color-white;
+  line-height: 1.2;
+}
+
+.lessonMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pillGoal {
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 0.2rem 0.65rem;
+  border-radius: $border-radius-xl;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-white;
+  backdrop-filter: blur(4px);
+}
+
+// Hero Banner with img_7.png
+.heroBannerImage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(180deg, #e0f2fe 0%, #f8fafc 100%);
+  border-bottom: 1px solid $color-gray-200;
+  padding: 1rem;
+  overflow: hidden;
+}
+
+.heroImageWrap {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  height: 280px;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+
+  @include respond-to(md) {
+    height: 320px;
+  }
+}
+
+// Content Body
+.contentBody {
+  padding: clamp(1rem, 2.5vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+  box-sizing: border-box;
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid $color-gray-100;
+  padding-bottom: 0.5rem;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: clamp(1.1rem, 2.4vw, 1.35rem);
+  font-weight: 700;
+  color: $color-gray-800;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0;
+
+  .sectionIcon {
+    color: #be123c;
+  }
+}
+
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #ffe4e6;
+    border-color: #fda4af;
+  }
+}
+
+// Exercise Card
+.exerciseCard {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.exInstruction {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: $font-size-base;
+  color: $color-gray-700;
+  margin: 0;
+  line-height: $line-height-relaxed;
+  flex-wrap: wrap;
+
+  strong {
+    color: $color-gray-900;
+  }
+}
+
+.exBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  width: auto;
+  height: 28px;
+  padding: 0 0.45rem;
+  background: #be123c;
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  border-radius: 14px;
+  line-height: 1;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+// Chat Thread Layout (Lydia's dos and don'ts)
+.chatContainer {
+  background: #e2e8f0;
+  border-radius: $border-radius-lg;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.lydiaMessageCard {
+  background: #bae6fd;
+  border: 1px solid #7dd3fc;
+  border-radius: $border-radius-lg;
+  padding: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.lydiaAvatarWrap {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid $color-white;
+  flex-shrink: 0;
+}
+
+.lydiaText {
+  font-size: $font-size-sm;
+  color: #0369a1;
+  font-weight: $font-weight-medium;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.messagesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.65rem;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.messageBubble {
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 1rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  font-size: $font-size-sm;
+  line-height: 1.4;
+  color: $color-gray-800;
+
+  .senderName {
+    font-weight: $font-weight-bold;
+    color: #be123c;
+    font-size: $font-size-xs;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+}
+
+// Pronunciation Box 2c
+.pronounceBox {
+  background: #fff1f2;
+  padding: 0.85rem 1rem;
+  border-radius: $border-radius-lg;
+  border: 1px solid #fecdd3;
+  margin-top: 0.75rem;
+}
+
+.pronounceHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+// Exercise 2c Post-Image (Big Ben / Westminster img_8.png)
+.exerciseImageWrap {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.londonLandscapeWrap {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  max-width: 320px;
+  width: 100%;
+}
+
+.imageCaption {
+  margin-top: 0.5rem;
+  font-size: $font-size-xs;
+  color: $color-gray-500;
+  font-weight: $font-weight-medium;
+  text-align: center;
+}
+
+// Photos layout for Exercise 3 with authentic image img_5.png
+.phrasesExerciseLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+
+  @include respond-to(md) {
+    grid-template-columns: minmax(260px, 320px) 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.phrasesImageContainer {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.phrasesSingleImageWrap {
+  position: relative;
+  width: 100%;
+  max-width: 280px;
+  height: 440px;
+}
+
+.phrasesInputsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+// Collocation Table
+.collocationRow {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-md;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+// Grammar Imperatives Box
+.grammarBox {
+  background: $color-white;
+  border: 2px solid #fda4af;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(190, 18, 60, 0.05);
+}
+
+.grammarHeader {
+  background: #ffe4e6;
+  padding: 0.75rem 1rem;
+  font-weight: $font-weight-bold;
+  color: #9f1239;
+  font-size: $font-size-base;
+  border-bottom: 1px solid #fecdd3;
+}
+
+.grammarTable {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid $color-gray-100;
+    text-align: left;
+    font-size: $font-size-sm;
+  }
+
+  th {
+    background: $color-gray-50;
+    font-weight: $font-weight-semibold;
+    color: $color-gray-700;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+// Rome Exercise 7 with authentic image img_4.png
+.romeExerciseLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  align-items: start;
+
+  @include respond-to(md) {
+    grid-template-columns: minmax(260px, 320px) 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.romeImageContainer {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.romeSingleImageWrap {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  height: 330px;
+}
+
+.romeInputsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+// Form Inputs & Badges
+.textInput {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: $font-size-base;
+  color: $color-gray-900;
+  background: $color-white;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+
+  @media (max-width: 768px) {
+    font-size: 16px !important;
+  }
+
+  &:focus {
+    outline: none;
+    border-color: #be123c;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+  }
+
+  &:disabled {
+    background: $color-gray-100;
+    color: $color-gray-500;
+    cursor: not-allowed;
+  }
+}
+
+.inputValid {
+  border-color: $color-success !important;
+  background-color: #f0fdf4 !important;
+}
+
+.inputInvalid {
+  border-color: $color-danger !important;
+  background-color: #fef2f2 !important;
+}
+
+.diffHighlight {
+  box-shadow: 0 0 0 2px #f59e0b !important;
+}
+
+.feedbackRow {
+  display: flex;
+  align-items: center;
+  margin-top: 0.25rem;
+}
+
+.correctBadge {
+  color: $color-success;
+  font-weight: 800;
+  font-size: $font-size-base;
+  margin-left: 0.4rem;
+}
+
+.checkItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  padding: 0.4rem 0.65rem;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #be123c;
+    background: #fff1f2;
+  }
+
+  input[type='checkbox'] {
+    width: 16px;
+    height: 16px;
+    accent-color: #be123c;
+    cursor: pointer;
+  }
+}
+
+// Speaking Tables for Dos and Don'ts
+.dosDontsTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0.75rem;
+
+  @media (max-width: 640px) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
+
+.dosCol,
+.dontsCol {
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  padding: 0.85rem;
+  vertical-align: top;
+  border: 1px solid $color-gray-200;
+
+  @media (max-width: 640px) {
+    width: 100%;
+    box-sizing: border-box;
+  }
+}
+
+.dosHeader {
+  color: #15803d;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.dontsHeader {
+  color: #be123c;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  margin-bottom: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
