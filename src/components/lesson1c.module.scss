@@ -1,3 +1,5 @@
+@use '@/styles/mixins' as *;
+
 .pageContainer {
   display: flex;
   flex-direction: column;
@@ -480,26 +482,30 @@
 }
 
 /* ================= Photos Collage ================= */
-.photosGrid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 0.5rem;
+.readingPhotoCard {
+  position: relative;
   width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+}
+
+.readingPhotoImg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.photosGrid {
+  @include photos-grid(3, 0.5rem);
 }
 
 .photoCard {
-  position: relative;
-  height: clamp(95px, 18vw, 135px);
-  border-radius: 8px;
-  overflow: hidden;
-  background: #cbd5e1;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+  @include photo-card;
 }
 
 /* ================= Nina's Blog Box (Ex 4a) ================= */

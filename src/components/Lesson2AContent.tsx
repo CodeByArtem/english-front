@@ -174,67 +174,16 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
             </div>
           </div>
 
-          {/* 2x2 Photo Grid */}
-          <div className={styles.photoGrid14}>
-            {/* Luisa */}
-            <div className={styles.photoCard}>
-              <div className={styles.photoFrame}>
-                <Image
-                  src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80"
-                  alt="Luisa photo"
-                  fill
-                  sizes="(max-width: 768px) 50vw, 200px"
-                  style={{ objectFit: 'cover' }}
-                  unoptimized
-                />
-              </div>
-              <div className={styles.photoLabel}>Luisa</div>
-            </div>
-
-            {/* Maria */}
-            <div className={styles.photoCard}>
-              <div className={styles.photoFrame}>
-                <Image
-                  src="https://images.unsplash.com/photo-1551836022-d5d88e9218df?auto=format&fit=crop&w=400&q=80"
-                  alt="Maria photo"
-                  fill
-                  sizes="(max-width: 768px) 50vw, 200px"
-                  style={{ objectFit: 'cover' }}
-                  unoptimized
-                />
-              </div>
-              <div className={styles.photoLabel}>Maria</div>
-            </div>
-
-            {/* Alonzo */}
-            <div className={styles.photoCard}>
-              <div className={styles.photoFrame}>
-                <Image
-                  src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=400&q=80"
-                  alt="Alonzo photo"
-                  fill
-                  sizes="(max-width: 768px) 50vw, 200px"
-                  style={{ objectFit: 'cover' }}
-                  unoptimized
-                />
-              </div>
-              <div className={styles.photoLabel}>Alonzo</div>
-            </div>
-
-            {/* José */}
-            <div className={styles.photoCard}>
-              <div className={styles.photoFrame}>
-                <Image
-                  src="https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&w=400&q=80"
-                  alt="José photo"
-                  fill
-                  sizes="(max-width: 768px) 50vw, 200px"
-                  style={{ objectFit: 'cover' }}
-                  unoptimized
-                />
-              </div>
-              <div className={styles.photoLabel}>José</div>
-            </div>
+          {/* Authentic 2x2 Photo (img_3.png: Luisa, Maria, Alonzo, José) */}
+          <div className={styles.topPhotoCard}>
+            <Image
+              src="/images/lesson2a/img_3.png"
+              alt="Luisa, Maria, Alonzo and José photos"
+              width={331}
+              height={372}
+              className={styles.topPhotoImg}
+              priority
+            />
           </div>
         </div>
 
@@ -859,19 +808,15 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
                 <span>Listen and match speakers 1–4 with photos A–D.</span>
               </div>
 
-              {/* Photos A-D */}
-              <div className={styles.listeningPhotosGrid}>
-                {[
-                  { id: 'A', url: 'https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=400&q=80' },
-                  { id: 'B', url: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=400&q=80' },
-                  { id: 'C', url: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?auto=format&fit=crop&w=400&q=80' },
-                  { id: 'D', url: 'https://images.unsplash.com/photo-1511895426328-dc8714191300?auto=format&fit=crop&w=400&q=80' },
-                ].map((ph) => (
-                  <div key={ph.id} className={styles.listeningPhotoCard}>
-                    <Image src={ph.url} alt={`Photo ${ph.id}`} fill sizes="200px" style={{ objectFit: 'cover' }} unoptimized />
-                    <span className={styles.photoBadge}>{ph.id}</span>
-                  </div>
-                ))}
+              {/* Authentic Photos A-D (img_4.png) */}
+              <div className={styles.listeningAuthenticCard}>
+                <Image
+                  src="/images/lesson2a/img_4.png"
+                  alt="Listening Photos A–D"
+                  width={294}
+                  height={238}
+                  className={styles.listeningAuthenticImg}
+                />
               </div>
 
               {/* Speaker matching row */}
@@ -1327,15 +1272,14 @@ export default function Lesson2AContent(props: Lesson2AContentProps) {
                 <span>Choose the correct alternatives.</span>
               </div>
 
-              {/* Photo of Yasemin & Tara */}
+              {/* Photo of Yasemin & Tara (img_5.png) */}
               <div className={styles.dialoguePhotoWrap}>
                 <Image
-                  src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=700&q=80"
+                  src="/images/lesson2a/img_5.png"
                   alt="Yasemin and Tara talking"
-                  fill
-                  sizes="(max-width: 768px) 100vw, 350px"
-                  style={{ objectFit: 'cover' }}
-                  unoptimized
+                  width={315}
+                  height={308}
+                  className={styles.dialoguePhotoImg}
                 />
               </div>
 

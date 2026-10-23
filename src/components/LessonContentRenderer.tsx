@@ -22,7 +22,7 @@ import Lesson4DContent from './Lesson4DContent';
 export interface LessonContentRendererProps {
   user?: Record<string, unknown> | null;
   audioBlob?: Blob | null;
-  onAudioBlobChange?: (blob: Blob | null, mimeType: string) => void;
+  onAudioBlobChange?: (blob: Blob | null, mimeType: string, exerciseKey?: string) => void;
 }
 
 export function getLessonType(lesson?: { order?: number; title?: string; id?: string } | null): string {
@@ -225,6 +225,10 @@ export default function LessonContentRenderer({
           onEx8AlternativesChange={(id: string, val: string) => setAnswerField('exercise_8_alternatives', id, val)}
           onEx9TextChange={(id: string, val: string) => setAnswerField('exercise_9_text', id, val)}
           onReflectChange={(id: string, score: string | number) => setAnswerField('reflect_scores', id, String(score))}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'exercise_6')}
+          submissionId={submissionId}
+          submittedAudios={audios}
         />
       );
     }
@@ -290,7 +294,7 @@ export default function LessonContentRenderer({
           onEx8ConversationsChange={(id: string, val: string) => setAnswerField('exercise_8_conversations', id, val)}
           onExRoomObjectsChange={(val: string) => setAnswer('exercise_room_objects', val)}
           audioBlob={audioBlob}
-          onAudioBlobChange={onAudioBlobChange}
+          onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'exercise_8')}
           submissionId={submissionId}
           submittedAudios={audios}
         />
@@ -460,6 +464,10 @@ export default function LessonContentRenderer({
           playAudio={playAudio}
           playingAudio={playingAudio}
           originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'exercise_4b')}
+          submissionId={submissionId}
+          submittedAudios={audios}
         />
       );
     }
@@ -520,6 +528,10 @@ export default function LessonContentRenderer({
           playAudio={playAudio}
           playingAudio={playingAudio}
           originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'exercise_5')}
+          submissionId={submissionId}
+          submittedAudios={audios}
         />
       );
     }

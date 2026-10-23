@@ -1,3 +1,5 @@
+@use '@/styles/mixins' as *;
+
 .pageContainer {
   display: flex;
   flex-direction: column;
@@ -474,34 +476,11 @@
 }
 
 .audioBtn {
-  background: #dc2626;
-  color: white;
-  border: none;
-  padding: 0.35rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.8rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.45rem;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  min-width: 95px;
-  justify-content: center;
-
-  &:hover {
-    background: #b91c1c;
-    transform: translateY(-1px);
-  }
+  @include audio-button;
 }
 
 .audioBtnActive {
-  background: #0284c7;
-
-  &:hover {
-    background: #0369a1;
-  }
+  @include audio-button-active;
 }
 
 .equalizer {

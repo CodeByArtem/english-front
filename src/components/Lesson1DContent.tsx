@@ -5,6 +5,10 @@ import Image from 'next/image';
 import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
 import PronounceButton from '@/components/PronounceButton';
 import { verifyAnswer, getExerciseKey, LessonAnswerKey } from '@/lib/answerVerification';
+import AudioAnswerRecorder from './AudioAnswerRecorder/AudioAnswerRecorder';
+import SubmissionAudioPlayer, {
+  SubmissionAudioMeta,
+} from './AudioAnswerRecorder/SubmissionAudioPlayer';
 import styles from './lesson1d.module.scss';
 
 export interface Lesson1DContentProps {
@@ -15,6 +19,12 @@ export interface Lesson1DContentProps {
   answerKey?: LessonAnswerKey | null;
   playAudio: (track: string) => void;
   playingAudio: string | null;
+
+  // Audio recording & review
+  audioBlob?: Blob | null;
+  onAudioBlobChange?: (blob: Blob | null, mimeType: string) => void;
+  submissionId?: string;
+  submittedAudios?: SubmissionAudioMeta[];
 
   // Page 12 states
   ex1Location?: string;
@@ -143,6 +153,9 @@ export default function Lesson1DContent({
   answerKey = null,
   playAudio,
   playingAudio,
+  submissionId,
+  submittedAudios,
+  onAudioBlobChange,
 
   // Page 12
   ex1Location = '',
@@ -849,6 +862,25 @@ export default function Lesson1DContent({
                     </div>
                   </div>
                 </div>
+
+                {/* Устное задание к упражнению 6: запись диалога в парах */}
+                {!readOnly && (
+                  <div style={{ marginTop: '0.75rem' }}>
+                    <AudioAnswerRecorder
+                      onAudioChange={onAudioBlobChange}
+                      readOnly={readOnly}
+                    />
+                  </div>
+                )}
+
+                {/* Прослушивание отправленной аудиозаписи */}
+                {submissionId && (
+                  <SubmissionAudioPlayer
+                    submissionId={submissionId}
+                    exerciseKey="exercise_6"
+                    audios={submittedAudios}
+                  />
+                )}
               </div>
             </div>
           </div>

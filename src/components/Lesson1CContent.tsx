@@ -358,27 +358,16 @@ export default function Lesson1CContent({
           <div className={styles.column}>
             <h2 className={styles.sectionHeading}>Reading</h2>
 
-            {/* Photos A–E Collage */}
-            <div className={styles.photosGrid}>
-              {[
-                { id: 'A', url: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=400&q=80' },
-                { id: 'B', url: 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=400&q=80' },
-                { id: 'C', url: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=400&q=80' },
-                { id: 'D', url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=400&q=80' },
-                { id: 'E', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80' },
-              ].map((p) => (
-                <div key={p.id} className={styles.photoCard}>
-                  <Image
-                    src={p.url}
-                    alt={`Photo ${p.id}`}
-                    fill
-                    sizes="(max-width: 768px) 33vw, 200px"
-                    style={{ objectFit: 'cover' }}
-                    unoptimized
-                  />
-                  <div className={styles.photoBadge} style={{ top: 0, left: 0 }}>{p.id}</div>
-                </div>
-              ))}
+            {/* Reading Photos A–E (img_2.png) */}
+            <div className={styles.readingPhotoCard}>
+              <Image
+                src="/images/lesson1c/img_2.png"
+                alt="Reading Photos A–E"
+                width={321}
+                height={265}
+                className={styles.readingPhotoImg}
+                priority
+              />
             </div>
 
             {/* Exercise 4a: Blog Matching */}

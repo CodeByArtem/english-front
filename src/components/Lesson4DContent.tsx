@@ -11,6 +11,10 @@ import {
   getExerciseKey,
   VerificationResult,
 } from '@/lib/answerVerification';
+import AudioAnswerRecorder from './AudioAnswerRecorder/AudioAnswerRecorder';
+import SubmissionAudioPlayer, {
+  SubmissionAudioMeta,
+} from './AudioAnswerRecorder/SubmissionAudioPlayer';
 import styles from './lesson4d.module.scss';
 
 export interface Lesson4DContentProps {
@@ -22,6 +26,12 @@ export interface Lesson4DContentProps {
   playAudio?: (track: string) => void;
   playingAudio?: string | null;
   originalAnswers?: Record<string, unknown>;
+
+  // Audio recording & review
+  audioBlob?: Blob | null;
+  onAudioBlobChange?: (blob: Blob | null, mimeType: string) => void;
+  submissionId?: string;
+  submittedAudios?: SubmissionAudioMeta[];
 }
 
 export const FALLBACK_ANSWER_KEY_4D: LessonAnswerKey = {
@@ -122,8 +132,13 @@ export default function Lesson4DContent({
   playAudio,
   playingAudio,
   originalAnswers,
+  submissionId: propSubmissionId,
+  submittedAudios: propSubmittedAudios,
+  onAudioBlobChange,
 }: Lesson4DContentProps) {
   const context = useLessonContext();
+  const submissionId = propSubmissionId || context.submissionId;
+  const submittedAudios = propSubmittedAudios || context.audios;
   const effectiveLesson = propLesson || context.lesson;
   const effectiveAnswers = context.answers;
 
@@ -493,6 +508,23 @@ export default function Lesson4DContent({
                   <strong>B:</strong> &ldquo;It&apos;s quarter to seven.&rdquo; <em>(for clock A)</em>
                 </p>
               </div>
+
+              {!readOnly && (
+                <div style={{ marginTop: '0.75rem' }}>
+                  <AudioAnswerRecorder
+                    onAudioChange={onAudioBlobChange}
+                    readOnly={readOnly}
+                  />
+                </div>
+              )}
+
+              {submissionId && (
+                <SubmissionAudioPlayer
+                  submissionId={submissionId}
+                  exerciseKey="exercise_5"
+                  audios={submittedAudios}
+                />
+              )}
             </div>
 
             {/* Exercise 6: Communication Pairwork */}

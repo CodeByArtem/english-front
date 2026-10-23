@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import api from '@/lib/api';
 import styles from './submission.module.scss';
+import { useAuth } from '@/hooks/useAuth';
 import { LessonProvider } from '@/context/LessonContext';
 import LessonContentRenderer from '@/components/LessonContentRenderer';
 import { SubmissionAudioMeta } from '@/components/AudioAnswerRecorder/SubmissionAudioPlayer';
@@ -58,7 +59,7 @@ export default function SubmissionDetailsPage() {
   const [tutorComment, setTutorComment] = useState('');
   const [success, setSuccess] = useState('');
   const [error, setError] = useState('');
-  const [user, setUser] = useState<{ id: string; email: string; role: string } | null>(null);
+  const { isTutor } = useAuth();
 
   // Состояние ответов для контекста (может сбрасываться кнопкой "Reset to student answers")
   const [answersState, setAnswersState] = useState<Record<string, unknown>>({});
@@ -69,41 +70,60 @@ export default function SubmissionDetailsPage() {
       try {
         setLoading(true);
 
-        if (typeof window !== 'undefined') {
-          const storedUser = localStorage.getItem('user');
-          if (storedUser) {
-            try {
-              setUser(JSON.parse(storedUser));
-            } catch {
-              // ignore
-            }
-          }
-        }
-
         const res = await api.get(`/submissions/${id}`);
         const data = res.data as SubmissionModel;
         setSubmission(data);
 
-        let rawAnswers = data.reviewedAnswers || data.answers || {};
-        if (typeof rawAnswers === 'string') {
-          try {
-            rawAnswers = JSON.parse(rawAnswers);
-          } catch {
-            rawAnswers = {};
+        let studentAnswers: Record<string, unknown> = {};
+        if (data.answers) {
+          if (typeof data.answers === 'string') {
+            try {
+              studentAnswers = JSON.parse(data.answers);
+            } catch {
+              studentAnswers = {};
+            }
+          } else if (typeof data.answers === 'object') {
+            studentAnswers = data.answers as Record<string, unknown>;
           }
         }
+
+        let reviewedAnswers: Record<string, unknown> | null = null;
+        if (data.reviewedAnswers) {
+          if (typeof data.reviewedAnswers === 'string') {
+            try {
+              reviewedAnswers = JSON.parse(data.reviewedAnswers);
+            } catch {
+              reviewedAnswers = null;
+            }
+          } else if (typeof data.reviewedAnswers === 'object') {
+            reviewedAnswers = data.reviewedAnswers as Record<string, unknown>;
+          }
+        }
+
+        // Если домашнее задание только что прислано учеником (статус 'submitted')
+        // или если reviewedAnswers отсутствуют/пусты — ВСЕГДА показываем свежие ответы ученика
+        const rawAnswers =
+          data.status === 'submitted' || !reviewedAnswers || Object.keys(reviewedAnswers).length === 0
+            ? studentAnswers
+            : reviewedAnswers;
 
         setAnswersState(rawAnswers);
         currentAnswersRef.current = rawAnswers;
 
-        if (data.grade !== null && data.grade !== undefined) {
-          setGrade(String(data.grade));
-        } else if (data.score !== null && data.score !== undefined) {
-          setGrade(String(data.score));
-        }
+        if (data.status === 'submitted') {
+          // При свежей сдаче подставляем автоматически вычисленный процент, а комментарий сбрасываем
+          setGrade(data.score !== null && data.score !== undefined ? String(data.score) : '');
+          setTutorComment('');
+        } else {
+          if (data.grade !== null && data.grade !== undefined) {
+            setGrade(String(data.grade));
+          } else if (data.score !== null && data.score !== undefined) {
+            setGrade(String(data.score));
+          }
 
-        if (data.tutorComment) {
-          setTutorComment(data.tutorComment);
+          if (data.tutorComment) {
+            setTutorComment(data.tutorComment);
+          }
         }
       } catch (err: unknown) {
         console.error('Failed to load submission:', err);
@@ -190,7 +210,6 @@ export default function SubmissionDetailsPage() {
   if (error && !submission) return <div className={styles.error}>{error}</div>;
   if (!submission) return <div className={styles.error}>Submission not found.</div>;
 
-  const isTutor = user?.role?.toUpperCase() !== 'STUDENT';
   const lesson = submission.lesson || submission.assignment?.lesson;
   const assignmentTitle = submission.assignment?.title;
   const isCustomAssignment = Boolean(

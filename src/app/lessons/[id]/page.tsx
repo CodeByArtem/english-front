@@ -9,6 +9,7 @@ import LessonContentRenderer from '@/components/LessonContentRenderer';
 import { SubmissionAudioMeta } from '@/components/AudioAnswerRecorder/SubmissionAudioPlayer';
 import { LessonAnswerKey } from '@/lib/answerVerification';
 import { useMascot } from '@/components/Mascot';
+import { useAuth } from '@/hooks/useAuth';
 import Navbar from '@/components/Navbar/Navbar';
 
 interface LessonModel {
@@ -18,14 +19,6 @@ interface LessonModel {
   content?: string;
   theory?: string;
   answerKey?: LessonAnswerKey | null;
-  [key: string]: unknown;
-}
-
-interface UserModel {
-  id: string;
-  email: string;
-  role: string;
-  name?: string;
   [key: string]: unknown;
 }
 
@@ -48,7 +41,7 @@ const LessonPage = () => {
 
   const [lesson, setLesson] = useState<LessonModel | null>(null);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<UserModel | null>(null);
+  const { user, isTutor: isTeacherReview } = useAuth();
 
   const [submitting, setSubmitting] = useState(false);
   const [mySubmission, setMySubmission] = useState<SubmissionModel | null>(null);
@@ -58,8 +51,8 @@ const LessonPage = () => {
   // Хранилище текущих ответов из контекста для отправки на бэкенд
   const currentAnswersRef = useRef<Record<string, unknown>>({});
 
-  // Аудиозапись для упражнений устной речи (Lesson 2B)
-  const [audioFile, setAudioFile] = useState<{ blob: Blob; mimeType: string } | null>(null);
+  // Аудиозапись для упражнений устной речи (Lessons 1D, 2B, 3D, 4D)
+  const [audioFile, setAudioFile] = useState<{ blob: Blob; mimeType: string; exerciseKey: string } | null>(null);
   const [audioUploadSubmissionId, setAudioUploadSubmissionId] = useState<string | null>(null);
   const [audioUploadError, setAudioUploadError] = useState<string | null>(null);
   const [retryingAudio, setRetryingAudio] = useState(false);
@@ -68,13 +61,6 @@ const LessonPage = () => {
     const fetchLessonData = async () => {
       try {
         setLoading(true);
-
-        if (typeof window !== 'undefined') {
-          const storedUser = localStorage.getItem('user');
-          if (storedUser) {
-            setUser(JSON.parse(storedUser));
-          }
-        }
 
         let targetId = lessonId;
 
@@ -99,8 +85,16 @@ const LessonPage = () => {
           const subRes = await api.get(`/submissions/lesson/${targetId}/my-submission`);
           if (subRes.data) {
             setMySubmission(subRes.data);
-            if (subRes.data.answers) {
-              currentAnswersRef.current = subRes.data.answers;
+            let ans = subRes.data.answers;
+            if (typeof ans === 'string') {
+              try {
+                ans = JSON.parse(ans);
+              } catch {
+                ans = {};
+              }
+            }
+            if (ans && typeof ans === 'object') {
+              currentAnswersRef.current = ans as Record<string, unknown>;
             }
           }
         } catch {
@@ -118,21 +112,22 @@ const LessonPage = () => {
 
   const uploadAudioFile = async (
     submissionId: string,
-    audio: { blob: Blob; mimeType: string },
+    audio: { blob: Blob; mimeType: string; exerciseKey?: string },
   ) => {
+    const exKey = audio.exerciseKey || 'exercise_8';
     const extension = audio.mimeType.includes('mp4')
       ? 'mp4'
       : audio.mimeType.includes('ogg')
       ? 'ogg'
       : 'webm';
-    const file = new File([audio.blob], `exercise_8.${extension}`, {
+    const file = new File([audio.blob], `${exKey}.${extension}`, {
       type: audio.mimeType,
     });
     const formData = new FormData();
     formData.append('file', file);
 
     // ВАЖНО: не задаем Content-Type вручную, позволяем Axios и браузеру выставить multipart/form-data с boundary
-    await api.post(`/submissions/${submissionId}/audio/exercise_8`, formData, {
+    await api.post(`/submissions/${submissionId}/audio/${encodeURIComponent(exKey)}`, formData, {
       headers: {
         'Content-Type': undefined,
       },
@@ -145,14 +140,15 @@ const LessonPage = () => {
     setAudioUploadError(null);
     try {
       await uploadAudioFile(audioUploadSubmissionId, audioFile);
+      const exKey = audioFile.exerciseKey || 'exercise_8';
       setMySubmission((prev) =>
         prev
           ? {
               ...prev,
               audios: [
-                ...(prev.audios?.filter((a) => a.exerciseKey !== 'exercise_8') || []),
+                ...(prev.audios?.filter((a) => a.exerciseKey !== exKey) || []),
                 {
-                  exerciseKey: 'exercise_8',
+                  exerciseKey: exKey,
                   mimeType: audioFile.mimeType,
                   sizeBytes: audioFile.blob.size,
                 },
@@ -182,9 +178,23 @@ const LessonPage = () => {
       setSuccessMessage('');
       setErrorMessage('');
 
+      const currentAnswers = currentAnswersRef.current || {};
+      let previousAnswers: Record<string, unknown> = {};
+      if (mySubmission?.answers) {
+        if (typeof mySubmission.answers === 'string') {
+          try {
+            previousAnswers = JSON.parse(mySubmission.answers);
+          } catch {
+            previousAnswers = {};
+          }
+        } else if (typeof mySubmission.answers === 'object') {
+          previousAnswers = mySubmission.answers as Record<string, unknown>;
+        }
+      }
+
       const answersPayload = {
-        ...(mySubmission?.answers || {}),
-        ...currentAnswersRef.current,
+        ...previousAnswers,
+        ...currentAnswers,
       };
 
       const response = await api.post('/submissions', {
@@ -194,20 +204,22 @@ const LessonPage = () => {
 
       const { score, id: submissionId } = response.data;
       setMySubmission(response.data);
+      currentAnswersRef.current = (response.data.answers as Record<string, unknown>) || answersPayload;
 
       // Загрузка аудиофайла на созданный submissionId
       if (audioFile && submissionId) {
         setAudioUploadSubmissionId(submissionId);
         try {
           await uploadAudioFile(submissionId, audioFile);
+          const exKey = audioFile.exerciseKey || 'exercise_8';
           setMySubmission((prev) =>
             prev
               ? {
                   ...prev,
                   audios: [
-                    ...(prev.audios?.filter((a) => a.exerciseKey !== 'exercise_8') || []),
+                    ...(prev.audios?.filter((a) => a.exerciseKey !== exKey) || []),
                     {
-                      exerciseKey: 'exercise_8',
+                      exerciseKey: exKey,
                       mimeType: audioFile.mimeType,
                       sizeBytes: audioFile.blob.size,
                     },
@@ -264,8 +276,6 @@ const LessonPage = () => {
   }
 
   const isLocked = mySubmission?.status === 'submitted' || mySubmission?.status === 'graded';
-  const role = user?.role?.toUpperCase();
-  const isTeacherReview = role === 'TEACHER' || role === 'TUTOR';
 
   return (
     <div className={styles.lessonPage}>
@@ -299,9 +309,9 @@ const LessonPage = () => {
             <LessonContentRenderer
               user={user}
               audioBlob={audioFile?.blob}
-              onAudioBlobChange={(blob, mimeType) => {
+              onAudioBlobChange={(blob, mimeType, exerciseKey = 'exercise_8') => {
                 if (blob) {
-                  setAudioFile({ blob, mimeType });
+                  setAudioFile({ blob, mimeType, exerciseKey });
                 } else {
                   setAudioFile(null);
                 }

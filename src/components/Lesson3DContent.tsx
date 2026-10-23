@@ -7,6 +7,10 @@ import { useLessonContext, useExerciseAnswer, LessonContextModel } from '@/conte
 import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
 import PronounceButton from '@/components/PronounceButton';
 import { LessonAnswerKey, verifyAnswer, getExerciseKey, VerificationResult } from '@/lib/answerVerification';
+import AudioAnswerRecorder from './AudioAnswerRecorder/AudioAnswerRecorder';
+import SubmissionAudioPlayer, {
+  SubmissionAudioMeta,
+} from './AudioAnswerRecorder/SubmissionAudioPlayer';
 import styles from './lesson3d.module.scss';
 
 export interface Lesson3DContentProps {
@@ -18,6 +22,12 @@ export interface Lesson3DContentProps {
   playAudio?: (track: string) => void;
   playingAudio?: string | null;
   originalAnswers?: Record<string, unknown>;
+
+  // Audio recording & review
+  audioBlob?: Blob | null;
+  onAudioBlobChange?: (blob: Blob | null, mimeType: string) => void;
+  submissionId?: string;
+  submittedAudios?: SubmissionAudioMeta[];
 }
 
 // Захардкоженный fallbackAnswerKey для полной автономности и мгновенной проверки
@@ -683,8 +693,13 @@ export default function Lesson3DContent({
   playAudio: propPlayAudio,
   playingAudio: propPlayingAudio,
   originalAnswers,
+  submissionId: propSubmissionId,
+  submittedAudios: propSubmittedAudios,
+  onAudioBlobChange,
 }: Lesson3DContentProps) {
   const context = useLessonContext();
+  const submissionId = propSubmissionId || context.submissionId;
+  const submittedAudios = propSubmittedAudios || context.audios;
   const playAudio = propPlayAudio || context.playAudio;
   const playingAudio = propPlayingAudio ?? context.playingAudio;
   const isTeacher = isTeacherReview ?? context.isTeacher;
@@ -1315,6 +1330,23 @@ export default function Lesson3DContent({
                   onChange={(e) => ex4b.setValue(e.target.value)}
                   disabled={isReadOnly}
                 />
+
+                {!isReadOnly && (
+                  <div style={{ marginTop: '0.75rem' }}>
+                    <AudioAnswerRecorder
+                      onAudioChange={onAudioBlobChange}
+                      readOnly={isReadOnly}
+                    />
+                  </div>
+                )}
+
+                {submissionId && (
+                  <SubmissionAudioPlayer
+                    submissionId={submissionId}
+                    exerciseKey="exercise_4b"
+                    audios={submittedAudios}
+                  />
+                )}
               </div>
 
               {/* Ex 5a & 5b: Directions Game */}
