@@ -1,0 +1,1018 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.lessonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  box-sizing: border-box;
+}
+
+// Header
+.lessonHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid $color-gray-200;
+  flex-wrap: wrap;
+}
+
+.lessonMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.unitBadge {
+  background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+  color: $color-white;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-full;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.pageBadge {
+  color: $color-gray-600;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+}
+
+.lessonTitle {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  color: $color-gray-900;
+  margin: 0.25rem 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.titleIcon {
+  font-size: 1.8rem;
+}
+
+.goalsBanner {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: $font-size-sm;
+  color: #9f1239;
+
+  strong {
+    color: #881337;
+  }
+}
+
+// Blocks & Sections
+.contentBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: clamp(1.2rem, 2.5vw, 1.45rem);
+  font-weight: $font-weight-bold;
+  color: $color-gray-800;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.sectionIcon {
+  color: #be123c;
+}
+
+// Exercise Card
+.exerciseCard {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.exInstruction {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: $font-size-base;
+  color: $color-gray-800;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.exBadge {
+  background: #be123c;
+  color: $color-white;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xs;
+  padding: 0.15rem 0.45rem;
+  border-radius: $border-radius-sm;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+// Audio Button (identical to Unit 4 & Unit 5 standard)
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #ffe4e6;
+    border-color: #fda4af;
+  }
+}
+
+// Cafe Layout
+.cafeGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @include respond-to(md) {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+.menuWrap {
+  position: relative;
+  width: 100%;
+  max-width: 320px;
+  aspect-ratio: 250 / 430;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-md;
+  border: 1px solid $color-gray-300;
+  margin: 0 auto;
+}
+
+.cafeFriendsWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 335 / 155;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  border: 1px solid $color-gray-200;
+}
+
+// Useful phrases
+.usefulPhrasesBox {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: $border-radius-lg;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.phrasesHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #9f1239;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-base;
+}
+
+.phrasesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+
+  @include respond-to(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.phraseCol {
+  background: $color-white;
+  padding: 0.75rem;
+  border-radius: $border-radius-md;
+  border: 1px solid #ffe4e6;
+  font-size: $font-size-sm;
+
+  h4 {
+    margin: 0 0 0.5rem 0;
+    color: #be123c;
+    font-size: $font-size-sm;
+    font-weight: $font-weight-bold;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  p {
+    margin: 0.25rem 0;
+    line-height: 1.4;
+  }
+}
+
+// Inputs & Feedback
+.inlineInput {
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px; // iOS zoom prevention
+  padding: 0.35rem 0.6rem;
+  border: 1px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  background: $color-white;
+  color: $color-gray-900;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #be123c;
+    box-shadow: 0 0 0 2px rgba(190, 18, 60, 0.2);
+  }
+}
+
+.diffHighlight {
+  background: #fef08a !important;
+  border-color: #eab308 !important;
+}
+
+.feedbackRow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.correctBadge {
+  color: #16a34a;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  display: inline-flex;
+  align-items: center;
+}
+
+.teacherAnswer {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  padding: 0.2rem 0.5rem;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+}
+
+// Dialogue Rows
+.dialogueRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: $font-size-sm;
+  line-height: 1.5;
+  flex-wrap: wrap;
+
+  strong {
+    min-width: 90px;
+    color: #475569;
+  }
+}
+
+// Crossword Styles
+.crosswordWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: $color-white;
+  padding: 1.25rem;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-gray-200;
+}
+
+.crosswordGridContainer {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.crosswordBoardWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: $border-radius-lg;
+  border: 1px solid #e2e8f0;
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.crosswordBoard {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 320px;
+}
+
+.crosswordRow {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.crosswordRowNumber {
+  width: 22px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #be123c;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.crosswordCell {
+  width: clamp(28px, 4vw, 36px);
+  height: clamp(28px, 4vw, 36px);
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.95rem, 2.5vw, 1.15rem);
+  font-weight: 800;
+  color: #1e293b;
+  text-transform: uppercase;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.crosswordEmptyCell {
+  width: clamp(28px, 4vw, 36px);
+  height: clamp(28px, 4vw, 36px);
+  background: transparent;
+  visibility: hidden;
+}
+
+.crosswordSecretCell {
+  background: #fef08a !important;
+  border-color: #eab308 !important;
+  color: #854d0e !important;
+  box-shadow: 0 0 0 1px #eab308;
+}
+
+.crosswordCorrectCell {
+  background: #dcfce7 !important;
+  border-color: #22c55e !important;
+  color: #15803d !important;
+}
+
+.crosswordInputs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  flex: 1;
+  min-width: 260px;
+}
+
+.crosswordItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  background: #f8fafc;
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  font-size: $font-size-sm;
+  flex-wrap: wrap;
+}
+
+.secretWordBanner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: #fef9c3;
+  border: 1.5px solid #facc15;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+  font-size: 0.9rem;
+  color: #854d0e;
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+// Anagram Cards (8a)
+.anagramGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
+
+.anagramCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: $color-white;
+  padding: 0.6rem 0.85rem;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+  font-size: $font-size-sm;
+}
+
+.anagramPill {
+  font-family: monospace;
+  font-size: 1rem;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: #be123c;
+  background: #fff1f2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  border: 1px solid #fecdd3;
+}
+
+// Ex 1 Dedicated Layout
+.ex1Layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @include respond-to(md) {
+    grid-template-columns: 280px 1fr;
+  }
+}
+
+.menuBoardCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: #1e293b;
+  color: #f8fafc;
+  padding: 1rem;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-md;
+}
+
+.menuBoardTitle {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #f59e0b;
+  text-align: center;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin: 0;
+  border-bottom: 2px dashed #475569;
+  padding-bottom: 0.5rem;
+}
+
+.menuBoardSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.menuSectionTitle {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #38bdf8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0.25rem 0;
+}
+
+.menuItemRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #e2e8f0;
+}
+
+// Reflect block
+.reflectBlock {
+  background: #fff1f2;
+  border: 2px dashed #fecdd3;
+  border-radius: $border-radius-xl;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reflectHeader {
+  font-size: 1.1rem;
+  font-weight: $font-weight-bold;
+  color: #9f1239;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.reflectItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: $color-white;
+  padding: 0.65rem 0.85rem;
+  border-radius: $border-radius-md;
+  border: 1px solid #ffe4e6;
+  font-size: $font-size-sm;
+  color: $color-gray-800;
+  flex-wrap: wrap;
+}
+
+.starsRow {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.starBtn {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 0;
+  color: #cbd5e1;
+  transition: transform 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    transform: scale(1.15);
+  }
+
+  &.starActive {
+    color: #eab308;
+  }
+}
+
+// Menu Board Image in Ex 1
+.menuImgCard {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 258 / 437;
+  max-width: 320px;
+  margin: 0 auto;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  box-shadow: $shadow-md;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+// Useful Phrases Matching Board (Ex 4a)
+.usefulMatchBoard {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-top: 0.75rem;
+
+  @include respond-to(md) {
+    grid-template-columns: 1.15fr 0.85fr;
+  }
+}
+
+.workerCol,
+.customerCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.colHeaderBadge {
+  background: #f1f5f9;
+  padding: 0.45rem 0.75rem;
+  border-radius: $border-radius-md;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.matchingList,
+.customerList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.matchRowCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.phraseTextWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.phraseNumBadge {
+  width: 22px;
+  height: 22px;
+  border-radius: 9999px;
+  background: #be123c;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.matchSelectWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.matchArrow {
+  color: #94a3b8;
+  font-weight: bold;
+}
+
+.customerPhraseCard {
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: $border-radius-lg;
+  padding: 0.65rem 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.9rem;
+  color: #9f1239;
+}
+
+.customerLetterBadge {
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background: #9f1239;
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.customerPhraseText {
+  flex: 1;
+}
+
+.repeatSection {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+// Days Grid (Check & Reflect Ex 1)
+.daysGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: $spacing-sm;
+  margin-top: $spacing-sm;
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(7, 1fr);
+  }
+}
+
+.dayCard {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: $spacing-sm $spacing-md;
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+  transition: transform $transition-fast ease, box-shadow $transition-fast ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+.dayCardWeekend {
+  background: #faf5ff;
+  border-color: #e9d5ff;
+}
+
+.dayCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.dayNumBadge {
+  width: 22px;
+  height: 22px;
+  border-radius: $border-radius-full;
+  background: $color-gray-900;
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weekendTag {
+  font-size: 0.65rem;
+  font-weight: $font-weight-bold;
+  background: #f3e8ff;
+  color: #7e22ce;
+  padding: 1px 6px;
+  border-radius: $border-radius-full;
+  text-transform: uppercase;
+}
+
+.weekdayTag {
+  font-size: 0.65rem;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-500;
+  padding: 1px 6px;
+  border-radius: $border-radius-full;
+  background: $color-gray-100;
+  text-transform: uppercase;
+}
+
+.dayPromptWrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 28px;
+}
+
+.dayPrefixHint {
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  color: #0284c7;
+  letter-spacing: 0.05em;
+}
+
+.dayInputWrap {
+  display: flex;
+  flex-direction: column;
+}
+
+// Crossword Layout (Check & Reflect Ex 5)
+.crosswordLayout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-top: 0.75rem;
+
+  @include respond-to(md) {
+    grid-template-columns: minmax(260px, 320px) 1fr;
+    align-items: start;
+  }
+}
+
+.crosswordDiagramWrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.crosswordDiagramCard {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 260 / 240;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  box-shadow: $shadow-sm;
+}
+
+.crosswordDiagramCaption {
+  font-size: 0.75rem;
+  color: #64748b;
+  font-style: italic;
+  text-align: center;
+}
+
+.crosswordCluesWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cluesGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.cluesGroupTitle {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #be123c;
+  margin: 0;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #fecdd3;
+}
+
+.cluesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.clueCard {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-md;
+  padding: 0.55rem 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.clueHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.clueBadge {
+  background: #f1f5f9;
+  color: #334155;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  white-space: nowrap;
+}
+
+.clueText {
+  font-size: 0.85rem;
+  color: #1e293b;
+}
+
+.clueInputRow {
+  min-width: 130px;
+}
+
+.crosswordSolvedBanner {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #047857;
+  font-weight: 700;
+  padding: 0.75rem 1rem;
+  border-radius: $border-radius-md;
+  text-align: center;
+}
+
+// Check & Reflect General Exercise Layouts
+.exerciseListCol {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-md;
+}
+
+.matchOptionsWrap {
+  display: flex;
+  gap: $spacing-md;
+  flex-wrap: wrap;
+  background: $color-gray-50;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+  font-size: $font-size-sm;
+}
+
+.matchGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: $spacing-sm;
+}
+
+.matchCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: $color-white;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+}
+
+.sentenceItem {
+  display: flex;
+  flex-direction: column;
+  gap: $spacing-xs;
+}
+
+.sentenceClue {
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+  margin-bottom: $spacing-xs;
+  display: block;
+}
+
+.sentenceInlineRow {
+  display: flex;
+  align-items: center;
+  gap: $spacing-xs;
+  flex-wrap: wrap;
+  line-height: $line-height-relaxed;
+}
+
+.correctClueBanner {
+  background: $color-gray-50;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  color: $color-gray-700;
+  border: 1px solid $color-gray-200;
+}
+
+.subExerciseDivider {
+  margin-top: $spacing-md;
+  padding-top: $spacing-md;
+  border-top: 1px solid $color-gray-200;
+}
+
+.collocationGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: $spacing-sm;
+  margin-top: $spacing-sm;
+
+  @include respond-to(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.collocationCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: $color-white;
+  padding: $spacing-xs $spacing-sm;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+}

@@ -1,0 +1,645 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.lessonContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(0.75rem, 2vw, 1.5rem);
+  box-sizing: border-box;
+}
+
+// Header
+.lessonHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 2px solid $color-gray-200;
+  flex-wrap: wrap;
+}
+
+.lessonMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.unitBadge {
+  background: linear-gradient(135deg, #059669 0%, #10b981 100%);
+  color: $color-white;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-full;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.pageBadge {
+  color: $color-gray-600;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-medium;
+}
+
+.lessonTitle {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  color: $color-gray-900;
+  margin: 0.25rem 0 0 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.titleIcon {
+  font-size: 1.8rem;
+}
+
+.goalsBanner {
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: $font-size-sm;
+  color: #065f46;
+
+  strong {
+    color: #047857;
+  }
+}
+
+// Blocks & Sections
+.contentBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.sectionTitle {
+  font-size: clamp(1.2rem, 2.5vw, 1.45rem);
+  font-weight: $font-weight-bold;
+  color: $color-gray-800;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.sectionIcon {
+  color: #059669;
+}
+
+// Exercise Card
+.exerciseCard {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-sizing: border-box;
+}
+
+.exInstruction {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: $font-size-base;
+  color: $color-gray-800;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.exBadge {
+  background: #059669;
+  color: $color-white;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xs;
+  padding: 0.15rem 0.45rem;
+  border-radius: $border-radius-sm;
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+}
+
+// Audio Button (identical to Unit 4 & Unit 5 standard)
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #ffe4e6;
+    border-color: #fda4af;
+  }
+}
+
+// Food Grid (14 items)
+.foodGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+  }
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.foodCard {
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  background: $color-white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: transform $transition-fast ease, box-shadow $transition-fast ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+.foodWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid $color-gray-100;
+}
+
+.foodImage {
+  object-fit: contain !important;
+  padding: 0.45rem;
+  transition: transform $transition-fast ease;
+
+  .foodCard:hover & {
+    transform: scale(1.03);
+  }
+}
+
+.foodBadge {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  background: rgba(15, 23, 42, 0.85);
+  color: $color-white;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xs;
+  width: 24px;
+  height: 24px;
+  border-radius: $border-radius-full;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.foodFooter {
+  padding: 0.6rem 0.65rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+  justify-content: space-between;
+  background: #fafafa;
+}
+
+// Word Box
+.wordBox {
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+  border-radius: $border-radius-md;
+  padding: 0.65rem 0.85rem;
+  font-size: $font-size-sm;
+  color: #92400e;
+  line-height: 1.6;
+  font-weight: $font-weight-medium;
+}
+
+// Frequency Diagram
+.frequencyDiagram {
+  background: $color-white;
+  border: 1px solid #cbd5e1;
+  border-radius: $border-radius-lg;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.scaleTrack {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #059669;
+  padding-bottom: 0.5rem;
+  position: relative;
+  gap: 0.5rem;
+  overflow-x: auto;
+}
+
+.scaleStep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+  color: $color-gray-700;
+  text-align: center;
+  min-width: 65px;
+}
+
+.percentTag {
+  background: #ecfdf5;
+  color: #047857;
+  padding: 1px 6px;
+  border-radius: $border-radius-full;
+  font-size: 0.7rem;
+}
+
+// Grammar Callout
+.grammarBox {
+  background: #f0fdf4;
+  border-left: 4px solid #059669;
+  border-radius: 0 $border-radius-lg $border-radius-lg 0;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: $font-size-sm;
+  color: $color-gray-800;
+
+  h4 {
+    margin: 0;
+    color: #065f46;
+    font-size: $font-size-base;
+  }
+}
+
+// Inputs & Rows
+.inlineInput {
+  display: inline-flex;
+  align-items: center;
+  font-size: 16px; // iOS zoom prevention
+  padding: 0.35rem 0.6rem;
+  border: 1px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  background: $color-white;
+  color: $color-gray-900;
+  box-sizing: border-box;
+
+  &:focus {
+    outline: none;
+    border-color: #059669;
+    box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.2);
+  }
+}
+
+.diffHighlight {
+  background: #fef08a !important;
+  border-color: #eab308 !important;
+}
+
+.feedbackRow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.correctBadge {
+  color: #16a34a;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  display: inline-flex;
+  align-items: center;
+}
+
+.teacherAnswer {
+  background: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+  padding: 0.2rem 0.5rem;
+  border-radius: $border-radius-sm;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-semibold;
+}
+
+// Tick lists
+.tickList {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.65rem;
+}
+
+.tickCard {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-md;
+  padding: 0.5rem 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all $transition-fast ease;
+
+  &:hover {
+    border-color: #059669;
+    background: #f0fdf4;
+  }
+
+  &.tickSelected {
+    border-color: #059669;
+    background: #ecfdf5;
+  }
+}
+
+// Speaking Netball Card
+.speakingGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @include respond-to(md) {
+    grid-template-columns: 1.2fr 0.8fr;
+  }
+}
+
+.netballPhotoWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  border: 1px solid $color-gray-200;
+}
+
+// Survey Table
+.surveyTableWrap {
+  overflow-x: auto;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-gray-200;
+}
+
+.surveyTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: $color-white;
+  font-size: $font-size-sm;
+
+  th, td {
+    padding: 0.65rem 0.85rem;
+    border: 1px solid $color-gray-200;
+    text-align: left;
+  }
+
+  th {
+    background: #ecfdf5;
+    color: #065f46;
+    font-weight: $font-weight-bold;
+  }
+}
+
+// Badge Develop your writing
+.developWritingBadge {
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  color: $color-white;
+  padding: 0.65rem 1.25rem;
+  border-radius: $border-radius-full;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.3);
+}
+
+// Pronunciation & Syllable Stress (Ex 7a & 7b)
+.stressTipBox {
+  background: #f0f9ff;
+  border: 1px solid #bae6fd;
+  border-radius: $border-radius-md;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.85rem;
+  color: #0369a1;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.85rem;
+  line-height: 1.45;
+
+  .tipIcon {
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+}
+
+.stressList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.stressSentenceCard {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: border-color $transition-fast ease, box-shadow $transition-fast ease;
+
+  &:hover {
+    border-color: #cbd5e1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  }
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+}
+
+.stressSentenceHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.stressNumBadge {
+  width: 24px;
+  height: 24px;
+  border-radius: $border-radius-full;
+  background: #e2e8f0;
+  color: #334155;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xs;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.stressSentenceText {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #1e293b;
+  line-height: 1.4;
+}
+
+.stressWordHighlight {
+  color: #1d4ed8;
+  font-weight: 700;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 1px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.stressPillsWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.stressSyllablePrompt {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.stressPillsContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.stressPillBtn {
+  background: #ffffff;
+  border: 1.5px solid #cbd5e1;
+  color: #334155;
+  border-radius: $border-radius-full;
+  padding: 0.35rem 0.8rem;
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-fast ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover:not(:disabled) {
+    border-color: #3b82f6;
+    background: #f0f7ff;
+    color: #1d4ed8;
+  }
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.9;
+  }
+
+  &.pillActive {
+    background: #2563eb;
+    border-color: #2563eb;
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.25);
+  }
+
+  &.pillCorrect {
+    background: #16a34a;
+    border-color: #16a34a;
+    color: #ffffff;
+    box-shadow: 0 2px 4px rgba(22, 163, 74, 0.25);
+  }
+
+  &.pillIncorrect {
+    background: #dc2626;
+    border-color: #dc2626;
+    color: #ffffff;
+  }
+
+  &.pillExpected {
+    border: 2px dashed #16a34a;
+    background: #f0fdf4;
+    color: #166534;
+  }
+}
+
+.stressValidationWrap {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.repeatSection {
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

@@ -1,0 +1,707 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-2xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Header Banner 5A (Pearson Scarlet / Coral Theme)
+.headerBanner {
+  background: linear-gradient(135deg, #c026d3 0%, #db2777 50%, #e11d48 100%);
+  color: $color-white;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  flex-wrap: wrap;
+}
+
+.badge5A {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  background: $color-white;
+  color: #db2777;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  padding: 0.25rem 0.85rem;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+  line-height: 1;
+
+  .letterA {
+    color: #e11d48;
+    margin-left: 1px;
+  }
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.titleHeading {
+  font-size: clamp(1.35rem, 3.2vw, 2rem);
+  font-weight: 800;
+  margin: 0;
+  color: $color-white;
+  line-height: 1.2;
+}
+
+.lessonMeta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.pillGoal {
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 0.2rem 0.65rem;
+  border-radius: $border-radius-xl;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-white;
+  backdrop-filter: blur(4px);
+}
+
+.contentBody {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.25rem, 3vw, 2rem);
+  padding: clamp(1rem, 3vw, 2rem);
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid $color-gray-100;
+  padding-bottom: 0.5rem;
+}
+
+.sectionTitle {
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0;
+}
+
+.sectionIcon {
+  font-size: 1.35rem;
+}
+
+.exerciseCard {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: clamp(0.85rem, 2.5vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.exInstruction {
+  margin: 0;
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  color: $color-gray-800;
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.exBadge {
+  background: #db2777;
+  color: $color-white;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  width: 24px;
+  height: 24px;
+  border-radius: $border-radius-full;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+// Gallery grid for pictures A-J
+.photosGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.photoCard {
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  background: $color-gray-50;
+  display: flex;
+  flex-direction: column;
+  transition: transform $transition-fast ease, box-shadow $transition-fast ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+.photoWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: $color-gray-100;
+}
+
+.photoLetterBadge {
+  position: absolute;
+  bottom: 6px;
+  left: 6px;
+  background: rgba(0, 0, 0, 0.75);
+  color: $color-white;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xs;
+  padding: 2px 7px;
+  border-radius: $border-radius-sm;
+}
+
+// Matching list
+.matchingList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.matchingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: 0.65rem 0.85rem;
+  flex-wrap: wrap;
+
+  @include respond-to(sm) {
+    flex-wrap: nowrap;
+  }
+}
+
+.sentenceText {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: $font-size-base;
+  color: $color-gray-900;
+  flex: 1;
+  min-width: 200px;
+}
+
+.numBadge {
+  font-weight: $font-weight-bold;
+  color: #db2777;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+.inputWrapper {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.textInput {
+  @include input-reset;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  padding: 0.45rem 0.65rem;
+  font-size: $font-size-base;
+  background: $color-white;
+  color: $color-gray-900;
+  outline: none;
+  transition: border-color $transition-fast ease, box-shadow $transition-fast ease;
+
+  &:focus {
+    border-color: #db2777;
+    box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.15);
+  }
+
+  &:disabled {
+    background: $color-gray-100;
+    color: $color-gray-600;
+    cursor: not-allowed;
+  }
+}
+
+.matchInput {
+  width: 58px;
+  text-align: center;
+  font-weight: $font-weight-bold;
+  text-transform: uppercase;
+}
+
+.inputValid {
+  border-color: $color-success !important;
+  background-color: rgba(34, 197, 94, 0.05) !important;
+}
+
+.inputInvalid {
+  border-color: $color-danger !important;
+  background-color: rgba(239, 68, 68, 0.05) !important;
+}
+
+.correctBadge {
+  color: $color-success;
+  font-weight: $font-weight-bold;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+
+.feedbackRow {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.2rem;
+}
+
+.diffHighlight {
+  outline: 2px dashed #f59e0b !important;
+  outline-offset: 2px;
+}
+
+// Audio Button
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: #ffe4e6;
+    border-color: #fda4af;
+  }
+}
+
+// Days table
+.daysTable {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+}
+
+.dayRow {
+  display: flex;
+  border-bottom: 1px solid $color-gray-200;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.dayColName {
+  width: 130px;
+  padding: 0.65rem 0.85rem;
+  font-weight: $font-weight-bold;
+  color: $color-white;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+
+.dayColAct {
+  flex: 1;
+  padding: 0.65rem 0.85rem;
+  background: $color-white;
+  color: $color-gray-800;
+  font-size: $font-size-base;
+  display: flex;
+  align-items: center;
+}
+
+// Reading section
+.readingGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @include respond-to(md) {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+.readingCard {
+  background: #fdf2f8;
+  border: 1px solid #fbcfe8;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 1.35rem);
+  line-height: 1.65;
+  color: $color-gray-800;
+  font-size: $font-size-base;
+
+  p {
+    margin: 0;
+  }
+}
+
+.readingUnderlined {
+  text-decoration: underline;
+  text-decoration-color: #db2777;
+  text-decoration-thickness: 2px;
+  font-weight: $font-weight-medium;
+}
+
+.readingPhotoWrap {
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  position: relative;
+  min-height: 220px;
+  background: $color-gray-100;
+  box-shadow: $shadow-md;
+}
+
+.questionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-top: 0.85rem;
+}
+
+.questionItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: 0.65rem 0.85rem;
+}
+
+.questionText {
+  font-weight: $font-weight-semibold;
+  color: $color-gray-900;
+}
+
+// Grammar Box
+.grammarBox {
+  background: #fdf4ff;
+  border: 1.5px solid #f0abfc;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.grammarTitle {
+  font-size: $font-size-lg;
+  font-weight: $font-weight-bold;
+  color: #86198f;
+  margin: 0;
+}
+
+.grammarTable {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e879f9;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  background: $color-white;
+}
+
+.grammarRow {
+  display: flex;
+  padding: 0.5rem 0.85rem;
+  border-bottom: 1px solid #f5d0fe;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.grammarSign {
+  width: 28px;
+  font-weight: $font-weight-bold;
+  color: #a21caf;
+  flex-shrink: 0;
+}
+
+.grammarRuleText {
+  color: $color-gray-800;
+  line-height: 1.5;
+}
+
+.selectInput {
+  @include input-reset;
+  border: 1.5px solid #d946ef;
+  border-radius: $border-radius-md;
+  padding: 0.25rem 0.5rem;
+  font-size: $font-size-base;
+  background: $color-white;
+  color: $color-gray-900;
+  font-weight: $font-weight-semibold;
+  cursor: pointer;
+  outline: none;
+
+  &:focus {
+    box-shadow: 0 0 0 3px rgba(217, 70, 239, 0.2);
+  }
+}
+
+// Word order exercise
+.wordOrderList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.wordOrderItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 0.95rem;
+}
+
+.promptTokens {
+  font-family: $font-family-mono;
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+  background: $color-white;
+  padding: 0.35rem 0.65rem;
+  border-radius: $border-radius-md;
+  border: 1px dashed $color-gray-300;
+}
+
+// Speaking / Schedule planner
+.scheduleTable {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.scheduleCol {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.scheduleDayTitle {
+  font-weight: $font-weight-bold;
+  color: #db2777;
+  margin: 0;
+  font-size: $font-size-base;
+}
+
+.textareaInput {
+  @include input-reset;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  padding: 0.5rem 0.75rem;
+  font-size: $font-size-base;
+  background: $color-white;
+  color: $color-gray-900;
+  min-height: 80px;
+  resize: vertical;
+  line-height: 1.4;
+
+  &:focus {
+    border-color: #db2777;
+    box-shadow: 0 0 0 3px rgba(219, 39, 119, 0.15);
+  }
+}
+
+// Ribbon Tags (PREPARE, SPEAK)
+.ribbonTag {
+  display: inline-flex;
+  align-items: center;
+  background: #db2777;
+  color: $color-white;
+  padding: 0.25rem 1.25rem 0.25rem 0.75rem;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  letter-spacing: 0.05em;
+  clip-path: polygon(0 0, 85% 0, 100% 50%, 85% 100%, 0 100%);
+  width: fit-content;
+  text-transform: uppercase;
+}
+
+// Exercise 9: True and False Sentences
+.trueFalseGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @include respond-to(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.trueCardCol {
+  background: rgba(34, 197, 94, 0.04);
+  border: 1px solid rgba(34, 197, 94, 0.25);
+  border-radius: $border-radius-lg;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.falseCardCol {
+  background: rgba(239, 68, 68, 0.04);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  border-radius: $border-radius-lg;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.colHeaderTitle {
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0 0 0.25rem 0;
+}
+
+// Model Dialogues
+.modelDialogCard {
+  background: #fdf4ff;
+  border: 1px solid #f0abfc;
+  border-radius: $border-radius-lg;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: $font-size-base;
+}
+
+.dialogLine {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  line-height: 1.5;
+  flex-wrap: wrap;
+}
+
+.speakerTag {
+  font-weight: $font-weight-bold;
+  color: #db2777;
+  width: 20px;
+  flex-shrink: 0;
+}
+
+// App Notice Badge
+.appNoticeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: $color-gray-100;
+  border: 1px dashed $color-gray-300;
+  border-radius: $border-radius-md;
+  padding: 0.45rem 0.85rem;
+  font-size: $font-size-xs;
+  color: $color-gray-700;
+  font-style: italic;
+  width: fit-content;
+}
+
+// Develop Reading Badge
+.developReadingBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: $color-white;
+  padding: 0.5rem 1rem;
+  border-radius: $border-radius-lg;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-sm;
+  box-shadow: $shadow-sm;
+  width: fit-content;
+  margin-top: 0.5rem;
+}
+

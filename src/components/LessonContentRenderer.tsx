@@ -18,6 +18,10 @@ import Lesson4AContent from './Lesson4AContent';
 import Lesson4BContent from './Lesson4BContent';
 import Lesson4CContent from './Lesson4CContent';
 import Lesson4DContent from './Lesson4DContent';
+import Lesson5AContent from './Lesson5AContent';
+import Lesson5BContent from './Lesson5BContent';
+import Lesson5CContent from './Lesson5CContent';
+import Lesson5DContent from './Lesson5DContent';
 
 export interface LessonContentRendererProps {
   user?: Record<string, unknown> | null;
@@ -42,6 +46,10 @@ export function getLessonType(lesson?: { order?: number; title?: string; id?: st
   if (lesson.order === 14 || lesson.title?.includes('4B') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380c02') return '4B';
   if (lesson.order === 15 || lesson.title?.includes('4C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380c03') return '4C';
   if (lesson.order === 16 || lesson.title?.includes('4D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380c04') return '4D';
+  if (lesson.order === 17 || lesson.title?.includes('5A') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380e01') return '5A';
+  if (lesson.order === 18 || lesson.title?.includes('5B') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380e02') return '5B';
+  if (lesson.order === 19 || lesson.title?.includes('5C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380e03') return '5C';
+  if (lesson.order === 20 || lesson.title?.includes('5D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380e04') return '5D';
   return '1A';
 }
 
@@ -530,6 +538,78 @@ export default function LessonContentRenderer({
           originalAnswers={answers}
           audioBlob={audioBlob}
           onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'exercise_5')}
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '5A': {
+      return (
+        <Lesson5AContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'exercise_11_speaking')}
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '5B': {
+      return (
+        <Lesson5BContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'exercise_9_speaking')}
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '5C': {
+      return (
+        <Lesson5CContent
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'exercise_11_speaking')}
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '5D': {
+      return (
+        <Lesson5DContent
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'exercise_6_cafe_roleplay')}
           submissionId={submissionId}
           submittedAudios={audios}
         />
