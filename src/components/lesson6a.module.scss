@@ -1,0 +1,745 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-2xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Header Banner 6A (Crimson / Scarlet Theme)
+.headerBanner {
+  background: linear-gradient(135deg, #be123c 0%, #dc2626 50%, #ea580c 100%);
+  color: $color-white;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  flex-wrap: wrap;
+}
+
+.badge6A {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  background: $color-white;
+  color: #dc2626;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1;
+  padding: 0.4rem 0.85rem;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-md;
+}
+
+.letterA {
+  color: #ea580c;
+  margin-left: 2px;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.titleHeading {
+  margin: 0;
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  font-weight: 800;
+  color: $color-white;
+  letter-spacing: -0.02em;
+}
+
+.lessonMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pillGoal {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 0.25rem 0.65rem;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: 500;
+  color: $color-white;
+}
+
+.contentBody {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: clamp(1rem, 3vw, 2rem);
+  box-sizing: border-box;
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  border-bottom: 2px solid #fee2e2;
+  padding-bottom: 0.5rem;
+}
+
+.sectionTitle {
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-weight: 800;
+  color: #991b1b;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.exerciseCard {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: $shadow-sm;
+}
+
+.exerciseTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.exerciseTitle {
+  font-size: $font-size-base;
+  font-weight: 700;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+.exerciseInstruction {
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+  margin: 0;
+}
+
+// Audio Button Standard Unit 4/5
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: #ffe4e6;
+    border-color: #fda4af;
+  }
+
+  &.audioPlaying {
+    background: #e11d48;
+    color: $color-white;
+    border-color: #be123c;
+  }
+}
+
+// Visual Gallery Grid for Ex 1a (Pictures A-G)
+.galleryGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.galleryCard {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform $transition-fast, box-shadow $transition-fast;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+.galleryImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  background: $color-gray-100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.galleryCardBadge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background: #dc2626;
+  color: $color-white;
+  font-weight: 800;
+  font-size: $font-size-sm;
+  padding: 0.2rem 0.5rem;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-sm;
+  z-index: 2;
+}
+
+.galleryCardCaption {
+  padding: 0.5rem 0.75rem;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  color: $color-gray-700;
+  text-align: center;
+}
+
+// Matching Sentences List
+.matchingList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.matchingRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.65rem 0.85rem;
+  background: $color-gray-50;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-gray-200;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.matchingLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.numBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 700;
+  font-size: $font-size-xs;
+  border-radius: $border-radius-full;
+  flex-shrink: 0;
+}
+
+.matchingSentence {
+  font-size: $font-size-sm;
+  color: $color-gray-800;
+
+  strong {
+    color: #b91c1c;
+  }
+}
+
+.matchingSelectArea {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// Word Bank Box
+.wordBankBox {
+  background: #fff7ed;
+  border: 1px dashed #fdba74;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.wordBankItem {
+  background: $color-white;
+  border: 1px solid #fed7aa;
+  padding: 0.25rem 0.6rem;
+  border-radius: $border-radius-md;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  color: #9a3412;
+}
+
+// Reading Text Cards
+.readingCardsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.readingCard {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.goodHabitsCard {
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+
+  .readingCardTitle {
+    color: #166534;
+  }
+}
+
+.badHabitsCard {
+  border-color: #fecdd3;
+  background: #fff1f2;
+
+  .readingCardTitle {
+    color: #9f1239;
+  }
+}
+
+.readingCardTitle {
+  font-size: $font-size-base;
+  font-weight: 800;
+  margin: 0;
+}
+
+.readingCardText {
+  font-size: $font-size-sm;
+  color: $color-gray-700;
+  line-height: $line-height-relaxed;
+  margin: 0;
+}
+
+// Photos Row for Reading
+.photosRow {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.photoCard {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.photoWrapper {
+  position: relative;
+  width: 100%;
+  height: 180px;
+  background: $color-gray-100;
+}
+
+.photoBadge {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.5rem;
+  background: rgba(0, 0, 0, 0.75);
+  color: $color-white;
+  font-weight: 800;
+  font-size: $font-size-sm;
+  padding: 0.2rem 0.5rem;
+  border-radius: $border-radius-md;
+}
+
+.photoActionArea {
+  padding: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+// Grammar Box Table
+.grammarBox {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
+  border-radius: $border-radius-xl;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.grammarTable {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #e2e8f0;
+    font-size: $font-size-sm;
+  }
+
+  th {
+    background: #e2e8f0;
+    font-weight: 700;
+    color: #334155;
+    text-align: left;
+  }
+
+  td {
+    background: $color-white;
+    color: $color-gray-800;
+  }
+}
+
+.grammarRulesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.grammarRuleRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.5rem 0.75rem;
+  background: $color-white;
+  border-radius: $border-radius-md;
+  border: 1px solid #e2e8f0;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+.grammarRuleText {
+  font-size: $font-size-sm;
+  color: $color-gray-700;
+  flex: 1;
+
+  em {
+    color: #475569;
+  }
+}
+
+// Categories Grid (Exercise 7a: /s/, /z/, /ɪz/)
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.categoryColumn {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.categoryHeader {
+  font-size: $font-size-base;
+  font-weight: 800;
+  color: #b91c1c;
+  text-align: center;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #fee2e2;
+  margin: 0;
+}
+
+.categoryItemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 80px;
+}
+
+.categoryItemBadge {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: $color-white;
+  border: 1px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  padding: 0.35rem 0.65rem;
+  font-size: $font-size-sm;
+  font-weight: 600;
+  color: $color-gray-800;
+}
+
+// Inputs and Form Controls
+.inputWrapper {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.inputWrapperFull {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.textInput {
+  background: $color-white;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  padding: 0.4rem 0.65rem;
+  font-size: $font-size-sm;
+  color: $color-gray-900;
+  outline: none;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+  }
+}
+
+.selectInput {
+  background: $color-white;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  padding: 0.4rem 0.65rem;
+  font-size: $font-size-sm;
+  color: $color-gray-900;
+  outline: none;
+  cursor: pointer;
+  transition: border-color $transition-fast;
+  min-width: 110px;
+
+  &:focus {
+    border-color: #dc2626;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.15);
+  }
+}
+
+.inputValid {
+  border-color: $color-success !important;
+  background-color: #f0fdf4 !important;
+}
+
+.inputInvalid {
+  border-color: $color-danger !important;
+  background-color: #fef2f2 !important;
+}
+
+.correctBadge {
+  color: $color-success-dark;
+  font-weight: 800;
+  font-size: $font-size-base;
+  margin-left: 0.25rem;
+}
+
+.feedbackRow {
+  margin-top: 0.25rem;
+}
+
+// Diff highlight for revisions
+.diffHighlight {
+  background-color: #fef3c7 !important;
+  border-color: #f59e0b !important;
+}
+
+// Gap Fill Exercise Sentences
+.gapFillList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.gapFillRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: $color-gray-50;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 1rem;
+  border: 1px solid $color-gray-200;
+}
+
+.gapFillSentence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: $font-size-sm;
+  color: $color-gray-800;
+  line-height: 2;
+}
+
+.inlineInput {
+  width: 140px;
+}
+
+// Speaking / Notes Box
+.notesCard {
+  background: #fdf4ff;
+  border: 1px solid #f0abfc;
+  border-radius: $border-radius-xl;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.notesCardTitle {
+  font-size: $font-size-base;
+  font-weight: 800;
+  color: #86198f;
+  margin: 0;
+}
+
+.notesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.noteField {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.noteLabel {
+  font-size: $font-size-xs;
+  font-weight: 700;
+  color: #701a75;
+}
+
+.noteTextarea {
+  background: $color-white;
+  border: 1.5px solid #e879f9;
+  border-radius: $border-radius-md;
+  padding: 0.5rem 0.75rem;
+  font-size: $font-size-sm;
+  color: $color-gray-900;
+  outline: none;
+  resize: vertical;
+  min-height: 60px;
+  font-family: inherit;
+
+  &:focus {
+    border-color: #c026d3;
+    box-shadow: 0 0 0 3px rgba(192, 38, 211, 0.15);
+  }
+}
+
+// Footer badge
+.footerBadge {
+  background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+  border: 1px solid #fecaca;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: $font-size-sm;
+  font-weight: 600;
+  color: #991b1b;
+}

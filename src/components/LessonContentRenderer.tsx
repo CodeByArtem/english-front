@@ -22,6 +22,10 @@ import Lesson5AContent from './Lesson5AContent';
 import Lesson5BContent from './Lesson5BContent';
 import Lesson5CContent from './Lesson5CContent';
 import Lesson5DContent from './Lesson5DContent';
+import Lesson6AContent from './Lesson6AContent';
+import Lesson6BContent from './Lesson6BContent';
+import Lesson6CContent from './Lesson6CContent';
+import Lesson6DContent from './Lesson6DContent';
 
 export interface LessonContentRendererProps {
   user?: Record<string, unknown> | null;
@@ -50,6 +54,10 @@ export function getLessonType(lesson?: { order?: number; title?: string; id?: st
   if (lesson.order === 18 || lesson.title?.includes('5B') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380e02') return '5B';
   if (lesson.order === 19 || lesson.title?.includes('5C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380e03') return '5C';
   if (lesson.order === 20 || lesson.title?.includes('5D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380e04') return '5D';
+  if (lesson.order === 21 || lesson.title?.includes('6A') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380f01') return '6A';
+  if (lesson.order === 22 || lesson.title?.includes('6B') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380f02') return '6B';
+  if (lesson.order === 23 || lesson.title?.includes('6C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380f03') return '6C';
+  if (lesson.order === 24 || lesson.title?.includes('6D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380f04') return '6D';
   return '1A';
 }
 
@@ -610,6 +618,86 @@ export default function LessonContentRenderer({
           originalAnswers={answers}
           audioBlob={audioBlob}
           onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'exercise_6_cafe_roleplay')}
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '6A': {
+      return (
+        <Lesson6AContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'lesson6a_speaking_ex10')}
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '6B': {
+      return (
+        <Lesson6BContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'lesson6b_speaking_ex10')}
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '6C': {
+      return (
+        <Lesson6CContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'exercise_8_audio')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '6D': {
+      return (
+        <Lesson6DContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'exercise_6b_audio')
+          }
           submissionId={submissionId}
           submittedAudios={audios}
         />
