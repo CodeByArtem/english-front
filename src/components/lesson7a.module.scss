@@ -1,0 +1,736 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-2xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Header Banner 7A (Crimson / Carmine & Azure Landscape Theme)
+.headerBanner {
+  background: linear-gradient(135deg, #be123c 0%, #e11d48 50%, #0284c7 100%);
+  color: $color-white;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  flex-wrap: wrap;
+}
+
+.badge7A {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  background: $color-white;
+  color: #be123c;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1;
+  padding: 0.4rem 0.85rem;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-md;
+}
+
+.letterA {
+  color: #0284c7;
+  margin-left: 2px;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.titleHeading {
+  margin: 0;
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  font-weight: 800;
+  color: $color-white;
+  letter-spacing: -0.02em;
+}
+
+.lessonMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pillGoal {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 0.25rem 0.65rem;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: 500;
+  color: $color-white;
+}
+
+.pageBody {
+  padding: clamp(1rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+// Section styling
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sectionHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 2px solid #fecdd3;
+  padding-bottom: 0.5rem;
+}
+
+.sectionBadge {
+  background: #be123c;
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: $border-radius-md;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sectionTitle {
+  font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+  font-weight: 800;
+  color: #881337;
+  margin: 0;
+}
+
+// Exercise block
+.exerciseSection {
+  background: $color-white;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: $shadow-sm;
+}
+
+.exerciseHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.exerciseNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #be123c;
+  color: $color-white;
+  font-weight: 800;
+  font-size: $font-size-sm;
+  min-width: 28px;
+  height: 28px;
+  border-radius: $border-radius-full;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.exerciseTitleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.exerciseTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.exerciseTitle {
+  font-size: $font-size-base;
+  font-weight: 700;
+  color: $color-gray-900;
+  margin: 0;
+}
+
+.exerciseInstruction {
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+  margin: 0;
+}
+
+// Audio Button Standard Unit 4/5
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #fff1f2;
+  color: #9f1239;
+  border: 1px solid #fecdd3;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: #ffe4e6;
+    border-color: #fda4af;
+  }
+
+  &.audioPlaying {
+    background: #e11d48;
+    color: $color-white;
+    border-color: #be123c;
+  }
+}
+
+// Word Box
+.wordBankBox {
+  background: #f0f9ff;
+  border: 1px dashed #7dd3fc;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.wordBankLabel {
+  font-size: $font-size-xs;
+  font-weight: 700;
+  color: #0369a1;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-right: 0.5rem;
+}
+
+.wordBankItem {
+  background: $color-white;
+  border: 1px solid #bae6fd;
+  padding: 0.25rem 0.6rem;
+  border-radius: $border-radius-md;
+  font-size: $font-size-xs;
+  font-weight: 600;
+  color: #075985;
+}
+
+// Visual Gallery Grid for Ex 1a (Photos A-O)
+.galleryGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.galleryCard {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform $transition-fast, box-shadow $transition-fast;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+.galleryImageWrapper {
+  position: relative;
+  width: 100%;
+  height: 140px;
+  background: $color-gray-100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.galleryCardBadge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background: #be123c;
+  color: $color-white;
+  font-weight: 800;
+  font-size: $font-size-xs;
+  padding: 0.2rem 0.5rem;
+  border-radius: $border-radius-md;
+  box-shadow: $shadow-sm;
+  z-index: 2;
+}
+
+.galleryCardForm {
+  padding: 0.6rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: $color-white;
+}
+
+// Special Compass Rose Card
+.compassCard {
+  background: #f0fdfa;
+  border: 1.5px solid #99f6e4;
+  border-radius: $border-radius-xl;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+  }
+}
+
+.compassImageWrapper {
+  position: relative;
+  width: 170px;
+  height: 170px;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  border: 1px solid #ccfbf1;
+  flex-shrink: 0;
+}
+
+.compassDirectionsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.compassDirectionItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  background: $color-white;
+  border: 1px solid #99f6e4;
+  border-radius: $border-radius-lg;
+  padding: 0.5rem 0.75rem;
+}
+
+.compassDirectionBadge {
+  font-size: $font-size-xs;
+  font-weight: 700;
+  color: #0d9488;
+}
+
+// Categorization Table (Ex 2)
+.categoriesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @include respond-to(lg) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.categoryColumn {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.categoryHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-size: $font-size-sm;
+  font-weight: 800;
+  color: #be123c;
+  text-align: center;
+  padding-bottom: 0.4rem;
+  border-bottom: 2px solid #fecdd3;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.categorySlots {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+// Matching and Gap Fill lists
+.itemsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.itemRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  padding: 0.65rem 0.85rem;
+  background: $color-gray-50;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-gray-200;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.itemLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+.numBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: #fee2e2;
+  color: #991b1b;
+  font-weight: 700;
+  font-size: $font-size-xs;
+  border-radius: $border-radius-full;
+  flex-shrink: 0;
+}
+
+.itemSentence {
+  font-size: $font-size-sm;
+  color: $color-gray-800;
+  line-height: 1.6;
+
+  em {
+    font-style: italic;
+    color: #be123c;
+    font-weight: 600;
+  }
+}
+
+.itemAction {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// Grammar Table (Ex 6)
+.grammarBox {
+  background: #eff6ff;
+  border: 1.5px solid #bfdbfe;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.grammarHeader {
+  font-size: $font-size-lg;
+  font-weight: 800;
+  color: #1e40af;
+  margin: 0;
+}
+
+.grammarTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  border: 1px solid #bfdbfe;
+
+  th,
+  td {
+    padding: 0.65rem 0.85rem;
+    font-size: $font-size-sm;
+    text-align: left;
+    border-bottom: 1px solid #dbeafe;
+  }
+
+  th {
+    background: #dbeafe;
+    color: #1e3a8a;
+    font-weight: 700;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.grammarRowRule {
+  color: $color-gray-800;
+  line-height: 1.5;
+
+  strong {
+    color: #1e40af;
+  }
+}
+
+.grammarRowExample {
+  color: #0369a1;
+  font-style: italic;
+}
+
+// Intonation sentences (Ex 7a)
+.intonationGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.intonationCard {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-lg;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.intonationText {
+  font-size: $font-size-sm;
+  color: $color-gray-800;
+  font-weight: 600;
+}
+
+.intonationBadgeDown {
+  background: #e0f2fe;
+  color: #0369a1;
+  font-size: $font-size-xs;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: $border-radius-full;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.intonationBadgeUp {
+  background: #fef3c7;
+  color: #b45309;
+  font-size: $font-size-xs;
+  font-weight: 700;
+  padding: 0.25rem 0.6rem;
+  border-radius: $border-radius-full;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+// Input styles
+.inputWrapper {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.inputWrapperFull {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.textInput {
+  background: $color-white;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  padding: 0.4rem 0.65rem;
+  font-size: $font-size-sm;
+  color: $color-gray-900;
+  outline: none;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+  width: 100%;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #be123c;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+  }
+}
+
+.selectInput {
+  background: $color-white;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  padding: 0.4rem 0.65rem;
+  font-size: $font-size-sm;
+  color: $color-gray-900;
+  outline: none;
+  cursor: pointer;
+  transition: border-color $transition-fast;
+  min-width: 120px;
+
+  &:focus {
+    border-color: #be123c;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+  }
+}
+
+.inputValid {
+  border-color: $color-success !important;
+  background-color: #f0fdf4 !important;
+}
+
+.inputInvalid {
+  border-color: $color-danger !important;
+  background-color: #fef2f2 !important;
+}
+
+.correctBadge {
+  color: $color-success-dark;
+  font-weight: 800;
+  font-size: $font-size-base;
+  margin-left: 0.25rem;
+}
+
+.feedbackRow {
+  margin-top: 0.25rem;
+}
+
+.diffHighlight {
+  background-color: #fef3c7 !important;
+  border-color: #f59e0b !important;
+}
+
+// Speaking and Prepare Cards
+.prepareCard {
+  background: #fdf2f8;
+  border: 1px solid #fbcfe8;
+  border-radius: $border-radius-xl;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.prepareLabel {
+  font-size: $font-size-xs;
+  font-weight: 800;
+  color: #db2777;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.speakCard {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: $border-radius-xl;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.speakLabel {
+  font-size: $font-size-xs;
+  font-weight: 800;
+  color: #16a34a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+// Develop badge
+.developBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ecfdf5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  padding: 0.5rem 1rem;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: 700;
+  align-self: flex-start;
+}

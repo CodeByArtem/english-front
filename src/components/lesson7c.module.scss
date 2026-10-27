@@ -1,0 +1,652 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-2xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Header Banner 7C (Crimson & Coral Theme)
+.headerBanner {
+  background: linear-gradient(135deg, #be123c 0%, #e11d48 50%, #ea580c 100%);
+  color: $color-white;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  flex-wrap: wrap;
+}
+
+.badge7C {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  background: $color-white;
+  color: #be123c;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1;
+  padding: 0.35rem 0.85rem;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  letter-spacing: -0.02em;
+}
+
+.headerTitle {
+  font-size: clamp(1.6rem, 4.5vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: $color-white;
+}
+
+.goalsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(8px);
+  padding: clamp(0.85rem, 2vw, 1.15rem) clamp(1rem, 2.5vw, 1.4rem);
+  border-radius: $border-radius-xl;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.goalItem {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.95);
+
+  strong {
+    color: #fed7aa;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+}
+
+// Collaged Gallery in Header
+.collageGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 0.75rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+.collageCard {
+  position: relative;
+  border-radius: $border-radius-md;
+  overflow: hidden;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+  aspect-ratio: 16 / 10;
+  background: #1f2937;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.25s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.05);
+  }
+}
+
+.collageLabel {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 3px 6px;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+// Page Content Sections
+.pageContent {
+  padding: clamp(1rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid #fecdd3;
+  margin-bottom: 0.25rem;
+}
+
+.sectionTitle {
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-weight: 800;
+  color: #9f1239;
+  letter-spacing: -0.01em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.exerciseBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  background: #fff;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 1.4rem);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.exerciseTitleRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.exerciseNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #be123c;
+  color: $color-white;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.exerciseSubNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #ffe4e6;
+  color: #9f1239;
+  font-weight: 800;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.exerciseText {
+  flex: 1;
+  font-size: 0.95rem;
+  color: $color-gray-800;
+  line-height: 1.5;
+  margin: 0;
+
+  em {
+    color: #9f1239;
+    font-weight: 600;
+  }
+}
+
+// Audio Button
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #be123c 0%, #e11d48 100%);
+  color: $color-white;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-full;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(190, 18, 60, 0.25);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(190, 18, 60, 0.35);
+  }
+
+  &.audioPlaying {
+    background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.4);
+  }
+}
+
+// Opposite Pairs Grid
+.oppositesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+
+  @include respond-to(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.oppositeCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: $border-radius-lg;
+  flex-wrap: wrap;
+}
+
+.oppositeLeft {
+  font-weight: 700;
+  color: #881337;
+  font-size: 0.95rem;
+  min-width: 90px;
+}
+
+.oppositeSelect {
+  padding: 0.35rem 0.65rem;
+  border-radius: $border-radius-md;
+  border: 1.5px solid $color-gray-300;
+  background: $color-white;
+  font-size: 0.9rem;
+  color: $color-gray-800;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  min-width: 140px;
+
+  &:focus {
+    border-color: #be123c;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+  }
+}
+
+// Winter Context Banner for Exercise 3
+.winterContextBanner {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: linear-gradient(135deg, #fff1f2 0%, #fdf2f8 50%, #eff6ff 100%);
+  border: 1.5px solid #fecdd3;
+  border-radius: $border-radius-xl;
+  padding: clamp(0.75rem, 2vw, 1.15rem);
+  box-shadow: 0 2px 8px rgba(190, 18, 60, 0.05);
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    gap: 1.25rem;
+  }
+}
+
+.winterImgWrap {
+  flex-shrink: 0;
+  width: 100%;
+  max-width: 200px;
+  margin: 0 auto;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border: 2px solid $color-white;
+
+  @include respond-to(md) {
+    margin: 0;
+    width: 180px;
+  }
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+}
+
+.winterTextWrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.winterTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  width: fit-content;
+  background: #be123c;
+  color: $color-white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 0.2rem 0.55rem;
+  border-radius: $border-radius-full;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.winterQuote {
+  font-size: clamp(0.95rem, 1.8vw, 1.05rem);
+  color: #881337;
+  font-style: italic;
+  margin: 0;
+  line-height: 1.45;
+
+  strong {
+    color: #be123c;
+    font-weight: 800;
+  }
+}
+
+.winterHint {
+  font-size: 0.85rem;
+  color: $color-gray-600;
+  margin: 0;
+  line-height: 1.4;
+}
+
+// Sentences Fill-in
+.sentencesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sentenceItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.65rem 0.85rem;
+  background: $color-gray-50;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-gray-200;
+}
+
+.sentenceRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  color: $color-gray-800;
+}
+
+.inputField {
+  padding: 0.35rem 0.65rem;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: 0.95rem;
+  color: $color-gray-800;
+  background: $color-white;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 120px;
+
+  &:focus {
+    border-color: #be123c;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+  }
+
+  &.inputValid {
+    border-color: $color-success;
+    background: #f0fdf4;
+  }
+
+  &.inputInvalid {
+    border-color: $color-danger;
+    background: #fef2f2;
+  }
+}
+
+// Listening Photos Grid
+.listeningGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+
+  @include respond-to(sm) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.listeningCard {
+  border: 1px solid #fecdd3;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  display: flex;
+  flex-direction: column;
+
+  img {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.listeningCardInfo {
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.badgePhotoLetter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #be123c;
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+// Chip Alternatives Selection
+.chipsRow {
+  display: inline-flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.chipBtn {
+  padding: 0.25rem 0.65rem;
+  border-radius: $border-radius-full;
+  border: 1.5px solid $color-gray-300;
+  background: $color-white;
+  color: $color-gray-700;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #be123c;
+    color: #be123c;
+  }
+
+  &.chipSelected {
+    background: #be123c;
+    border-color: #be123c;
+    color: #fff;
+  }
+
+  &.chipValid {
+    background: $color-success;
+    border-color: $color-success;
+    color: #fff;
+  }
+
+  &.chipInvalid {
+    background: $color-danger;
+    border-color: $color-danger;
+    color: #fff;
+  }
+}
+
+// Grammar Table
+.grammarTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  background: #fff;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  border: 1px solid #fecdd3;
+
+  th,
+  td {
+    padding: 0.65rem 0.85rem;
+    border: 1px solid #fecdd3;
+    vertical-align: middle;
+  }
+
+  th {
+    background: #ffe4e6;
+    color: #881337;
+    font-weight: 800;
+    text-align: left;
+  }
+
+  tr:nth-child(even) td {
+    background: #fff1f2;
+  }
+}
+
+// Dialogue Container
+.dialogueBox {
+  background: #fdf2f8;
+  border: 1px solid #fbcfe8;
+  border-radius: $border-radius-xl;
+  padding: clamp(0.9rem, 2vw, 1.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.dialogueLine {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  color: $color-gray-800;
+
+  strong {
+    color: #9f1239;
+    min-width: 65px;
+  }
+}
+
+// Speaking Beach Banner
+.beachBanner {
+  border-radius: $border-radius-2xl;
+  overflow: hidden;
+  border: 1px solid #fecdd3;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  margin-bottom: 1rem;
+
+  img {
+    width: 100%;
+    height: auto;
+    max-height: 320px;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+// Feedback & Diff Highlight
+.feedbackRow {
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.diffHighlight {
+  border-color: #f59e0b !important;
+  background: #fef3c7 !important;
+}
+
+.correctBadge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.35rem;
+}
+
+.badgeDevelop {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #eff6ff;
+  border: 1px dashed #3b82f6;
+  color: #1e40af;
+  padding: 0.5rem 0.9rem;
+  border-radius: $border-radius-lg;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+}

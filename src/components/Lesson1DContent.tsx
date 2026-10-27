@@ -5,6 +5,7 @@ import Image from 'next/image';
 import TeacherAnswerBadge from '@/components/TeacherAnswerBadge';
 import PronounceButton from '@/components/PronounceButton';
 import { verifyAnswer, getExerciseKey, LessonAnswerKey } from '@/lib/answerVerification';
+import { useLessonContext } from '@/context/LessonContext';
 import AudioAnswerRecorder from './AudioAnswerRecorder/AudioAnswerRecorder';
 import SubmissionAudioPlayer, {
   SubmissionAudioMeta,
@@ -17,8 +18,8 @@ export interface Lesson1DContentProps {
   readOnly?: boolean;
   isTeacherReview?: boolean;
   answerKey?: LessonAnswerKey | null;
-  playAudio: (track: string) => void;
-  playingAudio: string | null;
+  playAudio?: (track: string) => void;
+  playingAudio?: string | null;
 
   // Audio recording & review
   audioBlob?: Blob | null;
@@ -147,57 +148,63 @@ const TARGET_WORDS: Record<string, { name: string; cells: [number, number][] }> 
   },
 };
 
-export default function Lesson1DContent({
-  readOnly = false,
-  isTeacherReview = false,
-  answerKey = null,
-  playAudio,
-  playingAudio,
-  submissionId,
-  submittedAudios,
-  onAudioBlobChange,
+export default function Lesson1DContent(props: Lesson1DContentProps) {
+  const context = useLessonContext();
 
-  // Page 12
-  ex1Location = '',
-  ex2Audio = {},
-  ex3bContact = {},
-  ex4aDialogue = {},
-  ex5Personal = {},
-  ex6Partner = {},
+  const {
+    readOnly = false,
+    isTeacherReview = false,
+    answerKey = null,
+    playAudio: propPlayAudio,
+    playingAudio: propPlayingAudio,
+    submissionId,
+    submittedAudios,
+    onAudioBlobChange,
 
-  // Page 13
-  wordsearchFound = { poland: 'Poland' },
-  ex2aOrder = {},
-  ex3Be = {},
-  ex4Jobs = {},
-  ex5IsIsnt = {},
-  ex6Corrections = {},
-  ex7aNationalities = {},
-  ex8Alternatives = {},
-  ex9Text = {},
-  reflectScores = {},
+    // Page 12
+    ex1Location = '',
+    ex2Audio = {},
+    ex3bContact = {},
+    ex4aDialogue = {},
+    ex5Personal = {},
+    ex6Partner = {},
 
-  // Handlers
-  onEx1LocationChange = () => {},
-  onEx2AudioChange = () => {},
-  onEx3bContactChange = () => {},
-  onEx4aDialogueChange = () => {},
-  onEx5PersonalChange = () => {},
-  onEx6PartnerChange = () => {},
+    // Page 13
+    wordsearchFound = { poland: 'Poland' },
+    ex2aOrder = {},
+    ex3Be = {},
+    ex4Jobs = {},
+    ex5IsIsnt = {},
+    ex6Corrections = {},
+    ex7aNationalities = {},
+    ex8Alternatives = {},
+    ex9Text = {},
+    reflectScores = {},
 
-  onWordsearchChange = () => {},
-  onEx2aOrderChange = () => {},
-  onEx3BeChange = () => {},
-  onEx4JobsChange = () => {},
-  onEx5IsIsntChange = () => {},
-  onEx6CorrectionsChange = () => {},
-  onEx7aNationalitiesChange = () => {},
-  onEx8AlternativesChange = () => {},
-  onEx9TextChange = () => {},
-  onReflectChange = () => {},
+    // Handlers
+    onEx1LocationChange = () => {},
+    onEx2AudioChange = () => {},
+    onEx3bContactChange = () => {},
+    onEx4aDialogueChange = () => {},
+    onEx5PersonalChange = () => {},
+    onEx6PartnerChange = () => {},
 
-  originalAnswers,
-}: Lesson1DContentProps) {
+    onWordsearchChange = () => {},
+    onEx2aOrderChange = () => {},
+    onEx3BeChange = () => {},
+    onEx4JobsChange = () => {},
+    onEx5IsIsntChange = () => {},
+    onEx6CorrectionsChange = () => {},
+    onEx7aNationalitiesChange = () => {},
+    onEx8AlternativesChange = () => {},
+    onEx9TextChange = () => {},
+    onReflectChange = () => {},
+
+    originalAnswers,
+  } = props;
+
+  const playAudio = propPlayAudio ?? context?.playAudio;
+  const playingAudio = propPlayingAudio ?? context?.playingAudio;
   const isReview = Boolean(isTeacherReview || (answerKey && readOnly));
 
   const ex1Key = getExerciseKey(answerKey, 'exercise_1_location');
@@ -401,9 +408,8 @@ export default function Lesson1DContent({
                 <span className={styles.exNum}>2</span>
                 <button
                   type="button"
-                  onClick={() => playAudio('1.14')}
+                  onClick={() => playAudio?.('1.14')}
                   className={`${styles.audioBtn} ${playingAudio === '1.14' ? styles.playing : ''}`}
-                  disabled={readOnly}
                   aria-label="Play audio track 1.14"
                 >
                   <span className={styles.diamondIcon}>
@@ -505,6 +511,18 @@ export default function Lesson1DContent({
               <p className={styles.exTitle}>
                 <span className={styles.exNum}>3</span>
                 <span className={styles.exSub}>a</span>
+                <button
+                  type="button"
+                  onClick={() => playAudio?.('1.14')}
+                  className={`${styles.audioBtn} ${playingAudio === '1.14' ? styles.playing : ''}`}
+                  aria-label="Play audio track 1.14"
+                >
+                  <span className={styles.diamondIcon}>
+                    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" /></svg>
+                  </span>
+                  <span>1.14</span>
+                  <span>{playingAudio === '1.14' ? 'Playing...' : 'Audio'}</span>
+                </button>
                 <span>Read the Useful phrases box. Listen to the conversation again and number the phrases in the order that you hear them.</span>
               </p>
             </div>
@@ -540,6 +558,18 @@ export default function Lesson1DContent({
             <div>
               <p className={styles.exTitle}>
                 <span className={styles.exSub}>b</span>
+                <button
+                  type="button"
+                  onClick={() => playAudio?.('1.14')}
+                  className={`${styles.audioBtn} ${playingAudio === '1.14' ? styles.playing : ''}`}
+                  aria-label="Play audio track 1.14"
+                >
+                  <span className={styles.diamondIcon}>
+                    <svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" /></svg>
+                  </span>
+                  <span>1.14</span>
+                  <span>{playingAudio === '1.14' ? 'Playing...' : 'Audio'}</span>
+                </button>
                 <span>Listen again and complete the form.</span>
               </p>
               <div style={{ marginTop: '8px' }}>
@@ -703,9 +733,8 @@ export default function Lesson1DContent({
                 <span className={styles.exSub}>b</span>
                 <button
                   type="button"
-                  onClick={() => playAudio('1.15')}
+                  onClick={() => playAudio?.('1.15')}
                   className={`${styles.audioBtn} ${playingAudio === '1.15' ? styles.playing : ''}`}
-                  disabled={readOnly}
                   aria-label="Play audio track 1.15"
                 >
                   <span className={styles.diamondIcon}>

@@ -26,6 +26,10 @@ import Lesson6AContent from './Lesson6AContent';
 import Lesson6BContent from './Lesson6BContent';
 import Lesson6CContent from './Lesson6CContent';
 import Lesson6DContent from './Lesson6DContent';
+import Lesson7AContent from './Lesson7AContent';
+import Lesson7BContent from './Lesson7BContent';
+import Lesson7CContent from './Lesson7CContent';
+import Lesson7DContent from './Lesson7DContent';
 
 export interface LessonContentRendererProps {
   user?: Record<string, unknown> | null;
@@ -58,6 +62,10 @@ export function getLessonType(lesson?: { order?: number; title?: string; id?: st
   if (lesson.order === 22 || lesson.title?.includes('6B') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380f02') return '6B';
   if (lesson.order === 23 || lesson.title?.includes('6C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380f03') return '6C';
   if (lesson.order === 24 || lesson.title?.includes('6D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380f04') return '6D';
+  if (lesson.order === 25 || lesson.title?.includes('7A') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380701') return '7A';
+  if (lesson.order === 26 || lesson.title?.includes('7B') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380702') return '7B';
+  if (lesson.order === 27 || lesson.title?.includes('7C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380703') return '7C';
+  if (lesson.order === 28 || lesson.title?.includes('7D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380704') return '7D';
   return '1A';
 }
 
@@ -697,6 +705,90 @@ export default function LessonContentRenderer({
           audioBlob={audioBlob}
           onAudioBlobChange={(blob, mime, exKey) =>
             onAudioBlobChange?.(blob, mime, exKey || 'exercise_6b_audio')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '7A': {
+      return (
+        <Lesson7AContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'speaking_place_description')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '7B': {
+      return (
+        <Lesson7BContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'speaking_good_days')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '7C': {
+      return (
+        <Lesson7CContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'exercise_11')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '7D': {
+      return (
+        <Lesson7DContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'exercise_5')
           }
           submissionId={submissionId}
           submittedAudios={audios}

@@ -1,0 +1,798 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-2xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Header Banner 7D (Paddington Amber & Violet Theme)
+.headerBanner {
+  background: linear-gradient(135deg, #7c3aed 0%, #be123c 60%, #d97706 100%);
+  color: $color-white;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  flex-wrap: wrap;
+}
+
+.headerLeft {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.badge7D {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  background: $color-white;
+  color: #be123c;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1;
+  padding: 0.35rem 0.85rem;
+  border-radius: $border-radius-lg;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  letter-spacing: -0.02em;
+}
+
+.headerTitle {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: $color-white;
+}
+
+.stationPhotoWrapper {
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  max-width: 240px;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+.goalPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.22);
+  backdrop-filter: blur(8px);
+  padding: 0.5rem 1rem;
+  border-radius: $border-radius-full;
+  font-size: 0.95rem;
+  color: #fef08a;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  width: fit-content;
+
+  strong {
+    color: #fff;
+  }
+}
+
+// Station Information Board
+.boardContainer {
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  border: 2px solid #1f2937;
+  background: #111827;
+  margin-bottom: 1rem;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
+
+// Page Content Sections
+.pageContent {
+  padding: clamp(1rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 0.6rem;
+  border-bottom: 2px solid #ddd6fe;
+  margin-bottom: 0.25rem;
+}
+
+.sectionTitle {
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-weight: 800;
+  color: #6d28d9;
+  letter-spacing: -0.01em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.exerciseBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  background: #fff;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 1.4rem);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+.exerciseTitleRow {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.exerciseNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #7c3aed;
+  color: $color-white;
+  font-weight: 800;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.exerciseSubNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  background: #ede9fe;
+  color: #6d28d9;
+  font-weight: 800;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.exerciseText {
+  flex: 1;
+  font-size: 0.95rem;
+  color: $color-gray-800;
+  line-height: 1.5;
+  margin: 0;
+
+  em {
+    color: #6d28d9;
+    font-weight: 600;
+  }
+}
+
+// Audio Button
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, #7c3aed 0%, #9333ea 100%);
+  color: $color-white;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-full;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(124, 58, 237, 0.25);
+  transition: all 0.2s ease;
+  white-space: nowrap;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.35);
+  }
+
+  &.audioPlaying {
+    background: linear-gradient(135deg, #15803d 0%, #16a34a 100%);
+    box-shadow: 0 2px 8px rgba(22, 163, 74, 0.4);
+  }
+}
+
+// Tickets Grid (Interactive authentic tickets A-D)
+.ticketsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  max-width: 520px;
+
+  @include respond-to-max(sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.ticketCard {
+  border: 2px solid #e2e8f0;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  cursor: pointer;
+  background: #fff;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+
+  &:hover {
+    border-color: #7c3aed;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+  }
+
+  &.ticketSelected {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.25);
+  }
+
+  &.ticketValid {
+    border-color: $color-success;
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.25);
+  }
+
+  &.ticketInvalid {
+    border-color: $color-danger;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.25);
+  }
+}
+
+.ticketLetter {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #1e293b;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+}
+
+.ticketImage {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+// Useful Phrases Box (Paddington Ticket Office)
+.usefulPhrasesBox {
+  background: #faf5ff;
+  border: 1.5px solid #e9d5ff;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 1.4rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.phrasesGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  h4 {
+    margin: 0;
+    color: #6d28d9;
+    font-size: 1rem;
+    font-weight: 800;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    font-size: 0.95rem;
+    color: $color-gray-800;
+  }
+}
+
+// Layout for Ex 4a & Heathrow Poster
+.heathrowContentLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  @include respond-to(lg) {
+    display: grid;
+    grid-template-columns: 1fr 270px;
+    align-items: start;
+    gap: 1.5rem;
+  }
+}
+
+.heathrowDialogueCol {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  order: 2;
+
+  @include respond-to(lg) {
+    order: 1;
+  }
+}
+
+.heathrowPosterAside {
+  display: flex;
+  justify-content: center;
+  order: 1;
+
+  @include respond-to(lg) {
+    display: block;
+    width: 270px;
+    position: sticky;
+    top: 1.5rem;
+    align-self: start;
+    order: 2;
+  }
+}
+
+.posterHeathrowCard {
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 165, 195, 0.15);
+  border: 2px solid #00a5c3;
+  background: #f0fdfa;
+  max-width: 260px;
+  width: 100%;
+}
+
+.posterHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.75rem;
+  background: #00a5c3;
+  color: #fff;
+}
+
+.posterBadge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+.posterTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.posterImageWrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background: #00a5c3;
+}
+
+.posterImage {
+  width: 255px;
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: 6px;
+  object-fit: contain;
+}
+
+// Compass Rose Exercise 1a
+.compassWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+  background: #fdf2f8;
+  border: 1px solid #fbcfe8;
+  border-radius: $border-radius-xl;
+  margin: 0.5rem 0;
+  width: 100%;
+}
+
+.compassGrid {
+  display: grid;
+  grid-template-columns: minmax(80px, 120px) auto minmax(80px, 120px);
+  grid-template-rows: auto auto auto;
+  align-items: center;
+  justify-items: center;
+  gap: 0.75rem clamp(0.5rem, 2vw, 1.25rem);
+  max-width: 440px;
+  width: 100%;
+}
+
+.compassCellNorth {
+  grid-column: 2;
+  grid-row: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.compassCellWest {
+  grid-column: 1;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.compassCellCenter {
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+}
+
+.compassCellEast {
+  grid-column: 3;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.compassCellSouth {
+  grid-column: 2;
+  grid-row: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.compassInputRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.compassPrefix {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #be185d;
+  line-height: 1;
+}
+
+.compassInput {
+  width: 80px;
+  min-width: 70px;
+  padding: 0.35rem 0.5rem;
+  text-align: left;
+  font-size: 16px;
+
+  @include respond-to(sm) {
+    width: 95px;
+    font-size: 0.95rem;
+  }
+}
+
+.compassImage {
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.08));
+}
+
+.compassFeedback {
+  margin-top: 0.2rem;
+  font-size: 0.8rem;
+}
+
+// Generic Inputs and Lists
+.sentencesList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sentenceItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.65rem 0.85rem;
+  background: $color-gray-50;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-gray-200;
+}
+
+.sentenceRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  font-size: 0.95rem;
+  color: $color-gray-800;
+}
+
+.inputField {
+  padding: 0.35rem 0.65rem;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: 0.95rem;
+  color: $color-gray-800;
+  background: $color-white;
+  outline: none;
+  transition: all 0.2s ease;
+  min-width: 120px;
+
+  &:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  }
+
+  &.inputValid {
+    border-color: $color-success;
+    background: #f0fdf4;
+  }
+
+  &.inputInvalid {
+    border-color: $color-danger;
+    background: #fef2f2;
+  }
+}
+
+.selectField {
+  padding: 0.35rem 0.65rem;
+  border-radius: $border-radius-md;
+  border: 1.5px solid $color-gray-300;
+  background: $color-white;
+  font-size: 0.9rem;
+  color: $color-gray-800;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+
+  &:focus {
+    border-color: #7c3aed;
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.15);
+  }
+}
+
+// Chip Alternatives Selection
+.chipsRow {
+  display: inline-flex;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.chipBtn {
+  padding: 0.25rem 0.65rem;
+  border-radius: $border-radius-full;
+  border: 1.5px solid $color-gray-300;
+  background: $color-white;
+  color: $color-gray-700;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: #7c3aed;
+    color: #7c3aed;
+  }
+
+  &.chipSelected {
+    background: #7c3aed;
+    border-color: #7c3aed;
+    color: #fff;
+  }
+
+  &.chipValid {
+    background: $color-success;
+    border-color: $color-success;
+    color: #fff;
+  }
+
+  &.chipInvalid {
+    background: $color-danger;
+    border-color: $color-danger;
+    color: #fff;
+  }
+}
+
+// Months Two Columns Exercise 3a
+.monthsTwoCols {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem 1.5rem;
+  max-width: 680px;
+  width: 100%;
+
+  @include respond-to(sm) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.monthsColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.monthCard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: $border-radius-lg;
+  padding: 0.5rem 0.75rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    border-color: #cbd5e1;
+  }
+}
+
+.monthCardMain {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.monthIndex {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: $color-gray-600;
+  min-width: 24px;
+}
+
+.monthLetter {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #6d28d9;
+  min-width: 16px;
+  text-align: center;
+}
+
+.monthInput {
+  flex: 1;
+  min-width: 80px;
+  padding: 0.35rem 0.6rem;
+  font-size: 16px;
+
+  @include respond-to(sm) {
+    font-size: 0.95rem;
+  }
+}
+
+// Reflect Rating
+.reflectTable {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+
+  th,
+  td {
+    padding: 0.65rem 0.85rem;
+    border: 1px solid #e2e8f0;
+    vertical-align: middle;
+  }
+
+  th {
+    background: #ede9fe;
+    color: #6d28d9;
+    font-weight: 800;
+    text-align: left;
+  }
+
+  tr:nth-child(even) td {
+    background: #f5f3ff;
+  }
+}
+
+.starRating {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.starBtn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: #cbd5e1;
+  transition: transform 0.1s ease;
+
+  &:hover {
+    transform: scale(1.15);
+  }
+
+  &.starActive {
+    color: #f59e0b;
+  }
+}
+
+// Feedback & Diff Highlight
+.feedbackRow {
+  margin-top: 0.35rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.diffHighlight {
+  border-color: #f59e0b !important;
+  background: #fef3c7 !important;
+}
+
+.correctBadge {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 0.35rem;
+}
