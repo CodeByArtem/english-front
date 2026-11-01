@@ -1,0 +1,741 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-2xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Header Banner 8A (Pearson Scarlet & Crimson Theme)
+.headerBanner {
+  background: linear-gradient(135deg, #be123c 0%, #e11d48 50%, #f43f5e 100%);
+  color: $color-white;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  flex-wrap: wrap;
+}
+
+.badge8A {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  background: $color-white;
+  color: #be123c;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1;
+  padding: 0.4rem 0.85rem;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-md;
+}
+
+.letterA {
+  color: #e11d48;
+  margin-left: 2px;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.titleHeading {
+  margin: 0;
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  font-weight: 800;
+  color: $color-white;
+  letter-spacing: -0.02em;
+}
+
+.lessonMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pillGoal {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 0.25rem 0.65rem;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-white;
+}
+
+// Page Body & Sections
+.pageBody {
+  padding: clamp(1rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: $color-gray-50;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+  border: 1px solid $color-gray-200;
+}
+
+.sectionHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.sectionBadge {
+  background: #be123c;
+  color: $color-white;
+  padding: 0.3rem 0.75rem;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: clamp(1.2rem, 2.5vw, 1.5rem);
+  font-weight: $font-weight-bold;
+  color: $color-gray-900;
+}
+
+// Exercise Card
+.exerciseSection {
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  padding: clamp(1rem, 2vw, 1.5rem);
+  box-shadow: $shadow-sm;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.exerciseHeader {
+  display: flex;
+  gap: 0.85rem;
+  align-items: flex-start;
+}
+
+.exerciseNum {
+  background: #be123c;
+  color: $color-white;
+  font-size: $font-size-sm;
+  font-weight: $font-weight-bold;
+  min-width: 2rem;
+  height: 2rem;
+  border-radius: $border-radius-full;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.exerciseTitleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+}
+
+.exerciseTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.exerciseTitle {
+  margin: 0;
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  font-weight: $font-weight-bold;
+  color: $color-gray-800;
+}
+
+.exerciseInstruction {
+  margin: 0;
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+  line-height: $line-height-relaxed;
+}
+
+// Audio Button
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f43f5e;
+  color: $color-white;
+  border: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+  transition: all $transition-fast;
+  box-shadow: 0 2px 6px rgba(244, 63, 94, 0.3);
+
+  &:hover {
+    background: #e11d48;
+    transform: translateY(-1px);
+  }
+
+  &.audioPlaying {
+    background: #be123c;
+    animation: pulseAudio 1.5s infinite;
+  }
+}
+
+@keyframes pulseAudio {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.03); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+// Photos Grid
+.photosGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem;
+}
+
+.photoCard {
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  box-shadow: $shadow-sm;
+  display: flex;
+  flex-direction: column;
+}
+
+.photoImageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: $color-gray-100;
+
+  img {
+    object-fit: cover;
+  }
+}
+
+.photoCaption {
+  padding: 0.75rem 1rem;
+  background: $color-gray-50;
+  border-top: 1px solid $color-gray-200;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.photoBadge {
+  background: #be123c;
+  color: $color-white;
+  font-weight: $font-weight-bold;
+  padding: 0.2rem 0.55rem;
+  border-radius: $border-radius-base;
+  font-size: $font-size-xs;
+}
+
+.photoDesc {
+  font-size: $font-size-xs;
+  color: $color-gray-700;
+  font-style: italic;
+}
+
+// Story Text Box
+.storyBox {
+  background: #fff1f2;
+  border-left: 4px solid #be123c;
+  padding: 1.25rem;
+  border-radius: 0 $border-radius-lg $border-radius-lg 0;
+  font-size: clamp(0.95rem, 1.8vw, 1.05rem);
+  line-height: 1.7;
+  color: $color-gray-800;
+
+  p {
+    margin: 0;
+  }
+}
+
+// Word Map Interactive Visual Grid
+.wordMapGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.25rem;
+}
+
+.wordMapCard {
+  background: $color-gray-50;
+  border: 2px dashed #fda4af;
+  border-radius: $border-radius-xl;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.wordMapHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.wordMapVerbBubble {
+  background: linear-gradient(135deg, #e11d48, #be123c);
+  color: $color-white;
+  font-weight: $font-weight-bold;
+  font-size: $font-size-base;
+  padding: 0.35rem 0.85rem;
+  border-radius: $border-radius-full;
+  box-shadow: 0 2px 8px rgba(225, 29, 72, 0.25);
+}
+
+.wordMapBranches {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.wordMapBranch {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: $font-size-sm;
+  color: $color-gray-700;
+
+  &::before {
+    content: "•";
+    color: #e11d48;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+}
+
+// Word Bank Box
+.wordBankBox {
+  background: #ffe4e6;
+  border-radius: $border-radius-lg;
+  padding: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  border: 1px solid #fecdd3;
+}
+
+.wordBankTitle {
+  font-weight: $font-weight-bold;
+  font-size: $font-size-xs;
+  color: #9f1239;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  width: 100%;
+}
+
+.wordChip {
+  background: $color-white;
+  color: #be123c;
+  border: 1px solid #fda4af;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+// School Days Reading Cards
+.readingCardsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.25rem;
+}
+
+.readingCard {
+  background: $color-white;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  box-shadow: $shadow-sm;
+  display: flex;
+  flex-direction: column;
+}
+
+.readingCardHeader {
+  background: #0d9488;
+  color: $color-white;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.readingCardName {
+  margin: 0;
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+}
+
+.readingCardContent {
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.portraitWrapper {
+  position: relative;
+  width: 75px;
+  height: 80px;
+  flex-shrink: 0;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: $shadow-sm;
+  border: 1px solid $color-gray-200;
+
+  img {
+    object-fit: cover;
+  }
+}
+
+.readingText {
+  margin: 0;
+  font-size: $font-size-sm;
+  line-height: 1.6;
+  color: $color-gray-800;
+}
+
+// Table styling
+.tableResponsive {
+  width: 100%;
+  overflow-x: auto;
+  border-radius: $border-radius-lg;
+  border: 1px solid $color-gray-200;
+  -webkit-overflow-scrolling: touch;
+}
+
+.interactiveTable {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: $font-size-sm;
+
+  th,
+  td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid $color-gray-200;
+    min-width: 120px;
+  }
+
+  th {
+    background: #ffe4e6;
+    color: #9f1239;
+    font-weight: $font-weight-bold;
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tr:nth-child(even) td {
+    background: #fff5f5;
+  }
+}
+
+.tableHeaderCol {
+  text-align: center;
+  width: 100px;
+  min-width: 80px;
+}
+
+.tableCheckCell {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.tickBox {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: $border-radius-base;
+  border: 2px solid $color-gray-300;
+  background: $color-white;
+  color: transparent;
+  font-size: 1.15rem;
+  font-weight: 900;
+  cursor: pointer;
+  transition: all $transition-fast;
+  user-select: none;
+  padding: 0;
+
+  &:hover:not(:disabled) {
+    border-color: #be123c;
+    background: #fff1f2;
+    transform: scale(1.05);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #be123c;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.85;
+  }
+}
+
+.tickBoxChecked {
+  background: #be123c !important;
+  border-color: #be123c !important;
+  color: $color-white !important;
+}
+
+.tickBoxValid {
+  background: #16a34a !important;
+  border-color: #16a34a !important;
+  color: $color-white !important;
+}
+
+.tickBoxInvalid {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: $color-white !important;
+}
+
+.tickBoxMissing {
+  border: 2px dashed #16a34a !important;
+  background: #dcfce7 !important;
+  color: #16a34a !important;
+}
+
+// Grammar Rule Box
+.grammarRuleBox {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: $border-radius-xl;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.grammarRuleTitle {
+  margin: 0;
+  font-size: $font-size-base;
+  font-weight: $font-weight-bold;
+  color: #166534;
+}
+
+// Form Inputs & Verification
+.inputWrapper {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
+  margin: 0 0.25rem;
+}
+
+.inputWrapperFull {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.inputRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  position: relative;
+}
+
+.textInput {
+  background: $color-white;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-base;
+  padding: 0.35rem 0.65rem;
+  font-size: $font-size-sm;
+  color: $color-gray-900;
+  transition: all $transition-fast;
+  min-width: 120px;
+
+  &:focus {
+    border-color: #be123c;
+    box-shadow: 0 0 0 2px rgba(190, 18, 60, 0.15);
+  }
+
+  &:disabled {
+    background: $color-gray-100;
+    color: $color-gray-700;
+    cursor: not-allowed;
+  }
+}
+
+.selectInput {
+  background: $color-white;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-base;
+  padding: 0.35rem 0.65rem;
+  font-size: $font-size-sm;
+  color: $color-gray-900;
+  transition: all $transition-fast;
+  cursor: pointer;
+
+  &:focus {
+    border-color: #be123c;
+    box-shadow: 0 0 0 2px rgba(190, 18, 60, 0.15);
+  }
+
+  &:disabled {
+    background: $color-gray-100;
+    cursor: not-allowed;
+  }
+}
+
+.inputValid {
+  border-color: #16a34a !important;
+  background: #f0fdf4 !important;
+}
+
+.inputInvalid {
+  border-color: #dc2626 !important;
+  background: #fef2f2 !important;
+}
+
+.diffHighlight {
+  border-color: #d97706 !important;
+  background: #fffbeb !important;
+}
+
+.correctBadge {
+  color: #16a34a;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.feedbackRow {
+  margin-top: 0.35rem;
+}
+
+// Sentences List
+.sentencesList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sentenceItem {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  line-height: 2;
+  font-size: $font-size-sm;
+  color: $color-gray-800;
+}
+
+.sentenceNum {
+  font-weight: $font-weight-bold;
+  color: #be123c;
+  min-width: 1.5rem;
+}
+
+// Speaking Layout
+.speakingLayout {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  @include respond-to(md) {
+    display: grid;
+    grid-template-columns: 1fr 280px;
+  }
+}
+
+.speakingContent {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.speakingSidePhoto {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+}
+
+.speakingPhotoCard {
+  width: 100%;
+  max-width: 280px;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  box-shadow: $shadow-md;
+  border: 1px solid $color-gray-200;
+  position: relative;
+  aspect-ratio: 16 / 9;
+
+  img {
+    object-fit: cover;
+  }
+}
+
+.badgeDevelopWrapper {
+  width: 100%;
+  max-width: 240px;
+  position: relative;
+  height: 60px;
+
+  img {
+    object-fit: contain;
+  }
+}

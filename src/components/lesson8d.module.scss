@@ -1,0 +1,807 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-2xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Header Banner 8D
+.headerBanner {
+  background: linear-gradient(135deg, #be123c 0%, #e11d48 50%, #f43f5e 100%);
+  color: $color-white;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  flex-wrap: wrap;
+}
+
+.badge8D {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  background: $color-white;
+  color: #be123c;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1;
+  padding: 0.4rem 0.85rem;
+  border-radius: $border-radius-xl;
+  box-shadow: $shadow-md;
+}
+
+.letterD {
+  color: #e11d48;
+  margin-left: 2px;
+}
+
+.titleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.titleHeading {
+  margin: 0;
+  font-size: clamp(1.4rem, 3.5vw, 2.2rem);
+  font-weight: 800;
+  color: $color-white;
+  letter-spacing: -0.02em;
+}
+
+.lessonMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.pillGoal {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 0.25rem 0.65rem;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-medium;
+  color: $color-white;
+}
+
+// Page Body & Sections
+.pageBody {
+  padding: clamp(1rem, 3vw, 2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.sectionBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: $color-gray-50;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+  border: 1px solid $color-gray-200;
+}
+
+.sectionHeaderRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 2px solid $color-gray-200;
+  padding-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.sectionBadge {
+  background: #e11d48;
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.65rem;
+  border-radius: $border-radius-md;
+}
+
+.sectionTitle {
+  margin: 0;
+  font-size: clamp(1.15rem, 2.5vw, 1.4rem);
+  font-weight: 700;
+  color: $color-gray-900;
+}
+
+// Exercise styling
+.exerciseSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  padding: clamp(0.85rem, 2vw, 1.35rem);
+  border: 1px solid $color-gray-200;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.exerciseHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.exerciseNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  min-width: 2rem;
+  background: #be123c;
+  color: $color-white;
+  font-weight: 800;
+  font-size: $font-size-sm;
+  border-radius: $border-radius-full;
+  line-height: 1;
+}
+
+.exerciseTitleArea {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.exerciseTitleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.exerciseTitle {
+  margin: 0;
+  font-size: $font-size-base;
+  font-weight: 700;
+  color: $color-gray-900;
+  line-height: 1.4;
+}
+
+.exerciseInstruction {
+  margin: 0;
+  font-size: $font-size-sm;
+  color: $color-gray-600;
+  line-height: 1.5;
+}
+
+// Unified Audio Button
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: #f43f5e;
+  color: $color-white;
+  border: none;
+  padding: 0.4rem 0.85rem;
+  border-radius: $border-radius-full;
+  font-size: $font-size-xs;
+  font-weight: $font-weight-bold;
+  cursor: pointer;
+  transition: all $transition-fast;
+  box-shadow: 0 2px 6px rgba(244, 63, 94, 0.3);
+  white-space: nowrap;
+
+  &:hover {
+    background: #e11d48;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(244, 63, 94, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.audioPlaying {
+  background: #059669 !important;
+  box-shadow: 0 0 0 2px rgba(5, 150, 105, 0.3) !important;
+}
+
+// Photos Grid
+.photosGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.photoCard {
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  transition: transform $transition-fast, box-shadow $transition-fast;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-md;
+  }
+}
+
+.photoImageWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: $color-gray-100;
+
+  img {
+    object-fit: cover;
+  }
+}
+
+.photoCaption {
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.photoBadge {
+  display: inline-block;
+  background: #be123c;
+  color: $color-white;
+  font-size: $font-size-xs;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: $border-radius-sm;
+  align-self: flex-start;
+}
+
+// Useful phrases box
+.usefulPhrasesGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: $border-radius-xl;
+  padding: 1.25rem;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.usefulCategory {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+
+  h4 {
+    margin: 0;
+    font-size: $font-size-sm;
+    font-weight: 800;
+    color: #9f1239;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  ul {
+    margin: 0;
+    padding-left: 1.25rem;
+    font-size: $font-size-sm;
+    color: $color-gray-800;
+
+    li {
+      margin-bottom: 0.25rem;
+    }
+  }
+}
+
+// Dialogue script styling
+.dialogueBox {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: $color-gray-50;
+  border-radius: $border-radius-lg;
+  padding: 1rem 1.25rem;
+  border: 1px solid $color-gray-200;
+}
+
+.dialogueLine {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: $font-size-sm;
+  flex-wrap: wrap;
+}
+
+.speakerName {
+  font-weight: 700;
+  color: #9f1239;
+  min-width: 60px;
+}
+
+// Sentence list
+.sentenceList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.sentenceItem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.65rem 0.85rem;
+  background: $color-gray-50;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+  font-size: $font-size-sm;
+  color: $color-gray-800;
+}
+
+.itemLabel {
+  font-weight: 600;
+  color: $color-gray-700;
+  min-width: 1.5rem;
+}
+
+.itemText {
+  flex: 1;
+  min-width: 200px;
+}
+
+// Story / Text box
+.storyBox {
+  background: #fdf2f8;
+  border-left: 4px solid #be123c;
+  padding: 1rem 1.25rem;
+  border-radius: 0 $border-radius-md $border-radius-md 0;
+  font-size: $font-size-base;
+  line-height: 2;
+  color: $color-gray-800;
+
+  p {
+    margin: 0;
+  }
+}
+
+.storyText {
+  margin: 0;
+  line-height: 2.2;
+}
+
+// Word Box
+.wordBox {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: $border-radius-md;
+  padding: 0.75rem 1rem;
+}
+
+.wordChip {
+  background: $color-white;
+  color: #be123c;
+  border: 1px solid #f43f5e;
+  font-size: $font-size-sm;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: $border-radius-full;
+  display: inline-flex;
+  align-items: center;
+}
+
+// Wordsearch puzzle
+.wordsearchContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem;
+  background: #fdf2f8;
+  border-radius: $border-radius-xl;
+  border: 1px solid #fecdd3;
+}
+
+.wordsearchGrid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 3px;
+  max-width: 420px;
+  width: 100%;
+}
+
+.wordsearchCell {
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: clamp(0.75rem, 2vw, 1.1rem);
+  font-family: inherit;
+  padding: 0;
+  color: $color-gray-800;
+  background: $color-white;
+  border: 1px solid $color-gray-300;
+  border-radius: 4px;
+  cursor: pointer;
+  user-select: none;
+  transition: all $transition-fast;
+
+  &:hover:not(:disabled) {
+    background: #fee2e2;
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #be123c;
+    outline-offset: 1px;
+  }
+}
+
+.wordsearchCellSelected {
+  background: #be123c !important;
+  color: $color-white !important;
+  border-color: #9f1239 !important;
+}
+
+.wordsearchCellFound {
+  background: #10b981 !important;
+  color: $color-white !important;
+  border-color: #059669 !important;
+}
+
+.wordsearchStatusBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 420px;
+  font-size: $font-size-sm;
+  color: $color-gray-700;
+}
+
+.wordsearchStatusLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.wordsearchBadge {
+  background-color: #be123c;
+  color: $color-white;
+  font-weight: 800;
+  padding: 0.15rem 0.55rem;
+  border-radius: $border-radius-full;
+  font-size: 0.75rem;
+}
+
+.wordsearchFeedbackMessage {
+  color: #059669;
+  font-weight: 700;
+  font-size: $font-size-sm;
+}
+
+.wordsearchClearBtn {
+  background: none;
+  border: none;
+  color: #be123c;
+  text-decoration: underline;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  border-radius: $border-radius-sm;
+
+  &:hover {
+    color: #881337;
+    background: rgba(190, 18, 60, 0.05);
+  }
+}
+
+.wordsearchWordsList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.wordsearchWordItem {
+  padding: 0.35rem 0.75rem;
+  background: $color-white;
+  border: 1.5px solid #be123c;
+  color: #be123c;
+  font-weight: 700;
+  font-size: $font-size-sm;
+  border-radius: $border-radius-full;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: #fff1f2;
+  }
+}
+
+.wordsearchWordFound {
+  background: #10b981 !important;
+  border-color: #10b981 !important;
+  color: $color-white !important;
+  text-decoration: line-through;
+}
+
+@media (max-width: 480px) {
+  .wordsearchContainer {
+    padding: 0.75rem 0.5rem;
+    gap: 0.75rem;
+  }
+
+  .wordsearchGrid {
+    gap: 2px;
+  }
+
+  .wordsearchCell {
+    border-radius: 3px;
+    font-size: 0.8rem;
+  }
+}
+
+// Tick box exercises
+.tickList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.tickItem {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.65rem 0.85rem;
+  background: $color-gray-50;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+  cursor: pointer;
+  transition: background $transition-fast;
+
+  &:hover {
+    background: #fdf2f8;
+  }
+}
+
+.tickBox {
+  width: 1.5rem;
+  height: 1.5rem;
+  min-width: 1.5rem;
+  border: 2px solid $color-gray-300;
+  border-radius: $border-radius-sm;
+  background: $color-white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  font-weight: 900;
+  color: #be123c;
+  cursor: pointer;
+  transition: all $transition-fast;
+  padding: 0;
+}
+
+.tickBoxChecked {
+  background: #be123c;
+  border-color: #be123c;
+  color: $color-white;
+}
+
+// Reflect 1-5 rating cards
+.reflectGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.reflectCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1rem;
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  flex-wrap: wrap;
+}
+
+.reflectText {
+  font-size: $font-size-sm;
+  color: $color-gray-800;
+  font-weight: 500;
+  flex: 1;
+  min-width: 200px;
+}
+
+.reflectRatingGroup {
+  display: flex;
+  gap: 0.35rem;
+}
+
+.ratingBtn {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: $border-radius-full;
+  border: 1.5px solid $color-gray-300;
+  background: $color-white;
+  color: $color-gray-700;
+  font-weight: 700;
+  font-size: $font-size-sm;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all $transition-fast;
+
+  &:hover {
+    border-color: #be123c;
+    color: #be123c;
+  }
+}
+
+.ratingBtnActive {
+  background: #be123c !important;
+  border-color: #be123c !important;
+  color: $color-white !important;
+  box-shadow: 0 2px 6px rgba(190, 18, 60, 0.3);
+}
+
+// Input wrappers & feedback
+.inputWrapper {
+  display: inline-flex;
+  flex-direction: column;
+  vertical-align: middle;
+  margin: 0 0.25rem;
+  gap: 0.25rem;
+  min-width: 150px;
+}
+
+.inputWrapperFull {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  width: 100%;
+}
+
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.textInput {
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  color: $color-gray-900;
+  background: $color-white;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+
+  &:focus {
+    border-color: #be123c;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+  }
+
+  &:disabled {
+    background: $color-gray-100;
+    color: $color-gray-600;
+  }
+}
+
+.selectInput {
+  width: 100%;
+  padding: 0.45rem 0.75rem;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: $font-size-sm;
+  color: $color-gray-900;
+  background: $color-white;
+  transition: border-color $transition-fast;
+
+  &:focus {
+    border-color: #be123c;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+  }
+}
+
+.inputValid {
+  border-color: $color-success !important;
+  background: rgba(34, 197, 94, 0.05);
+}
+
+.inputInvalid {
+  border-color: $color-danger !important;
+  background: rgba(239, 68, 68, 0.05);
+}
+
+.correctBadge {
+  color: $color-success;
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+
+.feedbackRow {
+  margin-top: 0.2rem;
+}
+
+.diffHighlight {
+  border-color: #f59e0b !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.2);
+}
+
+// Banners at bottom
+.bottomBanner {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}
+
+.bannerImageWrapper {
+  position: relative;
+  width: 190px;
+  height: 56px;
+}

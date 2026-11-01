@@ -338,9 +338,12 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 1a: Gallery of Pictures A-G */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>1a. Match pictures A–G with sentences 1–7</h3>
-                <p className={styles.exerciseInstruction}>Look at the illustrations and select the correct picture letter for each sentence.</p>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>1a</span>
+                <div className={styles.exerciseTitleArea}>
+                  <h3 className={styles.exerciseTitle}>Match pictures A–G with sentences 1–7</h3>
+                  <p className={styles.exerciseInstruction}>Look at the illustrations and select the correct picture letter for each sentence.</p>
+                </div>
               </div>
 
               <div className={styles.galleryGrid}>
@@ -389,18 +392,23 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 1b: Audio & Pronunciation */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>1b. Listen and repeat the phrases in bold</h3>
-                <button
-                  type="button"
-                  className={`${styles.audioBtn} ${playingAudio === '6.1' ? styles.audioPlaying : ''}`}
-                  onClick={() => playAudio?.('6.1')}
-                  aria-label="Play Audio 6.1"
-                >
-                  {playingAudio === '6.1' ? '⏸ Playing 6.1' : '▶ Audio 6.1'}
-                </button>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>1b</span>
+                <div className={styles.exerciseTitleArea}>
+                  <div className={styles.exerciseTitleRow}>
+                    <h3 className={styles.exerciseTitle}>Listen and repeat the phrases in bold</h3>
+                    <button
+                      type="button"
+                      className={`${styles.audioBtn} ${playingAudio === '6.1' ? styles.audioPlaying : ''}`}
+                      onClick={() => playAudio?.('6.1')}
+                      aria-label="Play Audio 6.1"
+                    >
+                      {playingAudio === '6.1' ? '⏸ Playing 6.1' : '▶ Audio 6.1'}
+                    </button>
+                  </div>
+                  <p className={styles.exerciseInstruction}>Listen to the audio track and practice repeating the time expressions:</p>
+                </div>
               </div>
-              <p className={styles.exerciseInstruction}>Listen to the audio track and practice repeating the time expressions:</p>
               <div className={styles.wordBankBox}>
                 {TIME_PHRASES_BOX.map((phrase) => (
                   <div key={phrase} className={styles.wordBankItem}>
@@ -413,9 +421,12 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 2: Work in pairs (True for you) */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>2. Which sentences in Exercise 1a are true for you?</h3>
-                <p className={styles.exerciseInstruction}>Select which sentences are true for your routine. Example: <em>Number 3 is true. I watch TV in the evening.</em></p>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>2</span>
+                <div className={styles.exerciseTitleArea}>
+                  <h3 className={styles.exerciseTitle}>Which sentences in Exercise 1a are true for you?</h3>
+                  <p className={styles.exerciseInstruction}>Select which sentences are true for your routine. Example: <em>Number 3 is true. I watch TV in the evening.</em></p>
+                </div>
               </div>
 
               <div className={styles.matchingList}>
@@ -445,9 +456,12 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 3a: Complete the sentences so they are true for you */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>3a. Complete the sentences so they are true for you</h3>
-                <p className={styles.exerciseInstruction}>Use the phrases in the box to complete the sentences about your routine.</p>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>3a</span>
+                <div className={styles.exerciseTitleArea}>
+                  <h3 className={styles.exerciseTitle}>Complete the sentences so they are true for you</h3>
+                  <p className={styles.exerciseInstruction}>Use the phrases in the box to complete the sentences about your routine.</p>
+                </div>
               </div>
 
               <div className={styles.wordBankBox}>
@@ -480,9 +494,12 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 3b: Speaking submission */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>3b. Speak &amp; Compare: Record your answers</h3>
-                <p className={styles.exerciseInstruction}>Compare your answers with a partner or record them for teacher feedback.</p>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>3b</span>
+                <div className={styles.exerciseTitleArea}>
+                  <h3 className={styles.exerciseTitle}>Speak &amp; Compare: Record your answers</h3>
+                  <p className={styles.exerciseInstruction}>Compare your answers with a partner or record them for teacher feedback.</p>
+                </div>
               </div>
               <AudioAnswerRecorder
                 onAudioChange={(blob, mime) => onAudioBlobChange?.(blob, mime, 'lesson6a_speaking_ex3b')}
@@ -508,9 +525,12 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 4a: Text Cards & Photos */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>4a. Read the texts and match Erica and Tina with photos A and B</h3>
-                <p className={styles.exerciseInstruction}>Read about Erica and Tina, then match them to their respective photos below.</p>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>4a</span>
+                <div className={styles.exerciseTitleArea}>
+                  <h3 className={styles.exerciseTitle}>Read the texts and match Erica and Tina with photos A and B</h3>
+                  <p className={styles.exerciseInstruction}>Read about Erica and Tina, then match them to their respective photos below.</p>
+                </div>
               </div>
 
               <div className={styles.readingCardsGrid}>
@@ -593,8 +613,11 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 4b: Meaning of Habit */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>4b. What is a habit? Choose the correct option, a or b</h3>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>4b</span>
+                <div className={styles.exerciseTitleArea}>
+                  <h3 className={styles.exerciseTitle}>What is a habit? Choose the correct option, a or b</h3>
+                </div>
               </div>
               <div className={styles.matchingList}>
                 {[
@@ -624,9 +647,12 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 5: Rewrite with 'she' */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>5. Rewrite the sentences using &apos;she&apos;</h3>
-                <p className={styles.exerciseInstruction}>Use the texts in Exercise 4a to help you change the subject from I to she.</p>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>5</span>
+                <div className={styles.exerciseTitleArea}>
+                  <h3 className={styles.exerciseTitle}>Rewrite the sentences using &apos;she&apos;</h3>
+                  <p className={styles.exerciseInstruction}>Use the texts in Exercise 4a to help you change the subject from I to she.</p>
+                </div>
               </div>
 
               <div className={styles.gapFillList}>
@@ -663,9 +689,12 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 6: Grammar Box */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>6. Read and complete the grammar box</h3>
-                <p className={styles.exerciseInstruction}>Use Exercises 4a and 5 to help you complete the spelling rules.</p>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>6</span>
+                <div className={styles.exerciseTitleArea}>
+                  <h3 className={styles.exerciseTitle}>Read and complete the grammar box</h3>
+                  <p className={styles.exerciseInstruction}>Use Exercises 4a and 5 to help you complete the spelling rules.</p>
+                </div>
               </div>
 
               <div className={styles.grammarBox}>
@@ -757,31 +786,36 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 7a & 7b: Pronunciation /s/, /z/, /ɪz/ */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>7a. Listen to the endings of the verbs in the box</h3>
-                <div className={styles.matchingSelectArea}>
-                  <button
-                    type="button"
-                    className={`${styles.audioBtn} ${playingAudio === '6.2' ? styles.audioPlaying : ''}`}
-                    onClick={() => playAudio?.('6.2')}
-                    aria-label="Play Audio 6.2"
-                  >
-                    {playingAudio === '6.2' ? '⏸ Playing 6.2' : '▶ Audio 6.2'}
-                  </button>
-                  <button
-                    type="button"
-                    className={`${styles.audioBtn} ${playingAudio === '6.3' ? styles.audioPlaying : ''}`}
-                    onClick={() => playAudio?.('6.3')}
-                    aria-label="Play Audio 6.3"
-                  >
-                    {playingAudio === '6.3' ? '⏸ Playing 6.3' : '▶ Audio 6.3'}
-                  </button>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>7a</span>
+                <div className={styles.exerciseTitleArea}>
+                  <div className={styles.exerciseTitleRow}>
+                    <h3 className={styles.exerciseTitle}>Listen to the endings of the verbs in the box</h3>
+                    <div className={styles.matchingSelectArea}>
+                      <button
+                        type="button"
+                        className={`${styles.audioBtn} ${playingAudio === '6.2' ? styles.audioPlaying : ''}`}
+                        onClick={() => playAudio?.('6.2')}
+                        aria-label="Play Audio 6.2"
+                      >
+                        {playingAudio === '6.2' ? '⏸ Playing 6.2' : '▶ Audio 6.2'}
+                      </button>
+                      <button
+                        type="button"
+                        className={`${styles.audioBtn} ${playingAudio === '6.3' ? styles.audioPlaying : ''}`}
+                        onClick={() => playAudio?.('6.3')}
+                        aria-label="Play Audio 6.3"
+                      >
+                        {playingAudio === '6.3' ? '⏸ Playing 6.3' : '▶ Audio 6.3'}
+                      </button>
+                    </div>
+                  </div>
+
+                  <p className={styles.exerciseInstruction}>
+                    Categorize each verb according to the sound of its ending: <strong>/s/</strong>, <strong>/z/</strong>, or <strong>/ɪz/</strong>.
+                  </p>
                 </div>
               </div>
-
-              <p className={styles.exerciseInstruction}>
-                Categorize each verb according to the sound of its ending: <strong>/s/</strong>, <strong>/z/</strong>, or <strong>/ɪz/</strong>.
-              </p>
 
               <div className={styles.wordBankBox}>
                 {VERBS_PRONUNCIATION.map((item) => (
@@ -817,9 +851,12 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 8: Complete with correct form */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>8. Complete the sentences with the correct form of the verbs in brackets</h3>
-                <p className={styles.exerciseInstruction}>Fill in the blanks with the affirmative or negative 3rd person singular form.</p>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>8</span>
+                <div className={styles.exerciseTitleArea}>
+                  <h3 className={styles.exerciseTitle}>Complete the sentences with the correct form of the verbs in brackets</h3>
+                  <p className={styles.exerciseInstruction}>Fill in the blanks with the affirmative or negative 3rd person singular form.</p>
+                </div>
               </div>
 
               <div className={styles.gapFillList}>
@@ -891,8 +928,13 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 9: Prepare Notes */}
             <div className={styles.notesCard}>
-              <h3 className={styles.notesCardTitle}>9. PREPARE: Notes about a friend or family member</h3>
-              <p className={styles.exerciseInstruction}>Choose a person and write down notes about his or her good and bad habits.</p>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>9</span>
+                <div className={styles.exerciseTitleArea}>
+                  <h3 className={styles.notesCardTitle}>PREPARE: Notes about a friend or family member</h3>
+                  <p className={styles.exerciseInstruction}>Choose a person and write down notes about his or her good and bad habits.</p>
+                </div>
+              </div>
 
               <div className={styles.notesGrid}>
                 <div className={styles.noteField}>
@@ -945,11 +987,14 @@ export default function Lesson6AContent(props: Lesson6AContentProps) {
 
             {/* Exercise 10: Speak & Record Voice */}
             <div className={styles.exerciseCard}>
-              <div className={styles.exerciseTitleRow}>
-                <h3 className={styles.exerciseTitle}>10. SPEAK: Tell your partner or teacher</h3>
-                <p className={styles.exerciseInstruction}>
-                  Take turns telling your partner about your friend or family member. Record your spoken response below for teacher evaluation.
-                </p>
+              <div className={styles.exerciseHeader}>
+                <span className={styles.exerciseNum}>10</span>
+                <div className={styles.exerciseTitleArea}>
+                  <h3 className={styles.exerciseTitle}>SPEAK: Tell your partner or teacher</h3>
+                  <p className={styles.exerciseInstruction}>
+                    Take turns telling your partner about your friend or family member. Record your spoken response below for teacher evaluation.
+                  </p>
+                </div>
               </div>
 
               <AudioAnswerRecorder

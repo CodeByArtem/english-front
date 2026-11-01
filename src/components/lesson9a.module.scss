@@ -1,0 +1,907 @@
+@use '@/styles/variables' as *;
+@use '@/styles/mixins' as *;
+
+$unit9-primary: #be123c;
+$unit9-primary-dark: #9f1239;
+$unit9-primary-light: #f43f5e;
+$unit9-accent: #0284c7;
+
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+  width: 100%;
+  max-width: 1060px;
+  margin: 0 auto;
+  min-width: 0;
+  box-sizing: border-box;
+
+  input,
+  select,
+  textarea {
+    @include respond-to-max(md) {
+      font-size: 16px !important;
+    }
+  }
+}
+
+.textbookPage {
+  background: $color-white;
+  border-radius: $border-radius-2xl;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  border: 1px solid $color-gray-200;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+// Header Banner 9A (Pearson Crimson Theme)
+.headerBanner {
+  background: linear-gradient(135deg, $unit9-primary-dark 0%, $unit9-primary 50%, $unit9-primary-light 100%);
+  color: $color-white;
+  padding: clamp(1.25rem, 3.5vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.headerTop {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 1.25rem);
+  flex-wrap: wrap;
+}
+
+.badge9A {
+  display: inline-flex;
+  align-items: baseline;
+  justify-content: center;
+  background: $color-white;
+  color: $unit9-primary;
+  font-weight: 900;
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  line-height: 1;
+  padding: 0.35rem 0.85rem;
+  border-radius: $border-radius-md;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.15);
+
+  span {
+    font-size: clamp(1.2rem, 3vw, 1.75rem);
+    margin-left: 2px;
+  }
+}
+
+.lessonTitle {
+  font-size: clamp(1.5rem, 4vw, 2.35rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: $color-white;
+}
+
+.goalsBox {
+  background: rgba(0, 0, 0, 0.18);
+  backdrop-filter: blur(6px);
+  border-radius: $border-radius-lg;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  border-left: 4px solid #fecdd3;
+}
+
+.goalItem {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  font-size: clamp(0.85rem, 1.8vw, 0.95rem);
+  color: #fff1f2;
+
+  strong {
+    color: $color-white;
+    font-weight: 700;
+    min-width: 90px;
+  }
+}
+
+.pageBody {
+  padding: clamp(1rem, 3vw, 2.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(1.5rem, 3.5vw, 2.5rem);
+  background: $color-white;
+  min-width: 0;
+}
+
+// Section styling
+.lessonSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: $color-white;
+  border-radius: $border-radius-xl;
+  border: 1px solid $color-gray-200;
+  padding: clamp(1rem, 2.5vw, 1.75rem);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  min-width: 0;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 2px solid #ffe4e6;
+  padding-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.sectionTitle {
+  font-size: clamp(1.2rem, 2.8vw, 1.5rem);
+  font-weight: 800;
+  color: $unit9-primary-dark;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+// Exercise block
+.exerciseSection {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 0.5rem;
+  min-width: 0;
+}
+
+.exerciseHeader {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.exerciseNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: $unit9-primary;
+  color: $color-white;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: $border-radius-sm;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.exerciseTitle {
+  font-size: clamp(0.95rem, 2vw, 1.05rem);
+  font-weight: 600;
+  color: $color-gray-900;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.audioBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  background: linear-gradient(135deg, #be123c 0%, #e11d48 100%);
+  color: $color-white;
+  border: none;
+  border-radius: $border-radius-full;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(190, 18, 60, 0.25);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  user-select: none;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(190, 18, 60, 0.35);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+// Prepositions Gallery (Ex 1a & 1b)
+.prepositionsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 0.5rem 0;
+
+  @include respond-to-max(sm) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.prepCard {
+  display: flex;
+  flex-direction: column;
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  }
+}
+
+.prepImgWrapper {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 84 / 96;
+  background: #f1f5f9;
+
+  img {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.prepCardLabel {
+  padding: 0.4rem 0.6rem;
+  background: $color-white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: $color-gray-800;
+  border-top: 1px solid $color-gray-200;
+}
+
+.fullGridImageCard {
+  display: flex;
+  flex-direction: column;
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: 0.75rem;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+// Sentences matching list (Ex 1b)
+.matchingList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.matchingItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: $color-gray-50;
+  padding: 0.75rem 1rem;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+}
+
+.matchingSentence {
+  font-size: 0.95rem;
+  color: $color-gray-900;
+  line-height: 1.4;
+
+  strong {
+    color: $unit9-primary;
+    background: #ffe4e6;
+    padding: 0.1rem 0.35rem;
+    border-radius: $border-radius-sm;
+  }
+}
+
+.matchingControl {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  flex-shrink: 0;
+}
+
+.selectInput {
+  padding: 0.45rem 0.75rem;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: $color-white;
+  color: $color-gray-900;
+  cursor: pointer;
+  min-width: 100px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $unit9-primary;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+  }
+
+  &:disabled {
+    background: $color-gray-100;
+    cursor: not-allowed;
+  }
+}
+
+// Family portrait section (Ex 3a, 3b, 3c)
+.familyPortraitContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+
+  @include respond-to(lg) {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+}
+
+.familyPhotoCard {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+}
+
+.familyPhotoImg {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 307 / 403;
+  background: #000;
+
+  img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.familyPhotoLegend {
+  padding: 0.75rem 1rem;
+  background: $color-white;
+  font-size: 0.85rem;
+  color: $color-gray-700;
+  border-top: 1px solid $color-gray-200;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+
+  span {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+  }
+}
+
+.numberMarker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #36586b;
+  color: $color-white;
+  font-size: 0.75rem;
+  font-weight: 800;
+  width: 20px;
+  height: 20px;
+  border-radius: 3px;
+}
+
+.labelsList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.labelRow {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: $color-gray-50;
+  padding: 0.5rem 0.85rem;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+}
+
+.markerBadge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #36586b;
+  color: $color-white;
+  font-weight: 800;
+  width: 26px;
+  height: 26px;
+  border-radius: $border-radius-sm;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.textInput {
+  padding: 0.45rem 0.75rem;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: 0.95rem;
+  background: $color-white;
+  color: $color-gray-900;
+  flex: 1;
+  min-width: 0;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+
+  &:focus {
+    outline: none;
+    border-color: $unit9-primary;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+  }
+
+  &:disabled {
+    background: $color-gray-100;
+    cursor: not-allowed;
+  }
+}
+
+// Dialogue dialogue lines (Ex 3b)
+.dialogueSpeakersList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.dialogueSpeakerRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: $color-gray-50;
+  padding: 0.75rem 1rem;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+}
+
+.dialogueText {
+  font-size: 0.95rem;
+  line-height: 1.45;
+  color: $color-gray-900;
+
+  strong {
+    color: $unit9-primary;
+  }
+}
+
+.speakerRadioGroup {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+}
+
+.speakerLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.35rem 0.75rem;
+  border-radius: $border-radius-md;
+  background: $color-white;
+  border: 1.5px solid $color-gray-300;
+  transition: all 0.15s ease;
+
+  &:hover {
+    border-color: $unit9-primary;
+  }
+
+  &.activeSpeaker {
+    background: #ffe4e6;
+    border-color: $unit9-primary;
+    color: $unit9-primary-dark;
+  }
+}
+
+// Referents List (Ex 3c)
+.referentsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+
+  @include respond-to(md) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.referentItem {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: $color-gray-50;
+  padding: 0.75rem 1rem;
+  border-radius: $border-radius-md;
+  border: 1px solid $color-gray-200;
+}
+
+.referentPrompt {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: $color-gray-800;
+
+  span {
+    color: $unit9-primary;
+    font-weight: 800;
+    font-size: 1.05rem;
+  }
+}
+
+// Grammar Box (Ex 4)
+.grammarBox {
+  background: #f0fdf4;
+  border: 1.5px solid #bbf7d0;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.grammarBoxTitle {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #166534;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.grammarRules {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  background: $color-white;
+  padding: 1rem;
+  border-radius: $border-radius-lg;
+  border: 1px solid #dcfce7;
+}
+
+.grammarRuleRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  line-height: 1.5;
+
+  em {
+    color: #15803d;
+    font-style: normal;
+    font-weight: 600;
+  }
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+}
+
+.grammarTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: $color-white;
+  border-radius: $border-radius-lg;
+  overflow: hidden;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+
+  th,
+  td {
+    padding: 0.65rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+    font-size: 0.95rem;
+  }
+
+  th {
+    background: #dcfce7;
+    font-weight: 800;
+    color: #166534;
+  }
+
+  td:first-child {
+    font-weight: 600;
+    color: $color-gray-800;
+    width: 40%;
+  }
+}
+
+// Dialogue Alternatives (Ex 6)
+.dialogueBox {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  padding: clamp(1rem, 2.5vw, 1.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  line-height: 1.6;
+}
+
+.dialogueLine {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.95rem;
+  color: $color-gray-900;
+
+  @include respond-to(md) {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+}
+
+.dialogueSpeakerName {
+  font-weight: 800;
+  color: $unit9-primary-dark;
+  min-width: 65px;
+  flex-shrink: 0;
+}
+
+.dialogueContent {
+  flex: 1;
+  display: inline;
+}
+
+.choiceBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem 0.55rem;
+  margin: 0 0.2rem;
+  border-radius: $border-radius-sm;
+  font-size: 0.9rem;
+  font-weight: 700;
+  border: 1.5px solid $color-gray-300;
+  background: $color-white;
+  color: $color-gray-700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    border-color: $unit9-primary;
+    color: $unit9-primary;
+  }
+
+  &.activeChoice {
+    background: $unit9-primary;
+    border-color: $unit9-primary;
+    color: $color-white;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.75;
+  }
+}
+
+// Questions list (Ex 7)
+.questionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.questionCard {
+  background: $color-gray-50;
+  border: 1px solid $color-gray-200;
+  border-radius: $border-radius-lg;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.questionText {
+  font-size: 1rem;
+  font-weight: 700;
+  color: $color-gray-900;
+}
+
+// Speaking Prepare (Ex 8)
+.speakingGallery {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+
+  @include respond-to(md) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.speakingCard {
+  border: 2px solid $color-gray-200;
+  border-radius: $border-radius-xl;
+  overflow: hidden;
+  background: $color-white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+
+  &:hover {
+    border-color: $unit9-primary-light;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  &.selectedSpeakingCard {
+    border-color: $unit9-primary;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.2);
+  }
+}
+
+.speakingPhotoImg {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: $color-gray-100;
+
+  img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.speakingCardInfo {
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: $color-gray-800;
+  background: $color-gray-50;
+  border-top: 1px solid $color-gray-200;
+}
+
+.notesArea {
+  width: 100%;
+  min-height: 80px;
+  padding: 0.75rem;
+  border: 1.5px solid $color-gray-300;
+  border-radius: $border-radius-md;
+  font-size: 0.95rem;
+  background: $color-white;
+  box-sizing: border-box;
+  font-family: inherit;
+  resize: vertical;
+
+  &:focus {
+    outline: none;
+    border-color: $unit9-primary;
+    box-shadow: 0 0 0 3px rgba(190, 18, 60, 0.15);
+  }
+}
+
+// Speak banner & dialogue (Ex 9)
+.speakPromptBox {
+  background: #fff1f2;
+  border-left: 4px solid $unit9-primary;
+  border-radius: $border-radius-md;
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.95rem;
+  color: $color-gray-800;
+
+  p {
+    margin: 0;
+  }
+
+  .sampleDialogue {
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    margin-top: 0.35rem;
+    font-style: italic;
+    color: $unit9-primary-dark;
+  }
+}
+
+// Develop your reading badge
+.developReadingBadge {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1rem;
+  margin-top: 0.5rem;
+  border-top: 1px dashed $color-gray-300;
+}
+
+.badgeImgWrapper {
+  position: relative;
+  width: 160px;
+  height: 90px;
+
+  img {
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Teacher Review & Verification Styles
+.feedbackRow {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.correctBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #bbf7d0;
+  padding: 0.2rem 0.55rem;
+  border-radius: $border-radius-full;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.diffHighlight {
+  border-color: #f59e0b !important;
+  background-color: #fffbeb !important;
+  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.35) !important;
+}
+
+.fieldCorrect {
+  border-color: #22c55e !important;
+  background-color: #f0fdf4 !important;
+}
+
+.fieldIncorrect {
+  border-color: #ef4444 !important;
+  background-color: #fef2f2 !important;
+}

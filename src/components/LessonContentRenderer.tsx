@@ -30,6 +30,14 @@ import Lesson7AContent from './Lesson7AContent';
 import Lesson7BContent from './Lesson7BContent';
 import Lesson7CContent from './Lesson7CContent';
 import Lesson7DContent from './Lesson7DContent';
+import Lesson8AContent from './Lesson8AContent';
+import Lesson8BContent from './Lesson8BContent';
+import Lesson8CContent from './Lesson8CContent';
+import Lesson8DContent from './Lesson8DContent';
+import Lesson9AContent from './Lesson9AContent';
+import Lesson9BContent from './Lesson9BContent';
+import Lesson9CContent from './Lesson9CContent';
+import Lesson9DContent from './Lesson9DContent';
 
 export interface LessonContentRendererProps {
   user?: Record<string, unknown> | null;
@@ -66,6 +74,14 @@ export function getLessonType(lesson?: { order?: number; title?: string; id?: st
   if (lesson.order === 26 || lesson.title?.includes('7B') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380702') return '7B';
   if (lesson.order === 27 || lesson.title?.includes('7C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380703') return '7C';
   if (lesson.order === 28 || lesson.title?.includes('7D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380704') return '7D';
+  if (lesson.order === 29 || lesson.title?.includes('8A') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380801') return '8A';
+  if (lesson.order === 30 || lesson.title?.includes('8B') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380802') return '8B';
+  if (lesson.order === 31 || lesson.title?.includes('8C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380803') return '8C';
+  if (lesson.order === 32 || lesson.title?.includes('8D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380804') return '8D';
+  if (lesson.order === 33 || lesson.title?.includes('9A') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380901') return '9A';
+  if (lesson.order === 34 || lesson.title?.includes('9B') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380902') return '9B';
+  if (lesson.order === 35 || lesson.title?.includes('9C') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380903') return '9C';
+  if (lesson.order === 36 || lesson.title?.includes('9D') || lesson.id === 'b1eebc99-9c0b-4ef8-bb6d-6bb9bd380904') return '9D';
   return '1A';
 }
 
@@ -789,6 +805,174 @@ export default function LessonContentRenderer({
           audioBlob={audioBlob}
           onAudioBlobChange={(blob, mime, exKey) =>
             onAudioBlobChange?.(blob, mime, exKey || 'exercise_5')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '8A': {
+      return (
+        <Lesson8AContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'speaking_8a_childhood')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '8B': {
+      return (
+        <Lesson8BContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'speaking_8b_bad_day')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '8C': {
+      return (
+        <Lesson8CContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'speaking_8c_holiday')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '8D': {
+      return (
+        <Lesson8DContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'speaking_8d_greeting')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '9A': {
+      return (
+        <Lesson9AContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'speaking_9a_family')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '9B': {
+      return (
+        <Lesson9BContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'speaking_9b_survey')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '9C': {
+      return (
+        <Lesson9CContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'speaking_9c_habits')
+          }
+          submissionId={submissionId}
+          submittedAudios={audios}
+        />
+      );
+    }
+
+    case '9D': {
+      return (
+        <Lesson9DContent
+          lesson={lesson}
+          user={user}
+          isTeacherReview={isTeacher}
+          readOnly={isReadOnly}
+          answerKey={answerKey}
+          playAudio={playAudio}
+          playingAudio={playingAudio}
+          originalAnswers={answers}
+          audioBlob={audioBlob}
+          onAudioBlobChange={(blob, mime, exKey) =>
+            onAudioBlobChange?.(blob, mime, exKey || 'speaking_9d_suggestions')
           }
           submissionId={submissionId}
           submittedAudios={audios}
