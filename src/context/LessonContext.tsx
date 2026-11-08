@@ -17,6 +17,7 @@ import {
   verifyAnswer,
 } from '@/lib/answerVerification';
 import { type SubmissionAudioMeta } from '@/components/AudioAnswerRecorder/SubmissionAudioPlayer';
+import { type SubmissionAnswers } from '@/types/submission';
 
 export type LessonMode = 'student' | 'teacher' | 'preview';
 
@@ -33,7 +34,7 @@ export interface LessonContextValue {
   mode: LessonMode;
   isTeacher: boolean;
   isReadOnly: boolean;
-  answers: Record<string, unknown>;
+  answers: SubmissionAnswers;
   answerKey: LessonAnswerKey | null;
 
   // Управление ответами
@@ -88,11 +89,11 @@ export interface LessonProviderProps {
   lesson: LessonContextModel | null;
   mode?: LessonMode;
   readOnly?: boolean;
-  initialAnswers?: Record<string, unknown> | null;
+  initialAnswers?: SubmissionAnswers | null;
   answerKey?: LessonAnswerKey | null;
   audios?: SubmissionAudioMeta[];
   submissionId?: string;
-  onAnswersChange?: (answers: Record<string, unknown>) => void;
+  onAnswersChange?: (answers: SubmissionAnswers) => void;
 }
 
 export function LessonProvider({
@@ -106,7 +107,7 @@ export function LessonProvider({
   submissionId,
   onAnswersChange,
 }: LessonProviderProps) {
-  const [answers, setAnswers] = useState<Record<string, unknown>>(() => initialAnswers || {});
+  const [answers, setAnswers] = useState<SubmissionAnswers>(() => initialAnswers || {});
   const [prevInitialAnswers, setPrevInitialAnswers] = useState(initialAnswers);
 
   // Официальный паттерн React 19 для синхронизации состояния из пропсов без каскадных ререндеров в useEffect
